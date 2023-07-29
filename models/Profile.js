@@ -1,22 +1,23 @@
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+import mongoose from 'mongoose';
+const Schema = mongoose.Schema;
 
 const ProfileSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
-    ref: 'user',
+    ref: 'user'
   },
   school: {
     type: String,
-    required: true,
+    required: true
   },
 
   status: {
-    type: String,
+    type: String
   },
   name: {
-    type: String,
-  },
-})
+    type: String
+  }
+});
 
-module.exports = mongoose.model('profile', ProfileSchema)
+const Profile = mongoose.model('profile', ProfileSchema);
+export default Profile;

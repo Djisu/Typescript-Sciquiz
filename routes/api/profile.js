@@ -1,12 +1,12 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const auth = require('../../middleware/auth');
-const { check, validationResult } = require('express-validator');
-//const normalize = require('normalize-url');
-const checkObjectId = require('../../middleware/checkObjectId');
+import auth from '../../middleware/auth.js';
+import { check, validationResult } from 'express-validator';
+//import normalize from 'normalize-url');
+import checkObjectId from '../../middleware/checkObjectId.js';
 
-const Profile = require('../../models/Profile');
-const User = require('../../models/User');
+import Profile from '../../models/Profile.js';
+import User from '../../models/User.js';
 
 // // @route  POST api/profile
 // // @desc   Test route
@@ -174,4 +174,4 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

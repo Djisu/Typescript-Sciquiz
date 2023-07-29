@@ -1,12 +1,12 @@
-const express = require('express')
-const router = express.Router()
-const bcrypt = require('bcryptjs')
-const auth = require('../../middleware/auth')
-const jwt = require('jsonwebtoken')
-const config = require('config')
-const { check, validationResult } = require('express-validator')
+import  express from 'express'
+const  router = express.Router()
+import  bcrypt from 'bcryptjs'
+import auth from '../../middleware/auth.js';
+import  jwt from 'jsonwebtoken'
+import config from 'config';
+import  { check, validationResult } from 'express-validator'
 
-const User = require('../../models/User')
+import User from '../../models/User.js';
 
 // @route  POST api/auth
 
@@ -35,7 +35,7 @@ router.get('/', auth, async (req, res) => {
   }
 })
 
-// @route  GET api/auth
+// @route  POST api/auth
 // @desc   Authenticate user and get token
 // @access Public
 // With auth, route becomes protective.
@@ -51,6 +51,8 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() })
     }
+
+//console.log('in router.post(');
 
     // Destructure the req.body into email and password fields
     const { email, password } = req.body
@@ -74,10 +76,16 @@ router.post(
           .json({ errors: [{ msg: 'Invalid Credentials' }] })
       }
 
+//console.log("in auth router post user:", user)
+
+
       // Return jsonwebtoken
       const payload = {
         user: {
-          id: user.id,
+            id: user.id,       
+            name: user.name,
+            email: user.email,
+            isAdmin: user.isAdmin,
         },
       }
       jwt.sign(
@@ -87,7 +95,7 @@ router.post(
         (err, token) => {
           if (err) throw err
 
-          res.json({ token })
+          res.json({ token });
         },
       )
 
@@ -99,4 +107,4 @@ router.post(
   },
 )
 
-module.exports = router
+export default  router

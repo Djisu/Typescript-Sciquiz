@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 // middleware to check for a valid object id
 const checkObjectId = (idToCheck) => (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params[idToCheck]))
@@ -6,4 +6,4 @@ const checkObjectId = (idToCheck) => (req, res, next) => {
   next()
 }
 
-module.exports = checkObjectId
+export default  checkObjectId

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const TopicSchema = new mongoose.Schema({
   topic: {
@@ -11,4 +11,8 @@ const TopicSchema = new mongoose.Schema({
   }
 });
 
-module.exports = Topic = mongoose.model('topic', TopicSchema);
+const Topic = mongoose.model('topic', TopicSchema);
+export default Topic;
+
+//export default Topic = monconst Tests = mongoose.model('tests', TestsSchema);
+//export default Tests;goose.model('topic', TopicSchema);

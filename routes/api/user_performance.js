@@ -1,19 +1,27 @@
 /* eslint-disable semi */
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const mongoose = require('mongoose');
-const moment = require('moment');
+import mongoose from 'mongoose';
+import moment from 'moment';
 
-const { check, validationResult } = require('express-validator');
-const UserPerformance = require('../../models/User_Performance');
+import { check, validationResult } from 'express-validator';
+import UserPerformance from '../../models/User_Performance.js';
+import User from '../../models/User.js';
 
-// @route  POST api/test
-// @desc   Test route
+// @route  POST api/userperformance
+// @desc   find all userperformance
 // @access Public
-router.get('/', (req, res) => {
-  console.log(req.body);
-  res.send('User Performance route');
-});
+router.get('/',  async (req, res) => {
+    console.log("in userperformance router.get('/', ");
+  try {
+    const topic = await UserPerformance.find({}, { userId: 1, _id: 1 });
+
+    res.send(userperformancetopic);
+  } catch (err) {
+    console.log(err.message)
+    res.status(500).send('Server Error')
+  }
+})
 
 // Define an API endpoint to get the uPerformance by userid
 router.get('/:id', async (req, res) => {
@@ -162,4 +170,4 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

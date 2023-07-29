@@ -1,6 +1,17 @@
-const express = require('express');
-const connectDB = require('./config/db');
-const path = require('path');
+import express from 'express';
+import connectDB from './config/db.js';
+import path from 'path';
+
+import users from './routes/api/users.js';
+import auth from './routes/api/auth.js';
+import profile from './routes/api/profile.js';
+
+import difficulty_level from './routes/api/difficulty_level.js';
+import question from './routes/api/question.js';
+import subject from './routes/api/subject.js';
+import topic from './routes/api/topic.js';
+import user_performance from './routes/api/user_performance.js';
+import tests from './routes/api/tests.js';
 
 const app = express();
 
@@ -11,16 +22,16 @@ connectDB();
 app.use(express.json());
 
 // Define Routes
-app.use('/api/users', require('./routes/api/users'));
-app.use('/api/auth', require('./routes/api/auth'));
-app.use('/api/profile', require('./routes/api/profile'));
+app.use('/api/users', users);
+app.use('/api/auth', auth);
+app.use('/api/profile', profile);
 
-app.use('/api/difficulty_level', require('./routes/api/difficulty_level'));
-app.use('/api/question', require('./routes/api/question'));
-app.use('/api/subject', require('./routes/api/subject'));
-app.use('/api/topic', require('./routes/api/topic'));
-app.use('/api/user_performance', require('./routes/api/user_performance'));
-app.use('/api/tests', require('./routes/api/tests'));
+app.use('/api/difficulty_level', difficulty_level);
+app.use('/api/question', question);
+app.use('/api/subject', subject);
+app.use('/api/topic', topic);
+app.use('/api/user_performance', user_performance);
+app.use('/api/tests', tests);
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {

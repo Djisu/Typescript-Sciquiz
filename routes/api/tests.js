@@ -1,20 +1,27 @@
 /* eslint-disable semi */
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 
-const { check, validationResult } = require('express-validator');
+import { check, validationResult } from 'express-validator';
 
-const Tests = require('../../models/Tests');
+import Tests from '../../models/Tests.js';
 
-// @route  POST api/test
-// @desc   Test route
+// @route  POST api/// @route  POST api/question
+// @desc   find all question
 // @access Public
-router.get('/', (req, res) => {
-  console.log(req.body);
-  res.send('Test route');
-});
+router.get('/',  async (req, res) => {
+    console.log("in tests router.get('/', ");
+  try {
+    const tests = await Tests.find({}, { test_name: 1, _id: 1 });
 
-// Define an API endpoint to get the question by test ID and question index
+    res.send(tests);
+  } catch (err) {
+    console.log(err.message)
+    res.status(500).send('Server Error')
+  }
+})
+
+// Define an API endpoint to get the test by test ID 
 router.get('/:test_name', async (req, res) => {
   try {
     const { test_name } = req.params;
@@ -25,7 +32,7 @@ router.get('/:test_name', async (req, res) => {
     if (!test) {
       return res.status(404).json({ message: 'Test not found' });
     }
-    res.json({ test });
+    res.json(test);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
@@ -60,14 +67,14 @@ router.post(
       const { question, answer, marks, pass_marks, test_name, subject_name } =
         req.body;
 
-      // Find the test by ID
-      const test = await Tests.findById(test_name);
-
-      if (test) {
-        return res
-          .status(404)
-          .json({ message: 'Test already entered!. Opration aborted' });
-      }
+//      // Find the test by ID
+//      const test = await Tests.findById(test_name);
+//
+//      if (test) {
+//        return res
+//          .status(404)
+//          .json({ message: 'Test already entered!. Opration aborted' });
+//      }
 
       // Create a new test object
       const newTest = new Tests({
@@ -165,4 +172,4 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

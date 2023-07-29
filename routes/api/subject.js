@@ -1,18 +1,25 @@
 /* eslint-disable semi */
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 
-const { check, validationResult } = require('express-validator');
+import { check, validationResult } from 'express-validator';
 
-const Subject = require('../../models/Subject');
+import Subject from '../../models/Subject.js';
 
-// @route  POST api/subject
-// @desc   Test route
+// @route  POST api/question
+// @desc   find all question
 // @access Public
-router.get('/', (req, res) => {
-  console.log(req.body);
-  res.send('subject route');
-});
+router.get('/',  async (req, res) => {
+    console.log("in subject router.get('/', ");
+  try {
+    const subject = await Subject.find({}, { subject_name: 1, _id: 1 });
+
+    res.send(subject);
+  } catch (err) {
+    console.log(err.message)
+    res.status(500).send('Server Error')
+  }
+})
 
 // @route  POST api/subject
 // @desc   Post subject
@@ -21,6 +28,7 @@ router.post(
   '/',
   [check('subject_name', 'Subject is required').not().isEmpty()],
   async (req, res) => {
+
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -76,4 +84,4 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

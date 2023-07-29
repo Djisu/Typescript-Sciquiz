@@ -1,13 +1,13 @@
 /* eslint-disable semi */
-const express = require('express')
+import express from 'express'
 const router = express.Router()
-const gravatar = require('gravatar')
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
-const config = require('config')
-const { check, validationResult } = require('express-validator')
+import gravatar from 'gravatar'
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
+import config from 'config'
+import { check, validationResult } from 'express-validator'
 
-const User = require('../../models/User')
+import User from '../../models/User.js'
 
 // @route  POST api/users
 // @desc   Test route
@@ -98,4 +98,4 @@ router.post(
   },
 )
 
-module.exports = router
+export default router;

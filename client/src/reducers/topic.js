@@ -1,0 +1,35 @@
+import {
+  TOPIC_SUCCESS,
+  TOPIC_FAIL,
+  TOPIC_REQUEST,
+  TOPIC_LOADED,
+} from '../actions/types';
+
+const initialState = {
+  topics: [], // Initial state for the topic data
+  loading: true, // Indicates whether the data is being loaded or not
+};
+
+function topicReducer(state = initialState, action) {
+  const { type, payload } = action;
+
+  switch (action.type) {
+    case TOPIC_LOADED:
+      return {
+        ...state,
+        topics: action.payload, // Set the topics data from the action payload
+        loading: false, // Set loading to false, as the data has been successfully loaded
+      };
+
+    case TOPIC_FAIL:
+      return {
+        ...state,
+        topics: [], // Clear the topics data in case of failure
+        loading: false, // Set loading to false, as the data loading has failed
+      };
+    default:
+      return state;
+  }
+}
+
+export default topicReducer;

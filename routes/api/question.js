@@ -1,18 +1,26 @@
 /* eslint-disable semi */
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 
-const { check, validationResult } = require('express-validator');
+//import { check, validationResult } from 'express-validator';
+import  { check, validationResult }  from 'express-validator';
 
-const Question = require('../../models/Question');
+import Question from '../../models/Question.js';
 
 // @route  POST api/question
-// @desc   Test route
+// @desc   find all question
 // @access Public
-router.get('/', (req, res) => {
-  console.log(req.body);
-  res.send('question route');
-});
+router.get('/',  async (req, res) => {
+    //console.log("in question router.get('/', ");
+  try {
+    const question = await Question.find({}, { question: 1, _id: 1 });
+
+    res.send(question);
+  } catch (err) {
+    console.log(err.message)
+    res.status(500).send('Server Error')
+  }
+})
 
 // @route  POST api/question
 // @desc   Post question
@@ -23,7 +31,7 @@ router.post(
     check('question', 'Question is required').not().isEmpty(),
     check('answer', 'Answer is required').not().isEmpty(),
     check('difficulty_level', 'Difficulty level is required').not().isEmpty(),
-    check('subject', 'Subject is required').not().isEmpty(),
+    check('subject_name', 'Subject is required').not().isEmpty(),
     check('topic', 'Topic is required').not().isEmpty(),
     check('question_year', 'Question year is required').not().isEmpty()
   ],
@@ -34,17 +42,17 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    console.log('in question post api end point');
+//    console.log('in router.post question', req.body);
+//
+//    console.log('in question post api end point');
 
     const {
-      //  question_no,
       question,
       answer,
       difficulty_level,
       subject_name,
       topic,
-      question_year,
-      question_stats
+      question_year
     } = req.body;
 
     // Build question object question_no
@@ -57,7 +65,7 @@ router.post(
     if (subject_name) questionFields.subject_name = subject_name;
     if (topic) questionFields.topic = topic;
     if (question_year) questionFields.question_year = question_year;
-    if (question_stats) questionFields.question_stats = question_stats;
+    questionFields.question_stats = 0;
 
     try {
       // Create new question
@@ -152,6 +160,35 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+
+// @route  GET api/question /questions/question
+// @desc   Get question   
+// @access Public
+// Define a route to handle the findQuestion request
+router.get('/:question', async (req, res) => {
+//console.log('in get(/:question....) ', req.params.question);
+
+  try {
+    // Assuming the 'question' parameter is passed in the query string
+    //
+
+    // Mock an API call to the database (replace this with your actual database query)
+    const foundQuestion =await Question.findOne({ question: req.params.question });
+
+    //if (foundQuestion){
+    //    console.log('foundQuestion===', foundQuestion);
+    //}
+      if (!foundQuestion) {
+        return res.status(404).json({ msg: 'Question not found' });
+      }
+
+    return res.json(foundQuestion);
+  } catch (err) {
+    //console.error('Error==========:', err);
+    res.status(500).json({ msg: 'Server Error' });
+  }
+});
+
 function uuid() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     var r = (Math.random() * 16) | 0,
@@ -159,4 +196,4 @@ function uuid() {
     return v.toString(16);
   });
 }
-module.exports = router;
+export default router;

@@ -1,18 +1,29 @@
 /* eslint-disable semi */
-const express = require('express');
+import express from 'express';
+import auth from '../../middleware/auth.js';
 const router = express.Router();
 
-const { check, validationResult } = require('express-validator');
+import { check, validationResult } from 'express-validator';
 
-const Difficulty_level = require('../../models/Difficulty_level');
+import Difficultylevel from '../../models/Difficulty_level.js';
 
 // @route  POST api/difficult_level
-// @desc   Test route
+// @desc   find all difficult_level
 // @access Public
-router.get('/', (req, res) => {
-  console.log(req.body);
-  res.send('Difficulty_level route');
-});
+router.get('/',  async (req, res) => {
+    console.log("in router.get('/', ");
+  try {
+    const difficulty_level = await Difficultylevel.find(
+      {},
+      { level: 1, _id: 1 }
+    );
+
+    res.send(difficulty_level)
+  } catch (err) {
+    console.log(err.message)
+    res.status(500).send('Server Error')
+  }
+})
 
 // @route  POST api/difficult_level
 // @desc   Post difficult_level
@@ -22,6 +33,9 @@ router.post(
   [check('level', 'Difficulty level is required').not().isEmpty()],
   async (req, res) => {
     const errors = validationResult(req);
+
+   
+
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
@@ -31,15 +45,17 @@ router.post(
     const difficultyFields = {};
 
     if (level) difficultyFields.level = level;
+ console.log("in router.post Difficultylevel", req.body)
 
     try {
-      let difficulty_level = await Difficulty_level.findOne({
+      let difficulty_level = await Difficultylevel.findOne({
         level: level
       });
+console.log('XXXXXXXXX in router.post Difficultylevel');
 
       if (difficulty_level) {
         // Update old difficult level
-        difficulty_level = await Difficulty_level.findOneAndUpdate(
+        difficulty_level = await Difficultylevel.findOneAndUpdate(
           { level: req.body.level },
           { $set: difficultyFields },
           { new: true }
@@ -48,7 +64,7 @@ router.post(
       }
 
       // Create new difficult level
-      difficulty_level = new Difficulty_level(difficultyFields);
+      difficulty_level = new Difficultylevel(difficultyFields);
 
       await difficulty_level.save();
       return res.json(difficulty_level);
@@ -75,4 +91,4 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default  router;

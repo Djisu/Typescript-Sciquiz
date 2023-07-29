@@ -1,0 +1,92 @@
+import api from '../utils/api';
+import { setAlert } from './alert';
+
+import {
+  DIFFICULTY_LEVEL_SUCCESS,
+  DIFFICULTY_LEVEL_FAIL,
+  DIFFICULTY_LEVEL_REQUEST,
+  DIFFICULTY_LEVEL_LOADED,
+} from './types';
+
+// Load User
+export const loadDifficultyLevels = () => async (dispatch) => {
+console.log('in loadDifficultyLevels');
+
+  try {
+    const res = await api.get('/difficulty_level');
+    
+console.log(' res.data[0]:',  res.data[0]);
+
+    dispatch({
+      type: DIFFICULTY_LEVEL_LOADED,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: DIFFICULTY_LEVEL_FAIL,
+    });
+  }
+};
+
+// Create or update profile
+export const createDifficultyLevel = (difficultyLevelData) => async (dispatch) => {
+  console.log('in  createDifficultyLevel ', difficultyLevelData);
+
+  if (difficultyLevelData.level === '') {
+    alert('Empty difficultyLevelData');
+    return;
+  }
+  const tokenX = localStorage.getItem('token');
+
+  if (!tokenX) {
+    alert('You must login', 'danger');
+    return;
+  }
+
+  dispatch({ type: DIFFICULTY_LEVEL_REQUEST });
+
+  try {
+    const res = await api.post('/difficulty_level', difficultyLevelData);
+
+    console.log('after post difficultyLevelData');
+
+    dispatch({
+      type: DIFFICULTY_LEVEL_SUCCESS,
+      payload: res.data,
+    });
+
+    dispatch(setAlert('difficultyLevel Creation Successful', 'success'));
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+    }
+
+    dispatch({
+      type: DIFFICULTY_LEVEL_FAIL,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
+
+// Delete payment
+export const deleteDifficultyLevel = (id) => async (dispatch) => {
+  dispatch({ type: DIFFICULTY_LEVEL_REQUEST });
+
+  try {
+    const res = await api.delete(`/${id}`);
+
+    dispatch({
+      type: DIFFICULTY_LEVEL_SUCCESS,
+      payload: res.data,
+    });
+
+    dispatch(setAlert('Payment Removed', 'success'));
+  } catch (err) {
+    dispatch({
+      type: DIFFICULTY_LEVEL_FAIL,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const User_PerformanceSchema = new Schema({
@@ -21,4 +21,10 @@ const User_PerformanceSchema = new Schema({
   }
 });
 
-module.exports = mongoose.model('user_performance', User_PerformanceSchema);
+const User_Performance = mongoose.model(
+  'user_performance',
+  User_PerformanceSchema
+);
+export default User_Performance;
+
+//export default mongoose.model('user_performance', User_PerformanceSchema);
