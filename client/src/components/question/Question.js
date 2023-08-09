@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createQuestion } from '../../actions/question.js';
+import { createQuestion, deleteQuestion, loadQuestions } from '../../actions/question.js';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { setAlert } from '../../actions/alert.js';
@@ -36,6 +36,11 @@ const dispatch = useDispatch();
     dispatch(loadTopics());
   }, [dispatch]);
 
+  useEffect(() => {
+    console.log('in useEffect');
+    dispatch(loadQuestions());
+  }, [dispatch]);
+
   const difficultyLevels = useSelector(
     (state) => state.difficultyLevel.difficultyLevels
   );
@@ -49,8 +54,10 @@ const dispatch = useDispatch();
   const topics = useSelector((state) => state.topic.topics);
   const topicLoading = useSelector((state) => state.topic.loading);
 
- 
-
+  const questions = useSelector(
+    (state) => state.question.questions
+  );   
+  
   if (difficultyLevelLoading) {
     // Optionally, you can show a loading state while the data is being fetched
     return <p>Loading...</p>;
@@ -65,9 +72,9 @@ const dispatch = useDispatch();
     // Optionally, you can show a loading state while the data is being fetched
     return <p>Loading...</p>;
   } 
-console.log('difficultylevels:::', difficultyLevels);
-console.log('subjects:::', subjects);
-console.log('topics:::', topics);
+//console.log('difficultylevels:::', difficultyLevels);
+//console.log('subjects:::', subjects);
+//console.log('topics:::', topics);
 
 
   const {
@@ -93,7 +100,14 @@ console.log('topics:::', topics);
     dispatch(createQuestion(questionData));
   };
 
+ const deleteHandler = (id) => {
+   console.log('in deleteHandler');
 
+   if (window.confirm('Are you sure?')) {
+     console.log('id:', id);
+     dispatch(deleteQuestion(id));
+   }
+ };
 
   return (
     <section className="container">
@@ -122,9 +136,13 @@ console.log('topics:::', topics);
         </div>
         <div className="form-group">
           <h2>Select Difficulty Level:</h2>
-          <select name="difficulty_level" value={difficulty_level} onChange={handleInputChange}>
+          <select
+            name="difficulty_level"
+            value={difficulty_level}
+            onChange={handleInputChange}
+          >
             <option key="default" value="">
-              Easy
+            
             </option>
             {difficultyLevels.map((level) => (
               <option key={level._id} value={level.level}>
@@ -136,7 +154,11 @@ console.log('topics:::', topics);
 
         <div className="form-group">
           <h2>Select Subject:</h2>
-          <select name="subject_name" value={subject_name} onChange={handleInputChange}>
+          <select
+            name="subject_name"
+            value={subject_name}
+            onChange={handleInputChange}
+          >
             <option key="default" value="">
               Maths
             </option>
@@ -177,6 +199,32 @@ console.log('topics:::', topics);
           Go Back
         </Link>
       </form>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>QUESTION</th>
+            <th>ACTION</th>
+          </tr>
+        </thead>
+        <tbody>
+          {questions.map((question) => (
+            <tr key={question._id}>
+              <td>{question._id}</td>
+              <td>{question.question}</td>
+              <td>
+                <button
+                  type="button"
+                  className="small"
+                  onClick={() => deleteHandler(question._id)}
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </section>
   );
 };

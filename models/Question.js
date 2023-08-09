@@ -1,10 +1,6 @@
 import mongoose from 'mongoose';
 
 const QuestionSchema = new mongoose.Schema({
-  //  question_no: {
-  //    type: String,
-  //    required: true
-  //  },
   question: {
     type: String,
     required: true
@@ -31,10 +27,16 @@ const QuestionSchema = new mongoose.Schema({
   },
   question_stats: {
     type: Number
-  }
+  },
+  answeredBy: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'user', // Assuming you have a "User" model for users
+    },
+  ],
 });
 
 const Question = mongoose.model('question', QuestionSchema);
 export default Question;
 
-//export default  = mongoose.model('question', QuestionSchema);
+

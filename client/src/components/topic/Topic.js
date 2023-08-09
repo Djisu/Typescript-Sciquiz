@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { loadSubjects } from '../../actions/subject.js';
-import { createTopic } from '../../actions/topic.js';
+import { createTopic, loadTopics, deleteTopic } from '../../actions/topic.js';
 import { setAlert } from '../../actions/alert.js';
 
 const Topic = () => {
@@ -11,6 +11,8 @@ const Topic = () => {
     topic: '',
     subject_name: '',
   });
+
+ 
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -18,8 +20,14 @@ const Topic = () => {
     dispatch(loadSubjects());
   }, [dispatch]);
 
+  useEffect(() => {
+    console.log('in useEffect');
+    dispatch(loadTopics());
+  }, [dispatch]);
+
   const subjects = useSelector((state) => state.subject.subjects);
   const subjectLoading = useSelector((state) => state.subject.loading);
+   const topics = useSelector((state) => state.topic.topics);
 
   if (subjectLoading) {
     // Optionally, you can show a loading state while the data is being fetched
@@ -50,6 +58,15 @@ const Topic = () => {
         topic: '',
         subject_name: '',
       });
+    }
+  };
+
+  const deleteHandler = (id) => {
+    console.log('in deleteHandler');
+
+    if (window.confirm('Are you sure?')) {
+      console.log('id:', id);
+      dispatch(deleteTopic(id));
     }
   };
 
@@ -95,6 +112,32 @@ const Topic = () => {
           Go Back
         </Link>
       </form>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>LEVEL</th>
+            <th>ACTION</th>
+          </tr>
+        </thead>
+        <tbody>
+          {topics.map((topic) => (
+            <tr key={topic._id}>
+              <td>{topic._id}</td>
+              <td>{topic.topic}</td>
+              <td>
+                <button
+                  type="button"
+                  className="small"
+                  onClick={() => deleteHandler(topic._id)}
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </section>
   );
 };

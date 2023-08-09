@@ -72,11 +72,11 @@ router.post(
 // @desc   Delete subject
 // @access Public
 router.delete('/:id', async (req, res) => {
-  console.log('in subject delete', req.params.id);
+  console.log('in subject delete api', req.params.id);
 
   try {
     // Remove question
-    await Subject.findOneAndRemove({ _id: req.params.id });
+    await Subject.deleteOne({ _id: req.params.id });
     res.json({ msg: 'Subject deleted' });
   } catch (err) {
     console.error(err.message);

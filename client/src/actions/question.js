@@ -1,17 +1,28 @@
+import { useParams } from 'react-router-dom';
 import api from '../utils/api';
 import { setAlert } from './alert';
 
-import { QUESTION_REQUEST, QUESTION_SUCCESS, QUESTION_FAIL, QUESTION_LOADED,
-FIND_QUESTION_REQUEST, FIND_QUESTION_SUCCESS, FIND_QUESTION_FAIL } from './types';
-  
+import {
+  QUESTION_REQUEST,
+  QUESTION_SUCCESS,
+  QUESTION_FAIL,
+  QUESTION_LOADED,
+  FIND_QUESTION_REQUEST,
+  FIND_QUESTION_SUCCESS,
+  FIND_QUESTION_FAIL,
+  SELECTED_QUESTION_REQUEST,
+  SELECTED_QUESTION_SUCCESS,
+  SELECTED_QUESTION_FAIL,
+} from './types';
+
 // Load Difficult levels
 export const loadQuestions = () => async (dispatch) => {
-//console.log('in loadQuestions');
+  //console.log('in loadQuestions');
 
   try {
     const res = await api.get('/question');
-    
-//console.log(' res.data[0]:',  res.data[0]);
+
+    //console.log(' res.data[0]:',  res.data[0]);
 
     dispatch({
       type: QUESTION_LOADED,
@@ -26,9 +37,9 @@ export const loadQuestions = () => async (dispatch) => {
 
 // Get Question
 export const getQuestion = (questionData) => async (dispatch) => {
-//  console.log('in  getQuestion ', questionData);
+  //  console.log('in  getQuestion ', questionData);
 
-  dispatch({ type: QUESTION_REQUEST });  
+  dispatch({ type: QUESTION_REQUEST });
   try {
     const res = await api.get(`/question/${questionData}`);
 
@@ -54,13 +65,12 @@ export const getQuestion = (questionData) => async (dispatch) => {
 
 // Create or update Question
 export const createQuestion = (questionData) => async (dispatch) => {
-  
-//  console.log('in  createQuestion ', questionData);
+  //  console.log('in  createQuestion ', questionData);
 
   if (questionData.question === '') {
     alert('Empty subject');
     return;
-  } 
+  }
   const tokenX = localStorage.getItem('token');
 
   if (!tokenX) {
@@ -97,10 +107,9 @@ export const createQuestion = (questionData) => async (dispatch) => {
 // experiement //
 // find Question
 export const findQuestion = (question) => async (dispatch) => {
+  //console.log('in actions findQuestion', question);
 
-    //console.log('in actions findQuestion', question);
-
-  dispatch({ type: FIND_QUESTION_REQUEST });  
+  dispatch({ type: FIND_QUESTION_REQUEST });
   try {
     //const res = await api.get(`/question/${question}`);
 
@@ -111,28 +120,27 @@ export const findQuestion = (question) => async (dispatch) => {
       type: FIND_QUESTION_SUCCESS,
       payload: res.data,
     });
-    
+
     //dispatch(setAlert('Question found', 'success'));
   } catch (err) {
-    if (err){
-        dispatch({
+    if (err) {
+      dispatch({
         type: FIND_QUESTION_FAIL,
         payload: { msg: 'Error has occured' },
       });
     }
-      
   }
 };
 
 //end of experiment
 
-
 // Delete Question
 export const deleteQuestion = (id) => async (dispatch) => {
-    
-  dispatch({ type: QUESTION_REQUEST });  
+  console.log('in deleteQuestion action:', id);
+
+  dispatch({ type: QUESTION_REQUEST });
   try {
-    const res = await api.delete(`/${id}`);
+    const res = await api.delete(`/question/${id}`);
 
     dispatch({
       type: QUESTION_SUCCESS,
@@ -147,3 +155,92 @@ export const deleteQuestion = (id) => async (dispatch) => {
     });
   }
 };
+
+export const selectQuestions =
+  (checkedTopics, checkedDifficultylevels, userId) => async (dispatch) => {
+    dispatch({ type: SELECTED_QUESTION_REQUEST });
+
+    console.log(
+      'checkedTopics, checkedDifficultylevels, userId==',
+      checkedTopics,
+      checkedDifficultylevels,
+      userId
+    );
+
+    try {
+      console.log('in selectQuestions about to get');
+
+      //  const url = `/question/${checkedTopics}/${checkedDifficultyLevels}/${userId}`;
+      const res = null;
+
+      // Check null values
+      if (checkedTopics.length > 0 && checkedDifficultylevels.length > 0) {
+        res = await api.get(
+          `/question/${checkedTopics}/${checkedDifficultylevels}/${userId}`
+        );
+      }
+
+      console.log('res.data==', res.data);
+
+      dispatch({ type: SELECTED_QUESTION_SUCCESS, payload: res.data });
+    } catch (error) {
+      console.error('Error fetching question:', error);
+      dispatch({ type: SELECTED_QUESTION_FAIL });
+    }
+  };
+
+export const selectQuestionsTopics =
+  (checkedTopics, userId) => async (dispatch) => {
+    dispatch({ type: SELECTED_QUESTION_REQUEST });
+
+    console.log('checkedTopics,  userId==', checkedTopics, userId);
+
+    try {
+      console.log('in selectQuestionsTopics about to get');
+
+      //  const url = `/question/${checkedTopics}/${userId}`;
+      let res = null;
+
+      // Check null values
+      if (checkedTopics.length > 0) {
+        res = await api.get(`/question/${checkedTopics}/${userId}`);
+      }
+
+      console.log('res.data==', res.data);
+
+      dispatch({ type: SELECTED_QUESTION_SUCCESS, payload: res.data });
+    } catch (error) {
+      console.error('Error fetching question:', error);
+      dispatch({ type: SELECTED_QUESTION_FAIL });
+    }
+  };
+
+export const selectQuestionsDifficultylevels =
+  (checkedDifficultylevels, userId) => async (dispatch) => {
+    dispatch({ type: SELECTED_QUESTION_REQUEST });
+
+    console.log(
+      'checkedDifficultylevels, userId==',
+      checkedDifficultylevels,
+      userId
+    );
+
+    try {
+      console.log('in selectQuestionsDifficultylevels about to get');
+
+      //  const url = `/question/${checkedTopics}/${checkedDifficultyLevels}/${userId}`;
+      let res = null;
+
+      // Check null values
+      if (checkedDifficultylevels.length > 0) {
+        res = await api.get(`/question/${checkedDifficultylevels}/${userId}`);
+      }
+
+      console.log('res.data==', res.data);
+
+      dispatch({ type: SELECTED_QUESTION_SUCCESS, payload: res.data });
+    } catch (error) {
+      console.error('Error fetching question:', error);
+      dispatch({ type: SELECTED_QUESTION_FAIL });
+    }
+  };

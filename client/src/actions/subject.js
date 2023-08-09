@@ -70,8 +70,10 @@ console.log("after post subject")
 export const deleteSubject = (id) => async (dispatch) => {
   dispatch({ type: SUBJECT_REQUEST }); 
 
+  console.log('in deleteSubject action:', id)
+
   try {
-    const res = await api.delete(`/${id}`);
+    const res = await api.delete(`/subject/${id}`);
 
     dispatch({
       type: SUBJECT_SUCCESS,

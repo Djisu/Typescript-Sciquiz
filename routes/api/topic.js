@@ -24,6 +24,28 @@ router.get('/',  async (req, res) => {
 })
 
 // @route  POST api/topic
+// @desc   find all topic
+// @access Public
+// Define a GET endpoint to fetch unique topics
+router.get('/unique-topics', async (req, res) => {
+
+    console.log('/unique-topics backend api');
+
+  try {
+    const uniqueTopics = await Topic.distinct('topic');
+
+console.log('after uniqueTopics:', uniqueTopics);
+
+    res.json( uniqueTopics );
+  } catch (error) {
+    console.error('Error fetching unique topics:', error);
+
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+// @route  POST api/topic
 // @desc   Post topic
 // @access Public
 router.post(
@@ -119,7 +141,7 @@ router.delete('/:id', async (req, res) => {
 
   try {
     // Remove question
-    await Topic.findOneAndRemove({ _id: req.params.id });
+    await Topic.deleteOne({ _id: req.params.id });
     res.json({ msg: 'Topic deleted' });
   } catch (err) {
     console.error(err.message);

@@ -10,9 +10,9 @@ import Tests from '../../models/Tests.js';
 // @desc   find all question
 // @access Public
 router.get('/',  async (req, res) => {
-    console.log("in tests router.get('/', ");
+    //console.log("in tests router.get('/', ");
   try {
-    const tests = await Tests.find({}, { test_name: 1, _id: 1 });
+    const tests = await Tests.find();
 
     res.send(tests);
   } catch (err) {
@@ -50,8 +50,8 @@ router.post(
   [
     check('question', 'Question is required').not().isEmpty(),
     check('answer', 'Answer is required').not().isEmpty(),
-    check('marks', 'Marks is required').not().isEmpty(),
-    check('pass_marks', 'Pass marks is required').not().isEmpty(),
+    //check('marks', 'Marks is required').not().isEmpty(),
+    //check('pass_marks', 'Pass marks is required').not().isEmpty(),
     check('test_name', 'Test name is required').not().isEmpty(),
     check('subject_name', 'Test name is required').not().isEmpty()
   ],
@@ -62,43 +62,44 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    console.log('in test post api end point');
+    console.log('in test post api end point router.post(');
     try {
       const { question, answer, marks, pass_marks, test_name, subject_name } =
         req.body;
 
-//      // Find the test by ID
-//      const test = await Tests.findById(test_name);
-//
-//      if (test) {
-//        return res
-//          .status(404)
-//          .json({ message: 'Test already entered!. Opration aborted' });
-//      }
+       const query = {
+         $and: [{ question: question }, { test_name: test_name }]
+       }; 
 
-      // Create a new test object
-      const newTest = new Tests({
-        test_name,
-        question,
-        answer,
-        marks,
-        pass_marks,
-        subject_name
-      });
+       // Performing the find operation
+            const testItem = await Tests.findOne(query);
+            if(testItem){
+                return res
+                  .status(409)
+                  .json({
+                    msg: 'Test already exists with the same question and test_name'
+                  });
+            }
 
-      // Save the test
-      await newTest.save();
+            // Create a new test object
+            const newTest = new Tests({
+                test_name,
+                question,
+                answer,
+                marks,
+                pass_marks,
+                subject_name
+            });
+console.log('newTest:::', newTest);
+            // Save the test
+            await newTest.save();
 
-      res.status(201).json({
-        message: 'Test added successfully',
-        question: newTest
-      });
+            res.json(newTest);
+           
     } catch (error) {
-      console.error(error);
       res.status(500).json({ message: 'Server Error' });
     }
-  }
-);
+});
 
 // Define an API endpoint to update a question in test_details array
 router.put(
@@ -162,9 +163,10 @@ router.put(
 // @desc   Delete test
 // @access Public
 router.delete('/:id', async (req, res) => {
+    console.log('in test delete api', req.params.id)
   try {
     // Find the test by id and Remove question
-    await Tests.findOneAndRemove({ test_name: req.params.id });
+    await Tests.deleteOne({ _id: req.params.id });
     res.json({ msg: 'Test deleted' });
   } catch (error) {
     console.error(error);

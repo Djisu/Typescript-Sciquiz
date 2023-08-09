@@ -4,77 +4,89 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { logout } from '../../actions/auth';
-import SearchText from './SearchText';
+import { logout } from '../../actions/auth.js';
+//import SearchText from './SearchText.js';
+import StuTests from '../stutest/StuTests.js';
+import { useState } from 'react';
+import { setAlert } from '../../actions/alert.js';
 
 const Navbar = ({ auth: { isAuthenticated }, logout }) => {
+  const [showDropdown, setShowDropdown] = useState(false);
   const isAdmin = localStorage.getItem('isAdmin')
 
   const booleanValue = isAdmin === 'true' ? true : false;
 
+  const toggleDropdown = () => {
+    if (!booleanValue) alert("You are not admin.")
+    setShowDropdown(!showDropdown);
+  };
+
   const authLinks = (
     <div>
-      <ul>
-        <li>
-          <Link to="/profiles">Students</Link>
-        </li>
+      <div>
+        <ul>
+          <li>
+            <Link to="/profiles">Students</Link>
+          </li>
+          <li>
+            <Link to="/create-stutests">Take Test</Link>
+          </li>
 
-        <li>
-          <SearchText />
-        </li>
-        <li>
-          <Link to="/dashboard">
-            {' '}
-            <i className="fas fa-user" />{' '}
-            <span className="hide-sm">Dashboard</span>
-          </Link>
-        </li>
+          <li>
+            <Link to="/dashboard">
+              {' '}
+              <i className="fas fa-user" />{' '}
+              <span className="hide-sm">Dashboard</span>
+            </Link>
+          </li>
+          <li>
+            <button
+            //  className="dropbtn"
+              className="btn btn-primary"
+              onClick={toggleDropdown}
+            >
+              Admin
+            </button>
+            {showDropdown && booleanValue && (
+              <div className="dropdown">
+                <ul className="dropdown-content">
+                  <li>
+                    <Link to="/create-difficultylevel">Difficulty</Link>
+                  </li>
+                  <li>
+                    <Link to="/create-topic">Topic</Link>
+                  </li>
+                  <li>
+                    <Link to="/create-subject">Subject</Link>
+                  </li>
+                  <li>
+                    <Link to="/create-question">Question</Link>
+                  </li>
+                  <li>
+                    <Link to="/create-tests">Test</Link>
+                  </li>
+                  <li>
+                    <Link to="/create-user-performance">Test Result</Link>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </li>
+          <li>
+            <a onClick={logout} href="#!">
+              <i className="fas fa-sign-out-alt" />{' '}
+              <span className="hide-sm">Logout</span>
+            </a>
+          </li>
+        </ul>
+      </div>
 
-        <li>
-          {booleanValue && (
-            <div className="dropdown">
-              <Link to="#admin">
-                Admin <i className="fa fa-caret-down"></i>
-              </Link>
-              <ul className="dropdown-content">
-                <li>
-                  <Link to="/create-difficultylevel">Difficulty Level</Link>
-                </li>
-                <li>
-                  <Link to="/create-topic">Topic</Link>
-                </li>
-                <li>
-                  <Link to="/create-subject">Subject</Link>
-                </li>
-                <li>
-                  <Link to="/create-question">Question</Link>
-                </li>
-                <li>
-                  <Link to="/create-tests">Test</Link>
-                </li>
-                <li>
-                  <Link to="/create-user-performance">Test Result</Link>
-                </li>
-              </ul>
-            </div>
-          )}
-        </li>
-
-        <li>
-          <a onClick={logout} href="#!">
-            <i className="fas fa-sign-out-alt" />{' '}
-            <span className="hide-sm">Logout</span>
-          </a>
-        </li>
-      </ul>
+      <div></div>
     </div>
   );
 
   const guestLinks = (
     <ul>
-      <li>
-        <SearchText />
-      </li>
       <li>
         <Link to="/profiles">Students</Link>
       </li>
@@ -85,9 +97,17 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
       <li>
         <Link to="/login">Login</Link>
       </li>
+      {/*<li>
+        <a onClick={logout} href="#!">
+          <i className="fas fa-sign-out-alt" />{' '}
+          <span className="hide-sm">Logout</span>
+        </a>
+      </li>*/}
     </ul>
   );
 
+   
+    
   return (
     <nav className="navbar bg-dark">
       <h1>

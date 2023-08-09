@@ -83,7 +83,7 @@ router.delete('/:id', async (req, res) => {
 
   try {
     // Remove question
-    await Difficulty_level.findOneAndRemove({ _id: req.params.id });
+    await Difficultylevel.deleteOne({ _id: req.params.id });
     res.json({ msg: 'Difficult level deleted' });
   } catch (err) {
     console.error(err.message);

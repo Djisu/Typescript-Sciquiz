@@ -699,8 +699,8 @@ main {
 }
 
 
-/* dropdown */
-.dropdown {
+
+/*.dropdown {
   display: inline-block;
   position: relative;
 }
@@ -718,7 +718,7 @@ main {
 }
 .dropdown:hover .dropdown-content {
   display: block;
-}
+}*/
 
 img {
   float: left;
@@ -904,4 +904,70 @@ button.small {
   border-right: none;
   margin-left: 0.5rem;
 }
+
+.stutestcontainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.stutesttextbox {
+  width: 150px;
+  height: 40px; /* Add the desired height value here */
+  padding: 8px;
+  margin: 5px;
+  border: 1px solid #ccc;
+}
+
+
+/* dropdown */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+.dropbtn {
+  background-color: transparent;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%; /* Position the dropdown below the button */
+  /*left: 0;*/
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  min-width: 160px;
+  z-index: 1;
+}
+/* Show the dropdown menu content when the button is hovered or focused */
+.dropdown:hover .dropdown-content,
+.dropdown:focus .dropdown-content {
+  display: block;
+}
+/* Style the list items inside the dropdown */
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  padding: 10px;
+  color: white;
+  cursor: pointer;
+}
+
+li:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.float-left {
+    float: left;
+}
+
+
+
+
+
 

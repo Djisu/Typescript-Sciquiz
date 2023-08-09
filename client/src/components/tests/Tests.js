@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { createTests } from '../../actions/tests';
+import { createTests, loadTests, deleteTest } from '../../actions/tests';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { setAlert } from '../../actions/alert.js';
@@ -21,6 +21,10 @@ const Question = () => {
 
   const dispatch = useDispatch();
 
+  const tests = useSelector((state) => state.tests.tests);
+
+  console.log("tests===", tests)
+
   useEffect(() => {
     //console.log('in useEffect');
     dispatch(loadQuestions());
@@ -31,13 +35,12 @@ const Question = () => {
     dispatch(loadSubjects());
   }, []);
 
+  useEffect(() => {
+    console.log('in useEffect');
+    dispatch(loadTests());
+  }, [dispatch]);
 
-
-  //TODO: onBlur event for otherQuestion
-//const handleFocusResults = (question) => {
-//       console.log('in handleQuestionResults');
-//       dispatch(findQuestion(question));
-//     };
+//   const tests = useSelector((state) => state const tests = useSelector( (state) => (state.tests.tests));.tests.tests);
   const questions = useSelector((state) => state.question.questions);
   const questionLoading = useSelector((state) => state.question.loading);
 
@@ -80,8 +83,8 @@ const Question = () => {
     }
     
     testData.pass_marks = parseInt(testData.pass_marks);
-    testData.answer = otherQuestions.questions.answer;
-    testData.subject_name = otherQuestions.questions.subject;
+    //testData.answer = otherQuestions.questions.answer;
+    //testData.subject_name = otherQuestions.questions.subject;
 
     //Validation of field
     //test_name, question, answer, marks, pass_marks, subject_name;
@@ -114,6 +117,15 @@ const Question = () => {
     dispatch(findQuestion(question));
  };
 
+ const deleteHandler = (id) => {
+   console.log('in deleteHandler');
+
+   if (window.confirm('Are you sure?')) {
+     console.log('id:', id);
+     dispatch(deleteTest(id));
+   }
+ };
+
   return (
     <section className="container">
       <br />
@@ -138,9 +150,7 @@ const Question = () => {
             onChange={handleInputChange}
             onBlur={(e) => handleFocusResults(e.target.value)}
           >
-            <option key="default" value="">
-              Who is Kofi
-            </option>
+            <option key="default" value=""></option>
             {questions.map((question) => (
               <option key={question._id} value={question.question}>
                 {question.question}
@@ -154,10 +164,10 @@ const Question = () => {
           <textarea
             type="text"
             name="answer"
-            value={otherQuestions.questions.answer}
+            value={answer}
+            //value={otherQuestions.questions.answer}
             onChange={handleInputChange}
           />
-          {/*{...(testData.answer = otherQuestions.questions.answer)}*/}
         </div>
 
         <div className="form-group">
@@ -165,21 +175,10 @@ const Question = () => {
           <textarea
             type="text"
             name="subject_name"
-            value={otherQuestions.questions.subject}
+            value={subject_name}
             onChange={handleInputChange}
           />
-          {/*{...(testData.subject_name = otherQuestions.questions.subject)}*/}
         </div>
-
-        {/*<div className="form-group">
-          <label>marks for this question</label>
-          <input
-            type="number"
-            name="marks"
-            value={marks}
-            onChange={handleInputChange}
-          />
-        </div>*/}
         <div className="form-group">
           <label>Pass marks for this question</label>
           <input
@@ -197,6 +196,54 @@ const Question = () => {
           Go Back
         </Link>
       </form>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>TEST NAME</th>
+            <th>ACTION</th>
+          </tr>
+        </thead>
+        <tbody>
+          {Array.isArray(tests) ? (
+            tests.map((test) => (
+              <tr key={test._id}>
+                <td>{test._id}</td>
+                <td>{test.test_name}</td>
+                <td>
+                  <button
+                    type="button"
+                    className="small"
+                    onClick={() => deleteHandler(test._id)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="3">Loading...</td>
+            </tr>
+          )}
+        </tbody>
+        {/*{tests.map((test) => (
+            <tr key={test._id}>
+              <td>{test._id}</td>
+              <td>{test.test_name}</td>
+              <td>
+                <button
+                  type="button"
+                  className="small"
+                  onClick={() => deleteHandler(test._id)}
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}*/}
+        {/*</tbody>*/}
+      </table>
     </section>
   );
 };

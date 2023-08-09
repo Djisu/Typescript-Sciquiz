@@ -10,6 +10,9 @@ import subject from './subject.js';
 import userPerformance from './user_performance.js';
 import topic from './topic.js';
 import otherQuestion from './otherQuestion.js';
+import fetchUniqueTopics from './fetchUniqueTopics.js';
+import fetchUniqueDifficultyLevels from './fetchUniqueDifficultyLevels.js';
+import selectedQuestions from './selectedQuestions.js';
 
 export default combineReducers({
   alert,
@@ -23,6 +26,9 @@ export default combineReducers({
   userPerformance,
   topic,
   otherQuestion,
+  fetchUniqueTopics,
+  fetchUniqueDifficultyLevels,
+  selectedQuestions,
 });
 
 //import { combineReducers } from 'redux';

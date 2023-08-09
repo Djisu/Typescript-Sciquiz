@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { createUserPerformance } from '../../actions/user_performance';
+import { createUserPerformance, loadUserPerformances, deleteUserPerformance } from '../../actions/user_performance';
 import { useDispatch } from 'react-redux';
 import { setAlert } from '../../actions/alert';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const User_Performance = () => {
     console.log('in User_Performance  component');
+
   const [userPerformanceData, setUserPerformanceData] = useState({
     userId: '',
     test_name: '',
@@ -14,10 +16,21 @@ const User_Performance = () => {
   });
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    console.log('in useEffect');
+    dispatch(loadUserPerformances());
+  }, [dispatch]);
+
+  const userPerformances = useSelector(
+    (state) => state.userPerformance.userPerformances
+  ); 
+
+//  console.log('userPerformances==', userPerformances);
+
   const { userId, test_name, score, date } = userPerformanceData;
 
   userPerformanceData.userId = localStorage.getItem('id');
-   userPerformanceData.date = new Date.now();
+   userPerformanceData.date = Date.now();
 
   const handleInputChange = (e) => {
     setUserPerformanceData({ ...userPerformanceData, [e.target.name]: e.target.value });
@@ -38,8 +51,18 @@ const User_Performance = () => {
     } 
    
     console.log('user performance data', userPerformanceData);
-    //dispatch(createUserPerformance(userPerformanceData));
+    dispatch(createUserPerformance(userPerformanceData));
   };
+
+  const deleteHandler = (id) => {
+    console.log('in deleteHandler');
+
+    if (window.confirm('Are you sure?')) {
+      console.log('id:', id);
+      dispatch(deleteUserPerformance(id));
+    }
+  };
+
 
   return (
     <section className="container">
@@ -73,6 +96,34 @@ const User_Performance = () => {
           Go Back
         </Link>
       </form>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>TEST NAME</th>
+            <th>TEST SCORE</th>
+            <th>ACTION</th>
+          </tr>
+        </thead>
+        <tbody>
+          {userPerformances.map((userPerformance) => (
+            <tr key={userPerformance._id}>
+              <td>{userPerformance._id}</td>
+              <td>{userPerformance.test_name}</td>
+              <td>{userPerformance.score}</td>
+              <td>
+                <button
+                  type="button"
+                  className="small"
+                  onClick={() => deleteHandler(userPerformance._id)}
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </section>
   );
 };

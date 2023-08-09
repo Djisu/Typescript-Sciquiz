@@ -28,7 +28,7 @@ import {
 export const loadUser = () => async (dispatch) => {
   try {
     const res = await api.get('/auth');
-    
+
     dispatch({
       type: USER_LOADED,
       payload: res.data,
@@ -67,20 +67,20 @@ export const register = (formData) => async (dispatch) => {
 export const login = (email, password) => async (dispatch) => {
   const body = { email, password };
 
-  dispatch({type: LOGIN_REQUEST})
+  dispatch({ type: LOGIN_REQUEST });
 
   try {
     const res = await api.post('/auth', body);
-//
-//    console.log('typeOf res.data.user:', typeof res.data.user);
-//    console.log('res.data.token:', res.data.token);
-//    
+    //
+    //    console.log('typeOf res.data.user:', typeof res.data.user);
+    //    console.log('res.data.token:', res.data.token);
+    //
     const [encryptedId, name, email, isAdmin] = detokenize(res.data.token);
 
-    //console.log('encryptedId', encryptedId);
-    //console.log('name', name);
-    //console.log('email', email);
-    //console.log('isAdmin', isAdmin);
+    console.log('encryptedId', encryptedId);
+    console.log('name', name);
+    console.log('email', email);
+    console.log('isAdmin', isAdmin);
 
     localStorage.setItem('id', encryptedId);
     localStorage.setItem('name', name);

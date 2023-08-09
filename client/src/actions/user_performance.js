@@ -5,7 +5,7 @@ import { USER_PERFORMANCE_SUCCESS, USER_PERFORMANCE_FAIL, USER_PERFORMANCE_REQUE
 
 // Load Topics
 export const loadUserPerformances = () => async (dispatch) => {
-console.log('in loadUserPerformances');
+//console.log('in loadUserPerformances');
 
   try {
     const res = await api.get('/user_performance');
@@ -25,17 +25,22 @@ console.log(' res.data[0]:',  res.data[0]);
 
 
 // Create or update Question UserPerformance
-export const createUserPerformance = (formData) => async (dispatch) => {
+export const createUserPerformance = (userPerformanceData) => async (dispatch) => {
  dispatch({ type: USER_PERFORMANCE_REQUEST });  
 
+// console.log('in userperformance action')
   try {
-    const res = await api.post('/', formData);
+    const res = await api.post('/user_performance', userPerformanceData);
+
+    console.log("res.data:", res.data)
 
     dispatch({
       type: USER_PERFORMANCE_SUCCESS,
       payload: res.data,
     });
 
+
+    //alert('UserPerformance Creation Successful');
     dispatch(setAlert('UserPerformance Creation Successful', 'success'));
   } catch (err) {
     const errors = err.response.data.errors;
@@ -55,8 +60,10 @@ export const createUserPerformance = (formData) => async (dispatch) => {
 export const deleteUserPerformance = (id) => async (dispatch) => {
  dispatch({ type: USER_PERFORMANCE_REQUEST });
 
+ console.log('in user performance action', id)
+
   try {
-    const res = await api.delete(`/${id}`);
+    const res = await api.delete(`/user_performance/${id}`);
 
     dispatch({
       type: USER_PERFORMANCE_SUCCESS,
@@ -67,7 +74,7 @@ export const deleteUserPerformance = (id) => async (dispatch) => {
   } catch (err) {
     dispatch({
       type: USER_PERFORMANCE_FAIL,
-      payload: { msg: err.response.statusText, status: err.response.status },
+      payload: { msg: 'Error has occured' }
     });
   }
 };

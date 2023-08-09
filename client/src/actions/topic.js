@@ -1,7 +1,15 @@
 import api from '../utils/api';
 import { setAlert } from './alert';
 
-import { TOPIC_SUCCESS, TOPIC_FAIL, TOPIC_REQUEST, TOPIC_LOADED } from './types';
+import { TOPIC_SUCCESS, 
+        TOPIC_FAIL, 
+        TOPIC_REQUEST, 
+        TOPIC_LOADED, 
+        UNIC_TOPIC_REQUEST,
+        UNIC_TOPIC_SUCCESS,
+        UNIC_TOPIC_FAIL, 
+        UNIC_TOPIC_LOADED 
+} from './types';
 
 // Load Topics
 export const loadTopics = () => async (dispatch) => {
@@ -20,6 +28,28 @@ console.log(' res.data[0]:',  res.data[0]);
     dispatch({
       type: TOPIC_FAIL,
     });
+  }
+};
+
+// Action creator for fetching unique topics
+export const fetchUniqueTopics = () => async (dispatch) => {
+  dispatch({ type: UNIC_TOPIC_REQUEST });
+
+//  console.log('in action fetchUniqueTopics');
+
+  try {
+    const res = await api.get('/unique_topics');
+
+//console.log('in topics action res.data', res.data);
+
+
+    const uniqueTopics = res.data;
+
+    dispatch({ type: UNIC_TOPIC_SUCCESS, payload: res.data });
+  } catch (error) {
+    console.error('Error fetching unique topics:', error);
+
+    dispatch({ type: UNIC_TOPIC_FAIL, error: 'Failed to fetch unique topics' });
   }
 };
 
@@ -56,9 +86,11 @@ console.log('in topic action', )
 // Delete Question
 export const deleteTopic = (id) => async (dispatch) => {
   dispatch({ type: TOPIC_REQUEST }); 
+
+  console.log('in deleteTopic action')
     
   try {
-    const res = await api.delete(`/${id}`);
+    const res = await api.delete(`/topic/${id}`);
 
     dispatch({
       type: TOPIC_SUCCESS,

@@ -16,10 +16,9 @@ import Difficultylevel from './components/difficultylevel/Difficultylevel.js';
 import Question from './components/question/Question.js';
 import Subject from './components/subject/Subject.js';
 import Tests from './components/tests/Tests.js';
+import StuTests from './components/stutest/StuTests.js';
 import Topic from './components/topic/Topic.js';
 import User_Performance from './components/user_performance/User_Performance.js';
-
-
 
 import NotFound from './components/layout/NotFound.js';
 
@@ -33,6 +32,10 @@ import store from './store.js';
 import { loadUser } from './actions/auth.js';
 import setAuthToken from './utils/setAuthToken.js';
 import PaymentEntry from './components/payments/PaymentEntry.js';
+import StuTestDashboard from './components/stutest/StuTestDashboard.js';
+import MainTest from './components/stutest/MainTest.js';
+import MainTestTopics from './components/stutest/MainTestTopics.js';
+import MainTestDifficultyLevels from './components/stutest/MainTestDifficultyLevels.js';
 
 import './App.css';
 
@@ -67,6 +70,20 @@ const App = () => {
         <Route path="profile/:id" element={<Profile />} />
         <Route path="profile/:status" element={<SearchText />} />
         <Route path="payment-entry" element={<PaymentEntry />} />
+        <Route
+          path="/maintest/:checkedTopics/:checkedDifficultylevels/:userId"
+          element={<MainTest />}
+        />
+
+        <Route
+          path="/maintesttopics/:checkedTopics/:userId"
+          element={<MainTestTopics />}
+        />
+
+        <Route
+          path="/maintestdifficultylevels/:checkedDifficultylevels/:userId"
+          element={<MainTestDifficultyLevels />}
+        />
 
         {/* <Route path="/rateService" element={<RateServiceScreen />}></Route> */}
         <Route
@@ -91,6 +108,7 @@ const App = () => {
         <Route path="/create-subject" element={<Subject />} />
 
         <Route path="/create-tests" element={<Tests />} />
+        <Route path="/create-stutests" element={<StuTestDashboard />} />
 
         <Route path="/create-user-performance" element={<User_Performance />} />
 

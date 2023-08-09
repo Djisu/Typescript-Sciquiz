@@ -1,4 +1,8 @@
-import { QUESTION_SUCCESS, QUESTION_FAIL, QUESTION_REQUEST, QUESTION_LOADED } from '../actions/types';
+import { QUESTION_SUCCESS, 
+    QUESTION_FAIL, 
+    QUESTION_REQUEST, 
+    QUESTION_LOADED 
+} from '../actions/types';
 
 const initialState = {
   questions: [], // Initial state for the question data

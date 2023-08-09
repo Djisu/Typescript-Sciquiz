@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { createSubject } from '../../actions/subject.js';
+import { createSubject, loadSubjects,deleteSubject } from '../../actions/subject.js';
 import { useDispatch } from 'react-redux';
 import { setAlert } from '../../actions/alert.js';
+import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 
 const Subject = () => {
@@ -12,6 +14,13 @@ const Subject = () => {
     subject_name: '',
   });
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    console.log('in useEffect');
+    dispatch(loadSubjects());
+  }, [dispatch]);
+
+  const subjects = useSelector((state) => state.subject.subjects);
 
   const {subject_name} = subjectData
 
@@ -29,6 +38,15 @@ const Subject = () => {
 
     dispatch(createSubject(subjectData));
   };
+
+   const deleteHandler = (id) => {
+     console.log('in deleteHandler');
+
+     if (window.confirm('Are you sure?')) {
+       console.log('id:', id);
+       dispatch(deleteSubject(id));
+     }
+   };
 
   return (
     <section className="container">
@@ -53,6 +71,32 @@ const Subject = () => {
           Go Back
         </Link>
       </form>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>SUBJECT</th>
+            <th>ACTION</th>
+          </tr>
+        </thead>
+        <tbody>
+          {subjects.map((subject) => (
+            <tr key={subject._id}>
+              <td>{subject._id}</td>
+              <td>{subject.subject_name}</td>
+              <td>
+                <button
+                  type="button"
+                  className="small"
+                  onClick={() => deleteHandler(subject._id)}
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </section>
   );
 };

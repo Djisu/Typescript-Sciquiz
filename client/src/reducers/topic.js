@@ -8,6 +8,7 @@ import {
 const initialState = {
   topics: [], // Initial state for the topic data
   loading: true, // Indicates whether the data is being loaded or not
+  error: null
 };
 
 function topicReducer(state = initialState, action) {
@@ -26,6 +27,7 @@ function topicReducer(state = initialState, action) {
         ...state,
         topics: [], // Clear the topics data in case of failure
         loading: false, // Set loading to false, as the data loading has failed
+        error: action.payload
       };
     default:
       return state;

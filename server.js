@@ -12,13 +12,16 @@ import subject from './routes/api/subject.js';
 import topic from './routes/api/topic.js';
 import user_performance from './routes/api/user_performance.js';
 import tests from './routes/api/tests.js';
+import stutest from './routes/api/stutest.js';
+import unique_topics from './routes/api/unique_topics.js';
+import unique_difficultylevels from './routes/api/unique_difficultylevels.js';
 
 const app = express();
 
 // Connect Database
 connectDB();
 
-// Init Middleware
+// Init Middleware  /unique-topics
 app.use(express.json());
 
 // Define Routes
@@ -32,6 +35,9 @@ app.use('/api/subject', subject);
 app.use('/api/topic', topic);
 app.use('/api/user_performance', user_performance);
 app.use('/api/tests', tests);
+app.use('/api/stutest', stutest);
+app.use('/api/unique_topics', unique_topics);
+app.use('/api/unique_difficultylevels', unique_difficultylevels);
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {

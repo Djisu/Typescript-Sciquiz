@@ -14,9 +14,13 @@ import User from '../../models/User.js';
 router.get('/',  async (req, res) => {
     console.log("in userperformance router.get('/', ");
   try {
-    const topic = await UserPerformance.find({}, { userId: 1, _id: 1 });
+    const userperformance = await UserPerformance.find();
+    //const userperformance = await UserPerformance.find(
+    //  {},
+    //  { userId: 1, _id: 1 }
+    //);
 
-    res.send(userperformancetopic);
+    res.send(userperformance);
   } catch (err) {
     console.log(err.message)
     res.status(500).send('Server Error')
@@ -84,13 +88,11 @@ router.post(
         formattedDate
       });
 
-      // Save the test
+       console.log('about to save to database', newUserPerformance);
+      // Save the user performance
       await newUserPerformance.save();
 
-      res.status(201).json({
-        message: 'User Performance added successfully',
-        question: newUserPerformance
-      });
+      res.json(newUserPerformance);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Server Error' });
@@ -158,11 +160,12 @@ router.put(
 // @access Public
 router.delete('/:id', async (req, res) => {
   try {
+    console.log('in userperformance delete api', req.params.id)
     // Convert the userId to ObjectId
     //const objectId = mongoose.Types.ObjectId(userId);
 
     // Find the test by id and Remove question
-    await UserPerformance.findOneAndRemove({ _id: req.params.id });
+    await UserPerformance.deleteOne({ _id: req.params.id });
     res.json({ msg: 'User performance deleted' });
   } catch (error) {
     console.error(error);

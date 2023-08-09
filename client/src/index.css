@@ -197,3 +197,39 @@ button.small {
   margin-left: 0.5rem;
 }
 
+.stutestcontainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.stutesttextbox {
+  width: 150px;
+  height: 40px; /* Add the desired height value here */
+  padding: 8px;
+  margin: 5px;
+  border: 1px solid #ccc;
+}
+
+/* dropdown */
+.dropdown {
+  display: inline-block;
+  position: relative;
+}
+.dropdown-content {
+  position: absolute;
+  display: none;
+  right: 0;
+  min-width: 12rem;
+  padding: 1rem;
+  z-index: 1;
+  background-color: white;
+  color: black;
+  margin: 0;
+  margin-top: 0.4rem;
+  border-radius: 0.5rem;
+}
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+
