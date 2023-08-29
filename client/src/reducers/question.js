@@ -1,13 +1,14 @@
-import { QUESTION_SUCCESS, 
-    QUESTION_FAIL, 
-    QUESTION_REQUEST, 
-    QUESTION_LOADED 
-} from '../actions/types';
+import {
+  QUESTION_SUCCESS,
+  QUESTION_FAIL,
+  QUESTION_REQUEST,
+  QUESTION_LOADED,
+} from '../actions/types.js';
 
 const initialState = {
   questions: [], // Initial state for the question data
   loading: true, // Indicates whether the data is being loaded or not
-  error: ''
+  error: '',
 };
 
 function questionReducer(state = initialState, action) {
@@ -26,7 +27,7 @@ function questionReducer(state = initialState, action) {
         ...state,
         questions: [], // Clear the questions data in case of failure
         loading: false, // Set loading to false, as the data loading has failed
-        error: action.payload
+        error: action.payload,
       };
 
     default:

@@ -1,16 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { connect, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { LOGOUT } from '../../actions/types';
-import { useEffect } from 'react';
+import { LOGOUT } from '../../actions/types.js';
 
 const Landing = ({ isAuthenticated }) => {
-//  if (isAuthenticated) {
-//    return <Navigate to="/dashboard" />;
-//  }
+  //  if (isAuthenticated) {
+  //    return <Navigate to="/dashboard" />;
+  //  }
 
-const dispatch = useDispatch()
+  const dispatch = useDispatch();
   useEffect(() => {
     if (isAuthenticated) {
       dispatch({ type: LOGOUT });

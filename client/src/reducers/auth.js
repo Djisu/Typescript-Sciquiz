@@ -15,10 +15,11 @@ import {
   USER_LIST_REQUEST,
   USER_LIST_SUCCESS,
   USER_LIST_FAIL,
-} from '../actions/types';
+} from '../actions/types.js';
 
 const initialState = {
   token: localStorage.getItem('token'),
+
   isAuthenticated: null,
   loading: true,
   user: null,
@@ -42,14 +43,14 @@ function authReducer(state = initialState, action) {
       };
 
     case LOGIN_REQUEST:
-        return {loading: true}  
+      return { loading: true };
 
     case REGISTER_SUCCESS:
     case LOGIN_SUCCESS:
       localStorage.setItem('token', payload.token);
 
-    //  console.log('in reducer case LOGIN_SUCCESS:');
-     
+      //  console.log('in reducer case LOGIN_SUCCESS:');
+
       return {
         ...state,
         ...payload,
@@ -103,6 +104,5 @@ export const userListReducer = (state = { loading: true }, action) => {
       return state;
   }
 };
-
 
 export default authReducer;

@@ -6,9 +6,9 @@ import React, { Fragment, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Spinner from '../layout/Spinner';
-import SetupActions from './SetupActions';
-import { getCurrentProfile } from '../../actions/profile';
+import Spinner from '../layout/Spinner.js';
+import SetupActions from './SetupActions.js';
+import { getCurrentProfile } from '../../actions/profile.js';
 
 // Destructure props
 const Dashboard = ({
@@ -34,7 +34,7 @@ const Dashboard = ({
         <i className="fas fa-user"></i>
         Welcome {user && user.name}
       </p>
-      {user.isAdmin  && (
+      {user.isAdmin && (
         <Fragment>
           <SetupActions />
         </Fragment>

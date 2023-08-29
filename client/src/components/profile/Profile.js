@@ -1,21 +1,50 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
+
 import PropTypes from 'prop-types';
 import { Link, useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
-import Spinner from '../layout/Spinner';
-import ProfileTop from './ProfileTop';
-import ProfileAbout from './ProfileAbout';
+import { useDispatch, useSelector } from 'react-redux';
+import Spinner from '../layout/Spinner.js';
+import ProfileTop from './ProfileTop.js';
+import ProfileAbout from './ProfileAbout.js';
 
-import { getProfileById } from '../../actions/profile';
+import { getProfileById } from '../../actions/profile.js';
+import { userAnsweredQuestions } from '../../actions/auth.js';
 
 const Profile = ({ getProfileById, profile: { profile }, auth }) => {
+  //  console.log('in Profile');
+
   const { id } = useParams();
 
-  console.log('auth in Profile:', auth);
+  //  console.log('id==', id);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getProfileById(id);
   }, [getProfileById, id]);
+
+  const profileX = useSelector((state) => state.profile);
+
+  //const auth = useSelector((state) => state.auth);
+
+  //  console.log('XXXXXXX in Profile prolife=========', profileX);
+  //
+  //  if (!profile) {
+  //    console.log('There is no profile loaded');
+  //  }
+  const answeredQuestions = useSelector((state) => state.userAnsweredQuestions);
+  //  const [userAnsweredQuestions] = useSelector(
+  //    (state) => state.userAnsweredQuestions
+  //  );
+
+  console.log(' answeredQuestions:', answeredQuestions.userAnsweredQuestions);
+
+  useEffect(() => {
+    console.log('in dispatch(userAnsweredQuestions(id));');
+
+    dispatch(userAnsweredQuestions(id));
+  }, [dispatch]);
 
   return (
     <section className="container">
@@ -35,12 +64,23 @@ const Profile = ({ getProfileById, profile: { profile }, auth }) => {
               </Link>
             )}
 
-            <div className="profile-grid my-1">
-                <ProfileTop profile={profile} />
-                <ProfileAbout profile={profile} />
-            </div>
+          <div className="profile-grid my-1">
+            <ProfileTop profile={profile} />
+            <ProfileAbout profile={profile} />
+          </div>
         </Fragment>
       )}
+      <p>Total Questions Answered: {answeredQuestions.userAnsweredQuestions}</p>
+      {/*<div>
+        <ul>
+          <p>List of questions answered</p>
+          {answeredQuestions &&
+            answeredQuestions.map((question, index) => {
+              return <li key={index}>{question}</li>;
+            })}
+        </ul>
+        
+      </div>*/}
     </section>
   );
 };

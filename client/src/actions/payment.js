@@ -11,7 +11,7 @@ import {
   DELETE_PAYMENT_FAIL,
   GET_PAYMENTS_FAIL,
   ADD_PAYMENT,
-} from './types';
+} from './types.js';
 
 // Get all profiles
 export const getPayments = () => async (dispatch) => {

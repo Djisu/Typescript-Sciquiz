@@ -3,23 +3,18 @@ import {
   PROFILE_ERROR,
   CLEAR_PROFILE,
   UPDATE_PROFILE,
-  GET_PROFILES,
-  GET_REPOS,
-  NO_REPOS,
-  ADD_COMMENT,
-  REMOVE_COMMENT,
-} from '../actions/types';
+} from '../actions/types.js';
 
 const initialState = {
   profile: null,
-  profiles: [],
-  repos: [],
-  loading: true,
-  error: {},
+  loading: false,
+  error: null,
 };
 
 function profileReducer(state = initialState, action) {
   const { type, payload } = action;
+
+//  console.log('in profileReducer, payload is:', payload);
 
   switch (type) {
     case GET_PROFILE:
@@ -27,12 +22,6 @@ function profileReducer(state = initialState, action) {
       return {
         ...state,
         profile: payload,
-        loading: false,
-      };
-    case GET_PROFILES:
-      return {
-        ...state,
-        profiles: payload,
         loading: false,
       };
     case PROFILE_ERROR:
@@ -46,38 +35,7 @@ function profileReducer(state = initialState, action) {
       return {
         ...state,
         profile: null,
-        repos: [],
       };
-    case GET_REPOS:
-      return {
-        ...state,
-        repos: payload,
-        loading: false,
-      };
-    case NO_REPOS:
-      return {
-        ...state,
-        repos: [],
-      };
-
-    case ADD_COMMENT:
-      return {
-        ...state,
-        profile: { ...state.profile, comments: payload },
-        loading: false,
-      };
-    case REMOVE_COMMENT:
-      return {
-        ...state,
-        profile: {
-          ...state.profile,
-          comments: state.profile.comments.filter(
-            (comment) => comment._id !== payload
-          ),
-        },
-        loading: false,
-      };
-
     default:
       return state;
   }

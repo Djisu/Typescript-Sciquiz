@@ -2,20 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Link, useMatch, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { createProfile, getCurrentProfile } from '../../actions/profile';
+import { createProfile, getCurrentProfile } from '../../actions/profile.js';
 
-import DatePicker from 'react-datepicker';
-import { storage } from '../../firebase';
-
-/*
-  NOTE: declare initialState outside of component
-  so that it doesn't trigger a useEffect,
-  we can then safely use this to construct our profileData
- */
+//  NOTE: declare initialState outside of component
+//  so that it doesn't trigger a useEffect,
+//  we can then safely use this to construct our profileData
+// */
 const initialState = {
   school: '',
   status: '',
   bio: '',
+  name: '',
 };
 
 const ProfileForm = ({
@@ -29,21 +26,7 @@ const ProfileForm = ({
 
   const navigate = useNavigate();
 
-  const state = {
-    button: 1,
-  };
-
-  // Image codes
-  //  const [image, setImage] = useState(null);
-  const [url, setUrl] = useState(null);
-  const [progress, setProgress] = useState(0);
-
-  console.log('in ProfileForm');
-  //  const handleChange = (e) => {
-  //    if (e.target.files[0]) {
-  //      setImage(e.target.files[0]);
-  //    }
-  //  };
+  console.log('in ProfileForm profile====', profile);
 
   useEffect(() => {
     // if there is no profile, attempt to fetch one
@@ -53,18 +36,22 @@ const ProfileForm = ({
     // then build our profileData
     if (!loading && profile) {
       const profileData = { ...initialState };
+
       for (const key in profile) {
-        if (key in profileData) profileData[key] = profile[key];
+        if (key in profileData) {
+          profileData[key] = profile[key];
+        }
       }
 
       setFormData(profileData);
     }
   }, [loading, getCurrentProfile, profile]);
 
-  const { status, school, bio } = formData;
+  const { status, school, bio, name } = formData;
 
   const onChange = (e) => {
     formData.transDate = new Date();
+
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -73,14 +60,11 @@ const ProfileForm = ({
 
     e.preventDefault();
 
-    // Adding form data to the database
-    if (state.button === 2) {
-      console.log('in state.button === 2 ', formData.images);
+    createProfile(formData, editing).then(() => {
+      console.log('in createProfile formData==', formData);
 
-      createProfile(formData, editing).then(() => {
-        if (!editing) navigate('/dashboard');
-      });
-    }
+      if (!editing) navigate('/dashboard');
+    });
   };
 
   return (
@@ -88,10 +72,11 @@ const ProfileForm = ({
       <h1 className="large text-primary">
         {creatingProfile ? 'Create Your Profile' : 'Edit Your Profile'}
       </h1>
+
       <p className="lead">
         <i className="fas fa-user" />
         {creatingProfile
-          ? ` Let's get some information to make your`
+          ? ` Let's get some information to make your profile`
           : ' Add some changes to your profile'}
       </p>
 
@@ -114,6 +99,7 @@ const ProfileForm = ({
             <option value="Inactive">Inactive</option>
           </select>
         </div>
+        <small className="form-text">Tell us a little bit about yourself</small>
         <div className="form-group">
           <textarea
             placeholder="A short bio of yourself"
@@ -121,21 +107,23 @@ const ProfileForm = ({
             value={bio}
             onChange={onChange}
           />
-          <small className="form-text">
-            Tell us a little bit about yourself
-          </small>
+        </div>
+        <div className="form-group">
+          <input
+            type="text"
+            placeholder="name"
+            name="name"
+            value={name}
+            onChange={onChange}
+          />
         </div>
         <div>
           <Link to="/dashboard" className="primary m-3">
             Go Back
           </Link>
           <br />
-          <button
-            className="primary my-1"
-            type="submit"
-            onClick={() => (state.button = 2)}
-          >
-            Edit Profile
+          <button className="primary my-1" type="submit">
+            {creatingProfile ? ` Create Profile` : 'Edit Profile'}
           </button>
         </div>
       </form>

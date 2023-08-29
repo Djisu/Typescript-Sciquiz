@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { createQuestion, deleteQuestion, loadQuestions } from '../../actions/question.js';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { setAlert } from '../../actions/alert.js';
 import { useSelector } from 'react-redux';
 import { loadDifficultyLevels } from '../../actions/difficulty_level.js';
-import { loadSubjects } from '../../actions/subject.js'
+import { loadSubjects } from '../../actions/subject.js';
 import { loadTopics } from '../../actions/topic.js';
-
+import {
+  createQuestion,
+  deleteQuestion,
+  loadQuestions,
+} from '../../actions/question.js';
+import { setAlert } from '../../actions/alert.js';
 
 const Question = () => {
   const [questionData, setQuestionData] = useState({
@@ -19,7 +22,7 @@ const Question = () => {
     question_year: '',
   });
 
-const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     console.log('in useEffect');
@@ -47,17 +50,15 @@ const dispatch = useDispatch();
   const difficultyLevelLoading = useSelector(
     (state) => state.difficultyLevel.loading
   );
- 
+
   const subjects = useSelector((state) => state.subject.subjects);
   const subjectLoading = useSelector((state) => state.subject.loading);
 
   const topics = useSelector((state) => state.topic.topics);
   const topicLoading = useSelector((state) => state.topic.loading);
 
-  const questions = useSelector(
-    (state) => state.question.questions
-  );   
-  
+  const questions = useSelector((state) => state.question.questions);
+
   if (difficultyLevelLoading) {
     // Optionally, you can show a loading state while the data is being fetched
     return <p>Loading...</p>;
@@ -66,16 +67,15 @@ const dispatch = useDispatch();
   if (subjectLoading) {
     // Optionally, you can show a loading state while the data is being fetched
     return <p>Loading...</p>;
-  } 
+  }
 
   if (topicLoading) {
     // Optionally, you can show a loading state while the data is being fetched
     return <p>Loading...</p>;
-  } 
-//console.log('difficultylevels:::', difficultyLevels);
-//console.log('subjects:::', subjects);
-//console.log('topics:::', topics);
-
+  }
+  //console.log('difficultylevels:::', difficultyLevels);
+  //console.log('subjects:::', subjects);
+  //console.log('topics:::', topics);
 
   const {
     question,
@@ -100,14 +100,14 @@ const dispatch = useDispatch();
     dispatch(createQuestion(questionData));
   };
 
- const deleteHandler = (id) => {
-   console.log('in deleteHandler');
+  const deleteHandler = (id) => {
+    console.log('in deleteHandler');
 
-   if (window.confirm('Are you sure?')) {
-     console.log('id:', id);
-     dispatch(deleteQuestion(id));
-   }
- };
+    if (window.confirm('Are you sure?')) {
+      console.log('id:', id);
+      dispatch(deleteQuestion(id));
+    }
+  };
 
   return (
     <section className="container">
@@ -141,9 +141,7 @@ const dispatch = useDispatch();
             value={difficulty_level}
             onChange={handleInputChange}
           >
-            <option key="default" value="">
-            
-            </option>
+            <option key="default" value=""></option>
             {difficultyLevels.map((level) => (
               <option key={level._id} value={level.level}>
                 {level.level}

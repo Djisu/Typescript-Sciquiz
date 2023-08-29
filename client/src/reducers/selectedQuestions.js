@@ -6,7 +6,7 @@ import {
   SELECTED_QUESTION_SUCCESS,
   SELECTED_QUESTION_FAIL,
   SELECTED_QUESTION_LOADED,
-} from '../actions/types';
+} from '../actions/types.js';
 
 const initialState = {
   selectedQuestions: [], // Initial state for the question data
@@ -16,7 +16,7 @@ const initialState = {
 function selectedQuestionsReducer(state = initialState, action) {
   const { type, payload } = action;
 
-  console.log('in selectedQuestionsReducer', Array.isArray(payload));
+  //  console.log('in selectedQuestionsReducer', Array.isArray(payload));
 
   switch (action.type) {
     case SELECTED_QUESTION_SUCCESS:

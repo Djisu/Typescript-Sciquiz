@@ -1,5 +1,5 @@
-import api from '../utils/api';
-import { setAlert } from './alert';
+import api from '../utils/api.js';
+import { setAlert } from './alert.js';
 
 import {
   GET_PROFILE,
@@ -8,10 +8,7 @@ import {
   UPDATE_PROFILE,
   CLEAR_PROFILE,
   ACCOUNT_DELETED,
-  ADD_COMMENT,
-  REMOVE_COMMENT,
-  POST_ERROR,
-} from './types';
+} from './types.js';
 
 /*
   NOTE: we don't need a config object for axios as the
@@ -39,10 +36,14 @@ export const getCurrentProfile = () => async (dispatch) => {
 
 // Get all profiles
 export const getProfiles = () => async (dispatch) => {
+  //  console.log('in getProfiles action');
+
   dispatch({ type: CLEAR_PROFILE });
 
   try {
     const res = await api.get('/profile');
+
+    //console.log('in getProfileS action  res.data==', res.data);
 
     dispatch({
       type: GET_PROFILES,
@@ -51,15 +52,19 @@ export const getProfiles = () => async (dispatch) => {
   } catch (err) {
     dispatch({
       type: PROFILE_ERROR,
-      payload: { msg: err.response.statusText, status: err.response.status },
+      payload: { msg: err.msg },
     });
   }
 };
 
 // Get profile by ID
 export const getProfileById = (userId) => async (dispatch) => {
+  //  console.log('in getProfileById=', userId);
+
   try {
     const res = await api.get(`/profile/user/${userId}`);
+
+    //console.log('in getProfileById res.data=', res.data);
 
     dispatch({
       type: GET_PROFILE,
@@ -73,7 +78,7 @@ export const getProfileById = (userId) => async (dispatch) => {
   }
 };
 
-// Get profile by ID
+// Get profile by status
 
 export const getProfileByStatus = (status) => async (dispatch) => {
   //   console.log('in getProfileByStatus, status is:', status)
@@ -102,8 +107,11 @@ export const getProfileByStatus = (status) => async (dispatch) => {
 export const createProfile =
   (formData, edit = false) =>
   async (dispatch) => {
+    //console.log('in createProfile action', formData);
     try {
       const res = await api.post('/profile', formData);
+
+      //  console.log('res.data::', res.data);
 
       dispatch({
         type: GET_PROFILE,
@@ -127,51 +135,6 @@ export const createProfile =
     }
   };
 
-// Add Experience
-export const addExperience = (formData) => async (dispatch) => {
-  try {
-    const res = await api.put('/profile/experience', formData);
-
-    dispatch({
-      type: UPDATE_PROFILE,
-      payload: res.data,
-    });
-
-    dispatch(setAlert('Experience Added', 'success'));
-    return res.data;
-  } catch (err) {
-    const errors = err.response.data.errors;
-
-    if (errors) {
-      errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
-    }
-
-    dispatch({
-      type: PROFILE_ERROR,
-      payload: { msg: err.response.statusText, status: err.response.status },
-    });
-  }
-};
-
-// Delete experience
-export const deleteExperience = (id) => async (dispatch) => {
-  try {
-    const res = await api.delete(`/profile/experience/${id}`);
-
-    dispatch({
-      type: UPDATE_PROFILE,
-      payload: res.data,
-    });
-
-    dispatch(setAlert('Experience Removed', 'success'));
-  } catch (err) {
-    dispatch({
-      type: PROFILE_ERROR,
-      payload: { msg: err.response.statusText, status: err.response.status },
-    });
-  }
-};
-
 // Delete account & profile
 export const deleteAccount = () => async (dispatch) => {
   if (window.confirm('Are you sure? This can NOT be undone!')) {
@@ -188,49 +151,5 @@ export const deleteAccount = () => async (dispatch) => {
         payload: { msg: err.response.statusText, status: err.response.status },
       });
     }
-  }
-};
-
-// Add comment
-export const addComment = (userId, formData) => async (dispatch) => {
-  try {
-    console.log('in addComments', userId, formData);
-
-    const res = await api.post(`/profile/comment/${userId}`, formData);
-
-    console.log('after api.post(/profile/comment, formData)');
-
-    dispatch({
-      type: ADD_COMMENT,
-      payload: res.data,
-    });
-
-    dispatch(setAlert('Comment Added', 'success'));
-  } catch (err) {
-    dispatch({
-      type: POST_ERROR,
-      payload: { msg: err.response.statusText, status: err.response.status },
-    });
-  }
-};
-
-// Delete comment
-export const deleteComment = (userId, commentId) => async (dispatch) => {
-  try {
-    console.log('commentId:', commentId);
-
-    await api.delete(`/profile/comment/${userId}/${commentId}`);
-
-    dispatch({
-      type: REMOVE_COMMENT,
-      payload: commentId,
-    });
-
-    dispatch(setAlert('Comment Removed', 'success'));
-  } catch (err) {
-    dispatch({
-      type: POST_ERROR,
-      payload: { msg: err.response.statusText, status: err.response.status },
-    });
   }
 };

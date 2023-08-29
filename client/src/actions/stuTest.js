@@ -1,16 +1,21 @@
-import api from '../utils/api';
-import { setAlert } from './alert';
+import api from '../utils/api.js';
+import { setAlert } from './alert.js';
 
-import { STU_TESTS_SUCCESS, STU_TESTS_FAIL, STU_TESTS_REQUEST, STU_TESTS_LOADED } from './types';
+import {
+  STU_TESTS_SUCCESS,
+  STU_TESTS_FAIL,
+  STU_TESTS_REQUEST,
+  STU_TESTS_LOADED,
+} from './types.js';
 
 // Load Tests
 export const loadStuTests = () => async (dispatch) => {
-console.log('in loadStuTests');
+  console.log('in loadStuTests');
 
   try {
     const res = await api.get('/stutests');
-    
-    console.log(' res.data[0]:',  res.data[0]);
+
+    console.log(' res.data[0]:', res.data[0]);
 
     dispatch({
       type: STU_TESTS_LOADED,
@@ -25,7 +30,7 @@ console.log('in loadStuTests');
 
 // Get Question
 export const getStuTest = (testData) => async (dispatch) => {
-  dispatch({ type: STU_TESTS_REQUEST }); 
+  dispatch({ type: STU_TESTS_REQUEST });
 
   const { userid, test_name } = testData;
 
@@ -63,7 +68,7 @@ export const createStuTests = (testData) => async (dispatch) => {
 
   dispatch({ type: STU_TESTS_REQUEST });
 
- console.log('in createStuTests action about to post');
+  console.log('in createStuTests action about to post');
 
   try {
     const res = await api.post('/stutest', testData);
@@ -91,43 +96,42 @@ export const createStuTests = (testData) => async (dispatch) => {
 };
 
 // Update Tests
-export const updateStuTests =
-  (testData) => async (dispatch) => {
-    dispatch({ type: STU_TESTS_REQUEST });
+export const updateStuTests = (testData) => async (dispatch) => {
+  dispatch({ type: STU_TESTS_REQUEST });
 
-    const { userid, test_name } = testData;
+  const { userid, test_name } = testData;
 
-    try {
-      const res = await api.put(`/stutests/${userid}/${test_name}`, testData);
+  try {
+    const res = await api.put(`/stutests/${userid}/${test_name}`, testData);
 
-      dispatch({
-        type: STU_TESTS_SUCCESS,
-        payload: res.data,
-      });
+    dispatch({
+      type: STU_TESTS_SUCCESS,
+      payload: res.data,
+    });
 
-      dispatch(setAlert('Tests Update Successful', 'success'));
-    } catch (err) {
-      const errors = err.response.data.errors;
+    dispatch(setAlert('Tests Update Successful', 'success'));
+  } catch (err) {
+    const errors = err.response.data.errors;
 
-      if (errors) {
-        errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
-      }
-
-      dispatch({
-        type: STU_TESTS_FAIL,
-        payload: { msg: err.response.statusText, status: err.response.status },
-      });
+    if (errors) {
+      errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
     }
-  };
+
+    dispatch({
+      type: STU_TESTS_FAIL,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
 
 // Delete Question
 export const deleteStuTest = (testData) => async (dispatch) => {
   dispatch({ type: STU_TESTS_REQUEST });
 
-  const {userid, test_name} = testData
+  const { userid, test_name } = testData;
 
-  console.log('in deleteTest action')
-     
+  console.log('in deleteTest action');
+
   try {
     const res = await api.delete(`/stutest/${userid}/${test_name}`);
 

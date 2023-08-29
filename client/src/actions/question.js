@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
-import api from '../utils/api';
-import { setAlert } from './alert';
+import api from '../utils/api.js';
+import { setAlert } from './alert.js';
 
 import {
   QUESTION_REQUEST,
@@ -13,7 +13,11 @@ import {
   SELECTED_QUESTION_REQUEST,
   SELECTED_QUESTION_SUCCESS,
   SELECTED_QUESTION_FAIL,
-} from './types';
+  COUNTED_QUESTION_REQUEST,
+  COUNTED_QUESTION_SUCCESS,
+  COUNTED_QUESTION_FAIL,
+  COUNTED_QUESTION_LOADED,
+} from './types.js';
 
 // Load Difficult levels
 export const loadQuestions = () => async (dispatch) => {
@@ -157,26 +161,42 @@ export const deleteQuestion = (id) => async (dispatch) => {
 };
 
 export const selectQuestions =
-  (checkedTopics, checkedDifficultylevels, userId) => async (dispatch) => {
+  (
+    checkedTopics,
+    checkedDifficultylevels,
+    checkedSubjects,
+    userId,
+    noofquestions
+  ) =>
+  async (dispatch) => {
     dispatch({ type: SELECTED_QUESTION_REQUEST });
 
     console.log(
       'checkedTopics, checkedDifficultylevels, userId==',
       checkedTopics,
       checkedDifficultylevels,
-      userId
+      checkedSubjects,
+      userId,
+      noofquestions
     );
 
     try {
       console.log('in selectQuestions about to get');
 
+      noofquestions = parseInt(noofquestions);
+
       //  const url = `/question/${checkedTopics}/${checkedDifficultyLevels}/${userId}`;
       const res = null;
 
       // Check null values
-      if (checkedTopics.length > 0 && checkedDifficultylevels.length > 0) {
+      if (
+        checkedTopics.length > 0 &&
+        checkedDifficultylevels.length > 0 &&
+        checkedSubjects.length > 0 &&
+        noofquestions > 0
+      ) {
         res = await api.get(
-          `/question/${checkedTopics}/${checkedDifficultylevels}/${userId}`
+          `/question/${checkedTopics}/${checkedDifficultylevels}/${checkedSubjects}/${userId}/${noofquestions}`
         );
       }
 
@@ -190,20 +210,117 @@ export const selectQuestions =
   };
 
 export const selectQuestionsTopics =
-  (checkedTopics, userId) => async (dispatch) => {
+  (checkedTopics, checkedSubjects, userId, noofquestions) =>
+  async (dispatch) => {
     dispatch({ type: SELECTED_QUESTION_REQUEST });
 
-    console.log('checkedTopics,  userId==', checkedTopics, userId);
+    console.log(
+      'checkedTopics,  userId==',
+      checkedTopics,
+      checkedSubjects,
+      userId,
+      noofquestions
+    );
 
     try {
       console.log('in selectQuestionsTopics about to get');
 
+      noofquestions = parseInt(noofquestions);
+
       //  const url = `/question/${checkedTopics}/${userId}`;
       let res = null;
 
-      // Check null values
+      // Check null selectQuestionsTopics
       if (checkedTopics.length > 0) {
-        res = await api.get(`/question/${checkedTopics}/${userId}`);
+        console.log(
+          'in res = await api.get(`/question/${checkedTopics}/${checkedSubjects}/${userId}`);'
+        );
+
+        res = await api.get(
+          `/question/${checkedTopics}/${checkedSubjects}/${userId}/${noofquestions}`
+        );
+      }
+
+      console.log('selectQuestionsTopics res.data==', res.data);
+
+      dispatch({ type: SELECTED_QUESTION_SUCCESS, payload: res.data });
+    } catch (error) {
+      console.error('Error fetching question:', error);
+      dispatch({ type: SELECTED_QUESTION_FAIL });
+    }
+  };
+
+export const selectQuestionsTopicsDifficultylevels =
+  (
+    checkedTopics,
+    checkedDifficultylevels,
+    checkedSubjects,
+    userId,
+    noofquestions
+  ) =>
+  async (dispatch) => {
+    dispatch({ type: SELECTED_QUESTION_REQUEST });
+
+    console.log(
+      'checkedTopics,checkedDifficultylevels,  userId==',
+      checkedTopics,
+      checkedDifficultylevels,
+      checkedSubjects,
+      userId,
+      parseInt(noofquestions)
+    );
+
+    try {
+      console.log('in selectQuestionsTopicsDifficultylevels about to get');
+
+      //  const url = `/question/${checkedTopics}/${checkedSubjects}/${userId}`;
+      let res = null;
+      noofquestions = parseInt(noofquestions);
+
+      // Check null selectQuestionsTopics
+      if (checkedTopics.length > 0 && checkedDifficultylevels.length > 0) {
+        console.log(
+          'in res = await api.get(`/question/${checkedTopics}/${checkedDifficultylevels}/${checkedSubjects}/${userId}`);'
+        );
+
+        res = await api.get(
+          `/question/${checkedTopics}/${checkedDifficultylevels}/${checkedSubjects}/${userId}/${noofquestions}`
+        );
+      }
+
+      console.log('selectQuestionsTopicsDifficultylevels res.data==', res.data);
+
+      dispatch({ type: SELECTED_QUESTION_SUCCESS, payload: res.data });
+    } catch (error) {
+      console.error('Error fetching question:', error);
+      dispatch({ type: SELECTED_QUESTION_FAIL });
+    }
+  };
+
+export const selectQuestionsDifficultylevels =
+  (checkedDifficultylevels, checkedSubjects, userId, noofquestions) =>
+  async (dispatch) => {
+    dispatch({ type: SELECTED_QUESTION_REQUEST });
+
+    console.log(
+      'checkedDifficultylevels, userId==',
+      checkedDifficultylevels,
+      userId,
+      noofquestions
+    );
+
+    try {
+      console.log('in selectQuestionsDifficultylevels about to get');
+
+      //  const url = `/question/${checkedTopics}/${checkedDifficultyLevels}/${checkedSubjects}/${userId}`;
+      let res = null;
+      noofquestions = parseInt(noofquestions);
+
+      // Check null values
+      if (checkedDifficultylevels.length > 0) {
+        res = await api.get(
+          `/question/${checkedDifficultylevels}/${checkedSubjects}/${userId}/${noofquestions}`
+        );
       }
 
       console.log('res.data==', res.data);
@@ -215,27 +332,24 @@ export const selectQuestionsTopics =
     }
   };
 
-export const selectQuestionsDifficultylevels =
-  (checkedDifficultylevels, userId) => async (dispatch) => {
+export const selectQuestionsSubjects =
+  (checkedSubjects, userId, noofquestions) => async (dispatch) => {
     dispatch({ type: SELECTED_QUESTION_REQUEST });
 
-    console.log(
-      'checkedDifficultylevels, userId==',
-      checkedDifficultylevels,
-      userId
-    );
+    console.log('checkedSubjects,  userId==', checkedSubjects, userId);
 
     try {
-      console.log('in selectQuestionsDifficultylevels about to get');
-
-      //  const url = `/question/${checkedTopics}/${checkedDifficultyLevels}/${userId}`;
-      let res = null;
+      console.log('in selectQuestionsSubjects about to get');
 
       // Check null values
-      if (checkedDifficultylevels.length > 0) {
-        res = await api.get(`/question/${checkedDifficultylevels}/${userId}`);
+      if (checkedSubjects.length > 0) {
+        console.log(
+          'in await api.get(`/question/${checkedSubjects}/${userId}`)'
+        );
       }
-
+      const res = await api.get(
+        `/question/${checkedSubjects}/${userId}/${noofquestions}`
+      );
       console.log('res.data==', res.data);
 
       dispatch({ type: SELECTED_QUESTION_SUCCESS, payload: res.data });

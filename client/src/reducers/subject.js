@@ -1,4 +1,9 @@
-import { SUBJECT_SUCCESS, SUBJECT_FAIL, SUBJECT_REQUEST, SUBJECT_LOADED } from '../actions/types';
+import {
+  SUBJECT_SUCCESS,
+  SUBJECT_FAIL,
+  SUBJECT_REQUEST,
+  SUBJECT_LOADED,
+} from '../actions/types.js';
 
 const initialState = {
   subjects: [], // Initial state for the difficulty levels data

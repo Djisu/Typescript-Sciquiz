@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import {
   createDifficultyLevel,
   deleteDifficultyLevel,
   loadDifficultyLevels,
-} from '../../actions/difficulty_level';
-import { Link } from 'react-router-dom';
-import { setAlert } from '../../actions/alert';
+} from '../../actions/difficulty_level.js';
+import { setAlert } from '../../actions/alert.js';
 
 const Difficultylevel = () => {
   const difficultyLevels = useSelector(
     (state) => state.difficultyLevel.difficultyLevels
-  );   
-  
-console.log('difficultyLevels:', difficultyLevels);
+  );
+
+  console.log('difficultyLevels:', difficultyLevels);
 
   const [difficultylevelData, setDifficultylevel] = useState({
     level: '',
@@ -49,7 +49,7 @@ console.log('difficultyLevels:', difficultyLevels);
     console.log('in deleteHandler');
 
     if (window.confirm('Are you sure?')) {
-        console.log("id:", id)
+      console.log('id:', id);
       dispatch(deleteDifficultyLevel(id));
     }
   };

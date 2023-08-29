@@ -1,17 +1,15 @@
-import React, {useState, useEffect} from 'react'
-
-import { loadTests, getTest } from '../../actions/tests.js';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
+import { Navigate } from 'react-router-dom';
 import { setAlert } from '../../actions/alert.js';
 import { createStuTests } from '../../actions/stuTest.js';
-import { Navigate } from 'react-router-dom';
+import { loadTests, getTest } from '../../actions/tests.js';
 
 import { getDataBasedOnParam } from './getDataBasedOnParam.js'; // Replace with the actual path to your selectors.js file
 
-
 const StuTests = () => {
-  const [params, setParam]  = useState('') 
+  const [params, setParam] = useState('');
   const [questionData, setQuestionData] = useState('');
   const [sujectNameData, setSujectNameData] = useState('');
   const [index, setIndex] = useState(0);
@@ -38,8 +36,7 @@ const StuTests = () => {
     dispatch(loadTests());
   }, [dispatch]);
 
-
-  const tests = useSelector( (state) => (state.tests.tests));
+  const tests = useSelector((state) => state.tests.tests);
 
   console.log('tests===', tests);
 
@@ -69,7 +66,6 @@ const StuTests = () => {
     margin: '10px', // Optional, add some margin around the container
   };
 
-
   const handleInputChange = (e) => {
     setStuTestData({ ...stuTestData, [e.target.name]: e.target.value });
 
@@ -84,13 +80,12 @@ const StuTests = () => {
       (test) => test.test_name === e.target.value
     );
 
-    console.log('filteredTests====',filteredTests);
+    console.log('filteredTests====', filteredTests);
 
     const subjectNames = tests.map((test) => test.subject_name);
 
     console.log('questions=======', questions);
 
-  
     setStuQuestions(questions);
 
     setSujectNameData(subjectNames[index]);
@@ -128,14 +123,14 @@ const StuTests = () => {
     setIndex((index) => {
       let newIndex = index + 1;
       return checkNumber(newIndex);
-    }); 
+    });
   };
 
-//  const handleFocusResults = (e) => {
-//    console.log('handleFocusResults, e.target.value==', e.target.value);
-//    //setParam(test_name);
-//    //dispatch(getTest(e.target.value));
-//  };
+  //  const handleFocusResults = (e) => {
+  //    console.log('handleFocusResults, e.target.value==', e.target.value);
+  //    //setParam(test_name);
+  //    //dispatch(getTest(e.target.value));
+  //  };
 
   return (
     <section className="container">
@@ -216,4 +211,4 @@ const StuTests = () => {
   );
 };
 
-export default StuTests
+export default StuTests;

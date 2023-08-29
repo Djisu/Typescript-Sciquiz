@@ -3,7 +3,7 @@ import {
   STU_TESTS_FAIL,
   STU_TESTS_REQUEST,
   STU_TESTS_LOADED,
-} from '../actions/types';
+} from '../actions/types.js';
 
 const initialState = {
   stutests: [], // Initial state for the difficulty levels data
@@ -25,7 +25,7 @@ function stutestsReducer(state = initialState, action) {
     case STU_TESTS_SUCCESS:
       return {
         ...state,
-        stutests: {...state, stutests: action.payload}, // Add the tests data from the action payload
+        stutests: { ...state, stutests: action.payload }, // Add the tests data from the action payload
         loading: false, // Set loading to false, as the data has been successfully loaded
       };
 

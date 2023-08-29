@@ -12,12 +12,14 @@ import { setAlert } from '../../actions/alert.js';
 
 const Navbar = ({ auth: { isAuthenticated }, logout }) => {
   const [showDropdown, setShowDropdown] = useState(false);
-  const isAdmin = localStorage.getItem('isAdmin')
+  const isAdmin = localStorage.getItem('isAdmin');
 
   const booleanValue = isAdmin === 'true' ? true : false;
 
+  console.log('isAdmin: ', isAdmin);
+
   const toggleDropdown = () => {
-    if (!booleanValue) alert("You are not admin.")
+    if (!booleanValue) alert('You are not admin.');
     setShowDropdown(!showDropdown);
   };
 
@@ -41,7 +43,7 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
           </li>
           <li>
             <button
-            //  className="dropbtn"
+              //  className="dropbtn"
               className="btn btn-primary"
               onClick={toggleDropdown}
             >
@@ -106,8 +108,6 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
     </ul>
   );
 
-   
-    
   return (
     <nav className="navbar bg-dark">
       <h1>

@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteUser, listUsers } from '../../actions/auth';
-import LoadingBox from './LoadingBox';
-import MessageBox from './MessageBox';
-import { USER_DETAILS_RESET } from '../../actions/types';
+import { deleteUser, listUsers } from '../../actions/auth.js';
+import LoadingBox from './LoadingBox.js';
+import MessageBox from './MessageBox.js';
+import { USER_DETAILS_RESET } from '../../actions/types.js';
 
 export default function UserListScreen(props) {
   const userList = useSelector((state) => state.userList);

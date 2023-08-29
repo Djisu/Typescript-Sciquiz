@@ -10,7 +10,7 @@ const ProfileItem = ({
     bio,
   },
 }) => {
-    console.log('name:' + name);
+//  console.log('name:' + name);
   return (
     <div className="profile bg-light">
       {avatar && <img src={avatar} alt="" className="round-img" />}

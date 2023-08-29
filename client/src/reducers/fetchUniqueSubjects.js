@@ -1,33 +1,33 @@
 import {
-  UNIC_TOPIC_SUCCESS,
-  UNIC_TOPIC_FAIL,
-  UNIC_TOPIC_REQUEST,
-  UNIC_TOPIC_LOADED,
+  UNIC_SUBJECT_SUCCESS,
+  UNIC_SUBJECT_FAIL,
+  UNIC_SUBJECT_REQUEST,
+  UNIC_SUBJECT_LOADED,
 } from '../actions/types.js';
 
 const initialState = {
-  fetchUniqueTopics: [], // Initial state for the topic data
+  fetchUniqueSubjects: [], // Initial state for the topic data
   loading: true, // Indicates whether the data is being loaded or not
   error: null,
 };
 
-function fetchUniqueTopicsReducer(state = initialState, action) {
+function fetchUniqueSubjectsReducer(state = initialState, action) {
   const { type, payload } = action;
 
   //  console.log('action.payload', action.payload);
 
   switch (action.type) {
-    case UNIC_TOPIC_SUCCESS:
+    case UNIC_SUBJECT_SUCCESS:
       return {
         ...state,
-        fetchUniqueTopics: action.payload, // Set the topics data from the action payload
+        fetchUniqueSubjects: action.payload, // Set the topics data from the action payload
         loading: false, // Set loading to false, as the data has been successfully loaded
       };
 
-    case UNIC_TOPIC_FAIL:
+    case UNIC_SUBJECT_FAIL:
       return {
         ...state,
-        fetchUniqueTopics: [], // Clear the topics data in case of failure
+        fetchUniqueSubjects: [], // Clear the topics data in case of failure
         loading: false, // Set loading to false, as the data loading has failed
         error: action.payload,
       };
@@ -36,4 +36,4 @@ function fetchUniqueTopicsReducer(state = initialState, action) {
   }
 }
 
-export default fetchUniqueTopicsReducer;
+export default fetchUniqueSubjectsReducer;

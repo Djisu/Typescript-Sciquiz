@@ -1,24 +1,25 @@
-import api from '../utils/api';
-import { setAlert } from './alert';
+import api from '../utils/api.js';
+import { setAlert } from './alert.js';
 
-import { TOPIC_SUCCESS, 
-        TOPIC_FAIL, 
-        TOPIC_REQUEST, 
-        TOPIC_LOADED, 
-        UNIC_TOPIC_REQUEST,
-        UNIC_TOPIC_SUCCESS,
-        UNIC_TOPIC_FAIL, 
-        UNIC_TOPIC_LOADED 
-} from './types';
+import {
+  TOPIC_SUCCESS,
+  TOPIC_FAIL,
+  TOPIC_REQUEST,
+  TOPIC_LOADED,
+  UNIC_TOPIC_REQUEST,
+  UNIC_TOPIC_SUCCESS,
+  UNIC_TOPIC_FAIL,
+  UNIC_TOPIC_LOADED,
+} from './types.js';
 
 // Load Topics
 export const loadTopics = () => async (dispatch) => {
-console.log('in loadTopics');
+  console.log('in loadTopics');
 
   try {
     const res = await api.get('/topic');
-    
-console.log(' res.data[0]:',  res.data[0]);
+
+    console.log(' res.data[0]:', res.data[0]);
 
     dispatch({
       type: TOPIC_LOADED,
@@ -35,13 +36,12 @@ console.log(' res.data[0]:',  res.data[0]);
 export const fetchUniqueTopics = () => async (dispatch) => {
   dispatch({ type: UNIC_TOPIC_REQUEST });
 
-//  console.log('in action fetchUniqueTopics');
+  //  console.log('in action fetchUniqueTopics');
 
   try {
     const res = await api.get('/unique_topics');
 
-//console.log('in topics action res.data', res.data);
-
+    //console.log('in topics action res.data', res.data);
 
     const uniqueTopics = res.data;
 
@@ -53,12 +53,11 @@ export const fetchUniqueTopics = () => async (dispatch) => {
   }
 };
 
-
 // Create or update Question
 export const createTopic = (topicData) => async (dispatch) => {
-  dispatch({ type: TOPIC_REQUEST }); 
+  dispatch({ type: TOPIC_REQUEST });
 
-console.log('in topic action', )
+  console.log('in topic action');
 
   try {
     const res = await api.post('/topic', topicData);
@@ -85,10 +84,10 @@ console.log('in topic action', )
 
 // Delete Question
 export const deleteTopic = (id) => async (dispatch) => {
-  dispatch({ type: TOPIC_REQUEST }); 
+  dispatch({ type: TOPIC_REQUEST });
 
-  console.log('in deleteTopic action')
-    
+  console.log('in deleteTopic action');
+
   try {
     const res = await api.delete(`/topic/${id}`);
 

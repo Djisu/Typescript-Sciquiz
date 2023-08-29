@@ -1,16 +1,21 @@
-import api from '../utils/api';
-import { setAlert } from './alert';
+import api from '../utils/api.js';
+import { setAlert } from './alert.js';
 
-import { TESTS_SUCCESS, TESTS_FAIL, TESTS_REQUEST, TESTS_LOADED } from './types';
+import {
+  TESTS_SUCCESS,
+  TESTS_FAIL,
+  TESTS_REQUEST,
+  TESTS_LOADED,
+} from './types.js';
 
 // Load Tests
 export const loadTests = () => async (dispatch) => {
-console.log('in action loadTests');
+  console.log('in action loadTests');
 
   try {
     const res = await api.get('/tests');
-    
-console.log(' res.data:',  res.data);
+
+    console.log(' res.data:', res.data);
 
     dispatch({
       type: TESTS_LOADED,
@@ -24,28 +29,30 @@ console.log(' res.data:',  res.data);
 };
 
 // Load Tests Questions Only
-export const loadTestsQuestions = ({test_name}) => async (dispatch) => {
-console.log('in loadTests');
+export const loadTestsQuestions =
+  ({ test_name }) =>
+  async (dispatch) => {
+    console.log('in loadTests');
 
-  try {
-    const res = await api.get(`/tests/${test_name}`);
-    
-console.log(' res.data[0]:',  res.data[0]);
+    try {
+      const res = await api.get(`/tests/${test_name}`);
 
-    dispatch({
-      type: TESTS_LOADED,
-      payload: res.data,
-    });
-  } catch (err) {
-    dispatch({
-      type: TESTS_FAIL,
-    });
-  }
-};
+      console.log(' res.data[0]:', res.data[0]);
+
+      dispatch({
+        type: TESTS_LOADED,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: TESTS_FAIL,
+      });
+    }
+  };
 
 // Get Question
 export const getTest = (id) => async (dispatch) => {
-  dispatch({ type: TESTS_REQUEST }); 
+  dispatch({ type: TESTS_REQUEST });
 
   try {
     const res = await api.get(`/tests/${id}`);
@@ -96,13 +103,13 @@ export const createTests = (testData) => async (dispatch) => {
     //const errors = err.response.data.errors;
 
     if (err) {
-        //  errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
-        dispatch(setAlert(err.msg, 'danger'));
+      //  errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+      dispatch(setAlert(err.msg, 'danger'));
     }
 
     dispatch({
       type: TESTS_FAIL,
-      payload: { msg: "Error has occured"},
+      payload: { msg: 'Error has occured' },
     });
   }
 };
@@ -140,8 +147,8 @@ export const updateTests =
 export const deleteTest = (id) => async (dispatch) => {
   dispatch({ type: TESTS_REQUEST });
 
-  console.log('in deleteTest action')
-     
+  console.log('in deleteTest action');
+
   try {
     const res = await api.delete(`/tests/${id}`);
 

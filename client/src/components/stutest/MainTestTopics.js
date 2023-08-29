@@ -1,52 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-//import { selectQuestions } from '../../actions/question';
-import { selectQuestionsTopics } from '../../actions/question';
-//import { selectQuestionsDifficultylevels } from '../../actions/question';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import { selectQuestionsTopics } from '../../actions/question.js';
 
 const MainTestTopics = () => {
   const dispatch = useDispatch();
 
   const [showAnswer, setShowAnswer] = useState(false);
   let [questions, setQuestions] = useState([]);
+  const isAdmin = localStorage.getItem('isAdmin');
 
-  const { checkedTopics, userId } = useParams();
+  console.log('isAdmin: ', isAdmin);
+
+  const { checkedTopics, checkedSubjects, userId, noofquestions } = useParams();
 
   //  console.log('MainTestTopics checkedTopics==', checkedTopics);
 
   const selectedQuestions = useSelector((state) => state.selectedQuestions);
 
-  //
-  console.log('Array.isArray(questions):::', Array.isArray([questions]));
-  console.log(
-    'selectedQuestions.selectedQuestions)==',
-    selectedQuestions.selectedQuestions
-  );
-  //  //
-  //  setQuestions(selectedQuestions);
-  //
-  //  console.log('in MainTest 1', checkedTopics, userId);
-
-  console.log('typeof questions ==', typeof questions);
-
   useEffect(() => {
     console.log('in useEffect');
 
     if (checkedTopics) {
-      dispatch(selectQuestionsTopics(checkedTopics, userId));
+      dispatch(
+        selectQuestionsTopics(
+          checkedTopics,
+          checkedSubjects,
+          userId,
+          noofquestions
+        )
+      );
     }
   }, []);
 
   // Update selectedQuestions after API call
   useEffect(() => {
-    console.log('in useEffect setQuestions(selectedQuestions);');
+    //console.log('in useEffect setQuestions(selectedQuestions);');
+
     if (selectedQuestions) {
       // Replace with actual variable name
       setQuestions(selectedQuestions.selectedQuestions);
-      console.log('questions==', questions);
+      //  console.log('questions==', questions);
     }
   }, [selectedQuestions]);
 
@@ -62,6 +58,11 @@ const MainTestTopics = () => {
       <br />
       <br />
       <div>
+        {isAdmin == true && (
+          <button className="btn btn-primary" onClick={handleClick}>
+            See Answers
+          </button>
+        )}
         <ul>
           <li
             style={{
@@ -93,9 +94,6 @@ const MainTestTopics = () => {
       <br />
       <br />
       <br />
-      <button className="btn btn-primary" onClick={handleClick}>
-        See Answers
-      </button>
     </div>
   );
 };

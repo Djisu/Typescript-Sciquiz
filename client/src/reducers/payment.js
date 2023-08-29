@@ -6,7 +6,7 @@ import {
   GET_PAYMENTS,
   GET_PAYMENTS_FAIL,
   ADD_PAYMENT,
-} from '../actions/types';
+} from '../actions/types.js';
 
 const initialState = {
   payment: null,

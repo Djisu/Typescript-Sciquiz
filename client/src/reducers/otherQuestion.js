@@ -2,7 +2,7 @@ import {
   FIND_QUESTION_REQUEST,
   FIND_QUESTION_SUCCESS,
   FIND_QUESTION_FAIL,
-} from '../actions/types';
+} from '../actions/types.js';
 
 const initialState = {
   otherQuestion: [], // Initial state for the question data

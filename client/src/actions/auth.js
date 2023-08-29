@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
-import api from '../utils/api';
-import { setAlert } from './alert';
-import detokenize from './detokenize';
+import api from '../utils/api.js';
+import { setAlert } from './alert.js';
+import detokenize from './detokenize.js';
 
 import {
   REGISTER_SUCCESS,
@@ -15,7 +15,11 @@ import {
   USER_LIST_SUCCESS,
   USER_LIST_FAIL,
   LOGIN_REQUEST,
-} from './types';
+  COUNTED_QUESTION_REQUEST,
+  COUNTED_QUESTION_SUCCESS,
+  COUNTED_QUESTION_FAIL,
+  COUNTED_QUESTION_LOADED,
+} from './types.js';
 
 /*
   NOTE: we don't need a config object for axios as the
@@ -70,17 +74,19 @@ export const login = (email, password) => async (dispatch) => {
   dispatch({ type: LOGIN_REQUEST });
 
   try {
+    console.log('about to login');
+
     const res = await api.post('/auth', body);
     //
-    //    console.log('typeOf res.data.user:', typeof res.data.user);
-    //    console.log('res.data.token:', res.data.token);
+    //console.log('typeOf res.data.user:', typeof res.data.user);
+    //console.log('res.data.token:', res.data.token);
     //
     const [encryptedId, name, email, isAdmin] = detokenize(res.data.token);
 
-    console.log('encryptedId', encryptedId);
-    console.log('name', name);
-    console.log('email', email);
-    console.log('isAdmin', isAdmin);
+    //console.log('encryptedId', encryptedId);
+    //console.log('name', name);
+    //console.log('email', email);
+    //console.log('isAdmin', isAdmin);
 
     localStorage.setItem('id', encryptedId);
     localStorage.setItem('name', name);
@@ -107,7 +113,9 @@ export const login = (email, password) => async (dispatch) => {
 };
 
 // Logout
-export const logout = () => ({ type: LOGOUT });
+export const logout = () => async (dispatch) => {
+  dispatch({ type: LOGOUT });
+};
 
 export const listUsers = () => async (dispatch, getState) => {
   dispatch({ type: USER_LIST_REQUEST });
@@ -129,5 +137,23 @@ export const listUsers = () => async (dispatch, getState) => {
         ? error.response.data.message
         : error.message;
     dispatch({ type: USER_LIST_FAIL, payload: message });
+  }
+};
+
+export const userAnsweredQuestions = (userId) => async (dispatch) => {
+  console.log('in userAnsweredQuestions action', userId);
+
+  dispatch({
+    type: COUNTED_QUESTION_REQUEST,
+  });
+
+  try {
+    const res = await api.get(`/auth/${userId}/answered-questions`);
+
+    console.log('res.data===', res.data);
+
+    dispatch({ type: COUNTED_QUESTION_SUCCESS, payload: res.data });
+  } catch (error) {
+    dispatch({ type: COUNTED_QUESTION_FAIL, payload: error.message });
   }
 };

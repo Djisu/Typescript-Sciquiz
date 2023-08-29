@@ -1,9 +1,9 @@
 import {
- UNIC_DIFFICULTY_LEVEL_REQUEST, 
- UNIC_DIFFICULTY_LEVEL_SUCCESS, 
- UNIC_DIFFICULTY_LEVEL_FAIL, 
- UNIC_DIFFICULTY_LEVEL_LOADED
-} from '../actions/types';
+  UNIC_DIFFICULTY_LEVEL_REQUEST,
+  UNIC_DIFFICULTY_LEVEL_SUCCESS,
+  UNIC_DIFFICULTY_LEVEL_FAIL,
+  UNIC_DIFFICULTY_LEVEL_LOADED,
+} from '../actions/types.js';
 
 const initialState = {
   fetchUniqueDifficultyLevels: [], // Initial state for the topic data
@@ -14,7 +14,7 @@ const initialState = {
 function fetchUniqueDifficultyLevelsReducer(state = initialState, action) {
   const { type, payload } = action;
 
-//  console.log('action.payload', action.payload);
+  //  console.log('action.payload', action.payload);
 
   switch (action.type) {
     case UNIC_DIFFICULTY_LEVEL_SUCCESS:

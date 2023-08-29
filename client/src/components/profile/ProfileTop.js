@@ -5,7 +5,6 @@ const ProfileTop = ({
   profile: {
     status,
     school,
-    images,
     user: { name, avatar },
   },
 }) => {
@@ -14,7 +13,6 @@ const ProfileTop = ({
       {/*<img className="round-img my-1" src={avatar} alt="" />*/}
 
       {avatar && <img src={avatar} alt="" className="round-img" />}
-      {!avatar && <img src={images[0]} alt="" className="round-img" />}
       <h1 className="large">{name}</h1>
     </div>
   );

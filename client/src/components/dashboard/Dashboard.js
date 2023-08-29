@@ -6,9 +6,9 @@ import React, { Fragment, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Spinner from '../layout/Spinner';
-import DashboardActions from './DashboardActions';
-import { getCurrentProfile } from '../../actions/profile';
+import Spinner from '../layout/Spinner.js';
+import DashboardActions from './DashboardActions.js';
+import { getCurrentProfile } from '../../actions/profile.js';
 
 // Destructure props
 const Dashboard = ({
@@ -16,13 +16,13 @@ const Dashboard = ({
   auth: { user },
   profile: { profile, loading },
 }) => {
-  // console.log('in dashboard')
-  const userName = localStorage.getItem("name")
-
   // useEffect, call the action to run once
   useEffect(() => {
     getCurrentProfile();
   }, []);
+
+  // console.log('in dashboard')
+  const userName = localStorage.getItem('name');
 
   return loading && profile === null ? (
     <Spinner />

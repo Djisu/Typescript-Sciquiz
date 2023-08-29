@@ -3,55 +3,53 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { selectQuestionsDifficultylevels } from '../../actions/question.js';
+import { selectQuestionsTopics } from '../../actions/question.js';
+import { selectQuestionsTopicsDifficultylevels } from '../../actions/question.js';
+import { setAlert } from '../../actions/alert.js';
 
-const MainTestDifficultyLevels = () => {
+const MainTestTopicsDifficultyLevels = () => {
   const dispatch = useDispatch();
 
   const [showAnswer, setShowAnswer] = useState(false);
   let [questions, setQuestions] = useState([]);
   const isAdmin = localStorage.getItem('isAdmin');
 
-  const { checkedDifficultylevels, checkedSubjects, userId, noofquestions } =
-    useParams();
-
-  console.log(
-    'MainTestTopics checkedDifficultylevels==',
-    checkedDifficultylevels
-  );
+  const {
+    checkedTopics,
+    checkedDifficultylevels,
+    checkedSubjects,
+    userId,
+    noofquestions,
+  } = useParams();
 
   const selectedQuestions = useSelector((state) => state.selectedQuestions);
-
-  console.log('Array.isArray(questions):::', Array.isArray([questions]));
-  console.log(
-    'selectedQuestions.selectedQuestions)==',
-    selectedQuestions.selectedQuestions
-  );
-
-  console.log('typeof questions ==', typeof questions);
 
   useEffect(() => {
     console.log('in useEffect');
 
-    if (checkedDifficultylevels) {
+    if (checkedTopics && checkedDifficultylevels && checkedSubjects) {
       dispatch(
-        selectQuestionsDifficultylevels(
+        selectQuestionsTopicsDifficultylevels(
+          checkedTopics,
           checkedDifficultylevels,
           checkedSubjects,
           userId,
           noofquestions
         )
       );
+    } else {
+      setAlert('Missing value for questions selection', 'danger');
     }
   }, []);
 
   // Update selectedQuestions after API call
   useEffect(() => {
-    console.log('in useEffect setQuestions(selectedQuestions);');
+    //console.log('in useEffect setQuestions(selectedQuestions);');
+
     if (selectedQuestions) {
       // Replace with actual variable name
       setQuestions(selectedQuestions.selectedQuestions);
-      console.log('questions==', questions);
+      //  console.log('questions==', questions);
     }
   }, [selectedQuestions]);
 
@@ -72,6 +70,7 @@ const MainTestDifficultyLevels = () => {
             See Answers
           </button>
         )}
+
         <ul>
           <li
             style={{
@@ -107,4 +106,4 @@ const MainTestDifficultyLevels = () => {
   );
 };
 
-export default MainTestDifficultyLevels;
+export default MainTestTopicsDifficultyLevels;

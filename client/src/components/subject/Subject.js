@@ -1,19 +1,22 @@
 import React, { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { createSubject, loadSubjects,deleteSubject } from '../../actions/subject.js';
 import { useDispatch } from 'react-redux';
-import { setAlert } from '../../actions/alert.js';
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
-
+import PropTypes from 'prop-types';
+import {
+  createSubject,
+  loadSubjects,
+  deleteSubject,
+} from '../../actions/subject.js';
+import { setAlert } from '../../actions/alert.js';
 
 const Subject = () => {
   const [subjectData, setSubjectData] = useState({
     subject_name: '',
   });
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     console.log('in useEffect');
@@ -22,31 +25,30 @@ const Subject = () => {
 
   const subjects = useSelector((state) => state.subject.subjects);
 
-  const {subject_name} = subjectData
+  const { subject_name } = subjectData;
 
   const handleInputChange = (e) => {
-     
-     setSubjectData({ ...subjectData, [e.target.name]: e.target.value });
-  }
+    setSubjectData({ ...subjectData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!subjectData){
-         dispatch(setAlert('Subject Creation Successful', 'success'));
+    if (!subjectData) {
+      dispatch(setAlert('Subject Creation Successful', 'success'));
     }
 
     dispatch(createSubject(subjectData));
   };
 
-   const deleteHandler = (id) => {
-     console.log('in deleteHandler');
+  const deleteHandler = (id) => {
+    console.log('in deleteHandler');
 
-     if (window.confirm('Are you sure?')) {
-       console.log('id:', id);
-       dispatch(deleteSubject(id));
-     }
-   };
+    if (window.confirm('Are you sure?')) {
+      console.log('id:', id);
+      dispatch(deleteSubject(id));
+    }
+  };
 
   return (
     <section className="container">
@@ -100,7 +102,6 @@ const Subject = () => {
     </section>
   );
 };
-
 
 //const mapStateToProps = (state) => ({
 //  isAuthenticated: state.auth.isAuthenticated,

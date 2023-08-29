@@ -1,5 +1,5 @@
-import api from '../utils/api';
-import { setAlert } from './alert';
+import api from '../utils/api.js';
+import { setAlert } from './alert.js';
 
 import {
   DIFFICULTY_LEVEL_SUCCESS,
@@ -10,7 +10,7 @@ import {
   UNIC_DIFFICULTY_LEVEL_SUCCESS,
   UNIC_DIFFICULTY_LEVEL_FAIL,
   UNIC_DIFFICULTY_LEVEL_LOADED,
-} from './types';
+} from './types.js';
 
 // Load User
 export const loadDifficultyLevels = () => async (dispatch) => {

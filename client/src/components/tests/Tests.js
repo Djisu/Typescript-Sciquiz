@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { createTests, loadTests, deleteTest } from '../../actions/tests';
+import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { createTests, loadTests, deleteTest } from '../../actions/tests.js';
 import { setAlert } from '../../actions/alert.js';
-import { useSelector } from 'react-redux';
-import { loadQuestions } from '../../actions/question';
-import { findQuestion } from '../../actions/question';
+import { loadQuestions } from '../../actions/question.js';
+import { findQuestion } from '../../actions/question.js';
 import { loadSubjects } from '../../actions/subject.js';
 
 const Question = () => {
@@ -23,7 +23,7 @@ const Question = () => {
 
   const tests = useSelector((state) => state.tests.tests);
 
-  console.log("tests===", tests)
+  console.log('tests===', tests);
 
   useEffect(() => {
     //console.log('in useEffect');
@@ -40,21 +40,19 @@ const Question = () => {
     dispatch(loadTests());
   }, [dispatch]);
 
-//   const tests = useSelector((state) => state const tests = useSelector( (state) => (state.tests.tests));.tests.tests);
+  //   const tests = useSelector((state) => state const tests = useSelector( (state) => (state.tests.tests));.tests.tests);
   const questions = useSelector((state) => state.question.questions);
   const questionLoading = useSelector((state) => state.question.loading);
 
   const subjects = useSelector((state) => state.subject.subjects);
   const subjectLoading = useSelector((state) => state.subject.loading);
 
-  const otherQuestions = useSelector(
-    (state) => state.otherQuestion
-  );
+  const otherQuestions = useSelector((state) => state.otherQuestion);
   const otherQuestionLoading = useSelector(
-    (state) => state.otherQuestion.loading 
-  ); 
+    (state) => state.otherQuestion.loading
+  );
 
-  const { questionX} = otherQuestions.questions;
+  const { questionX } = otherQuestions.questions;
 
   if (questionLoading) {
     // Optionally, you can show a loading state while the data is being fetched
@@ -67,9 +65,9 @@ const Question = () => {
   }
 
   const { test_name, question, answer, marks, pass_marks, subject_name } =
-  testData;
+    testData;
 
-  testData.marks = 0
+  testData.marks = 0;
 
   const handleInputChange = (e) => {
     setTestData({ ...testData, [e.target.name]: e.target.value });
@@ -81,7 +79,7 @@ const Question = () => {
     if (!testData) {
       dispatch(setAlert('Question Creation failed', 'danger'));
     }
-    
+
     testData.pass_marks = parseInt(testData.pass_marks);
     //testData.answer = otherQuestions.questions.answer;
     //testData.subject_name = otherQuestions.questions.subject;
@@ -89,8 +87,8 @@ const Question = () => {
     //Validation of field
     //test_name, question, answer, marks, pass_marks, subject_name;
     if (!test_name) {
-         dispatch(setAlert('Test_name not entered', 'danger'));
-         return
+      dispatch(setAlert('Test_name not entered', 'danger'));
+      return;
     }
     if (!question) {
       dispatch(setAlert('Question not selected', 'danger'));
@@ -108,23 +106,23 @@ const Question = () => {
       dispatch(setAlert('Subject not selected', 'danger'));
       return;
     }
-    
+
     console.log('testData:', testData);
     dispatch(createTests(testData));
   };
 
- const handleFocusResults = (question) => {
+  const handleFocusResults = (question) => {
     dispatch(findQuestion(question));
- };
+  };
 
- const deleteHandler = (id) => {
-   console.log('in deleteHandler');
+  const deleteHandler = (id) => {
+    console.log('in deleteHandler');
 
-   if (window.confirm('Are you sure?')) {
-     console.log('id:', id);
-     dispatch(deleteTest(id));
-   }
- };
+    if (window.confirm('Are you sure?')) {
+      console.log('id:', id);
+      dispatch(deleteTest(id));
+    }
+  };
 
   return (
     <section className="container">

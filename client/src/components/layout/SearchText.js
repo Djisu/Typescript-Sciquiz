@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-
-// import { Navigate } from 'react-router-dom'
-// import Profiles from '../../components/profiles/Profiles'
 import PropTypes from 'prop-types';
-import { getProfileByStatus } from '../../actions/profile';
+import { getProfileByStatus } from '../../actions/profile.js';
 
 function SearchText() {
   const navigate = useNavigate();

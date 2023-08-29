@@ -3,7 +3,7 @@ import {
   USER_PERFORMANCE_FAIL,
   USER_PERFORMANCE_REQUEST,
   USER_PERFORMANCE_LOADED,
-} from '../actions/types';
+} from '../actions/types.js';
 
 const initialState = {
   userPerformances: [], // Initial state for the userPerformances data
@@ -33,5 +33,3 @@ function userPerformanceReducer(state = initialState, action) {
 }
 
 export default userPerformanceReducer;
-
-

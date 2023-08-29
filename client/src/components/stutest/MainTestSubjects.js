@@ -3,45 +3,39 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { selectQuestionsDifficultylevels } from '../../actions/question.js';
+import { selectQuestionsSubjects } from '../../actions/question.js';
 
-const MainTestDifficultyLevels = () => {
+const MainTestSubjects = () => {
   const dispatch = useDispatch();
 
   const [showAnswer, setShowAnswer] = useState(false);
   let [questions, setQuestions] = useState([]);
   const isAdmin = localStorage.getItem('isAdmin');
 
-  const { checkedDifficultylevels, checkedSubjects, userId, noofquestions } =
-    useParams();
+  const { checkedSubjects, userId, noofquestions } = useParams();
 
-  console.log(
-    'MainTestTopics checkedDifficultylevels==',
-    checkedDifficultylevels
-  );
+  console.log('MainTestSubjects checkedSubjects==', checkedSubjects);
 
   const selectedQuestions = useSelector((state) => state.selectedQuestions);
 
+  //
   console.log('Array.isArray(questions):::', Array.isArray([questions]));
   console.log(
     'selectedQuestions.selectedQuestions)==',
     selectedQuestions.selectedQuestions
   );
+  //  //
+  //  setQuestions(selectedQuestions);
+  //
+  //  console.log('in MainTest 1', checkedTopics, userId);
 
   console.log('typeof questions ==', typeof questions);
 
   useEffect(() => {
     console.log('in useEffect');
 
-    if (checkedDifficultylevels) {
-      dispatch(
-        selectQuestionsDifficultylevels(
-          checkedDifficultylevels,
-          checkedSubjects,
-          userId,
-          noofquestions
-        )
-      );
+    if (checkedSubjects) {
+      dispatch(selectQuestionsSubjects(checkedSubjects, userId, noofquestions));
     }
   }, []);
 
@@ -107,4 +101,4 @@ const MainTestDifficultyLevels = () => {
   );
 };
 
-export default MainTestDifficultyLevels;
+export default MainTestSubjects;

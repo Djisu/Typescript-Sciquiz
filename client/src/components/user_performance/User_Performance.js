@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { createUserPerformance, loadUserPerformances, deleteUserPerformance } from '../../actions/user_performance';
+import {
+  createUserPerformance,
+  loadUserPerformances,
+  deleteUserPerformance,
+} from '../../actions/user_performance.js';
 import { useDispatch } from 'react-redux';
-import { setAlert } from '../../actions/alert';
+import { setAlert } from '../../actions/alert.js';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 const User_Performance = () => {
-    console.log('in User_Performance  component');
+  console.log('in User_Performance  component');
 
   const [userPerformanceData, setUserPerformanceData] = useState({
     userId: '',
     test_name: '',
     score: 0,
-    date: "",
+    date: '',
   });
   const dispatch = useDispatch();
 
@@ -23,17 +27,20 @@ const User_Performance = () => {
 
   const userPerformances = useSelector(
     (state) => state.userPerformance.userPerformances
-  ); 
+  );
 
-//  console.log('userPerformances==', userPerformances);
+  //  console.log('userPerformances==', userPerformances);
 
   const { userId, test_name, score, date } = userPerformanceData;
 
   userPerformanceData.userId = localStorage.getItem('id');
-   userPerformanceData.date = Date.now();
+  userPerformanceData.date = Date.now();
 
   const handleInputChange = (e) => {
-    setUserPerformanceData({ ...userPerformanceData, [e.target.name]: e.target.value });
+    setUserPerformanceData({
+      ...userPerformanceData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleSubmit = (e) => {
@@ -43,13 +50,13 @@ const User_Performance = () => {
       dispatch(setAlert('User Test Results entry Successful', 'success'));
     }
 
-    if (!test_name){
-         dispatch(setAlert('Test name missing', 'danger'));
-    } 
+    if (!test_name) {
+      dispatch(setAlert('Test name missing', 'danger'));
+    }
     if (score === 0) {
       dispatch(setAlert('Test score missing', 'danger'));
-    } 
-   
+    }
+
     console.log('user performance data', userPerformanceData);
     dispatch(createUserPerformance(userPerformanceData));
   };
@@ -62,7 +69,6 @@ const User_Performance = () => {
       dispatch(deleteUserPerformance(id));
     }
   };
-
 
   return (
     <section className="container">

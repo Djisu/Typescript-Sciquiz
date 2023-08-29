@@ -2,9 +2,9 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Link, Navigate } from 'react-router-dom'; //Link for routes, Navigate for redirecting to different page
-import { setAlert } from '../../actions/alert'; //setAlert for notification
-import { register } from '../../actions/auth'; //action to post formdata to the backend
 import PropTypes from 'prop-types';
+import { setAlert } from '../../actions/alert.js'; //setAlert for notification
+import { register } from '../../actions/auth.js'; //action to post formdata to the backend
 
 // isAuthenticated from the state, from the reducer. It is in the state so it found everywhere
 const Register = ({ setAlert, register, isAuthenticated }) => {
@@ -69,8 +69,8 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
             onChange={onChange}
           />
           <small className="form-text">
-            This site uses Gravatar so if you want a profile image, use a
-            email with a photo.
+            This site uses Gravatar so if you want a profile image, use a email
+            with a photo.
           </small>
         </div>
         <div className="form-group">

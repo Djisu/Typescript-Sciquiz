@@ -1,5 +1,8 @@
 // DifficultyLevelReducer.js
-import { DIFFICULTY_LEVEL_LOADED, DIFFICULTY_LEVEL_FAIL } from '../actions/types';
+import {
+  DIFFICULTY_LEVEL_LOADED,
+  DIFFICULTY_LEVEL_FAIL,
+} from '../actions/types.js';
 
 const initialState = {
   difficultyLevels: [], // Initial state for the difficulty levels data
@@ -14,7 +17,7 @@ const difficultyLevelReducer = (state = initialState, action) => {
         difficultyLevels: action.payload, // Set the difficulty levels data from the action payload
         loading: false, // Set loading to false, as the data has been successfully loaded
       };
-      
+
     case DIFFICULTY_LEVEL_FAIL:
       return {
         ...state,
@@ -27,5 +30,3 @@ const difficultyLevelReducer = (state = initialState, action) => {
 };
 
 export default difficultyLevelReducer;
-
-
