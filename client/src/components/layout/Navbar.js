@@ -12,6 +12,7 @@ import { setAlert } from '../../actions/alert.js';
 
 const Navbar = ({ auth: { isAuthenticated }, logout }) => {
   const [showDropdown, setShowDropdown] = useState(false);
+
   const isAdmin = localStorage.getItem('isAdmin');
 
   const booleanValue = isAdmin === 'true' ? true : false;

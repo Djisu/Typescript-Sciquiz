@@ -6,6 +6,10 @@ import {
   USER_PERFORMANCE_FAIL,
   USER_PERFORMANCE_REQUEST,
   USER_PERFORMANCE_LOADED,
+  ONE_PERFORMANCE_SUCCESS,
+  ONE_PERFORMANCE_FAIL,
+  ONE_PERFORMANCE_REQUEST,
+  ONE_PERFORMANCE_LOADED,
 } from './types.js';
 
 // Load Topics
@@ -15,10 +19,10 @@ export const loadUserPerformances = () => async (dispatch) => {
   try {
     const res = await api.get('/user_performance');
 
-    console.log(' res.data[0]:', res.data[0]);
+    console.log(' res.data:', res.data);
 
     dispatch({
-      type: USER_PERFORMANCE_LOADED,
+      type: USER_PERFORMANCE_SUCCESS,
       payload: res.data,
     });
   } catch (err) {
@@ -28,12 +32,45 @@ export const loadUserPerformances = () => async (dispatch) => {
   }
 };
 
+// Delete UserPerformance
+export const getUserPerformance = (email) => async (dispatch) => {
+  dispatch({ type: ONE_PERFORMANCE_REQUEST });
+
+  console.log('in getUserPerformance action', email);
+
+  try {
+    const res = await api.get(`/user_performance/${email}`);
+
+    console.log('in getUserPerformance action res.data', res.data);
+
+    if (!res.data) {
+      dispatch({
+        type: ONE_PERFORMANCE_FAIL,
+        payload: { msg: 'No records found!!' },
+      });
+      dispatch(setAlert('No records found!!', danger));
+    }
+
+    dispatch({
+      type: ONE_PERFORMANCE_SUCCESS,
+      payload: res.data,
+    });
+
+    dispatch(setAlert('User performance fetched', 'success'));
+  } catch (err) {
+    dispatch({
+      type: ONE_PERFORMANCE_FAIL,
+      payload: { msg: 'Error has occured' },
+    });
+  }
+};
+
 // Create or update Question UserPerformance
 export const createUserPerformance =
   (userPerformanceData) => async (dispatch) => {
     dispatch({ type: USER_PERFORMANCE_REQUEST });
 
-    // console.log('in userperformance action')
+    console.log('in userperformance action');
     try {
       const res = await api.post('/user_performance', userPerformanceData);
 

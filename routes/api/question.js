@@ -1,6 +1,9 @@
 /* eslint-disable semi */
 import express from 'express';
-const router = express.Router();
+//import nodemailer from 'nodemailer';
+import mongoose from 'mongoose';
+
+import config from 'config';
 
 //import { check, validationResult } from 'express-validator';
 import { check, validationResult } from 'express-validator';
@@ -9,6 +12,8 @@ import User from '../../models/User.js';
 import Question from '../../models/Question.js';
 import questionData from '../../questionsData.js';
 
+const router = express.Router();
+const emailPassword = config.get('emailPassword');
 //import checkQuestionSelected from '../../middleware/checkQuestionSelected';
 
 // Route for seeding data
@@ -16,10 +21,6 @@ router.get('/seed', async (req, res) => {
   //  const client = new MongoClient(url);
 
   try {
-    //await client.connect();
-    //const db = client.db(dbName);
-    //const collection = db.collection(collectionName);
-
     // Insert the data into the collection
     const result = await Question.insertMany(questionData);
     console.log(`${result.insertedCount} documents inserted.`);
@@ -85,165 +86,247 @@ router.get('/questions', async (req, res) => {
   }
 });
 
-//app.get('/question/:checkedTopics/:checkedDifficultylevels/:userId', (req, res) => {
+//app.get('/question/:checkedTopics/:checkedDifficultylevels/:checkedSubjects/:userId', (req, res) => {
 router.get(
-  '/:checkedTopics/:checkedDifficultyLevels/:userId',
+  '/:checkedTopics/:checkedDifficultyLevels/:checkedSubjects/:userId/:noofquestions',
   async (req, res) => {
-    console.log(
-      'IN router.get(/question/:checkedTopics/:checkedDifficultyLevels/:userId'
-    );
-
-    const checkedTopics = req.params.checkedTopics.split(',');
-    const checkedDifficultyLevels =
-      req.params.checkedDifficultyLevels.split(',');
-
-    const userid = req.params.userId;
-
     try {
-      const foundTopics = await Question.find({
-        topic: { $in: checkedTopics }
-      }).exec();
+      let {
+        checkedTopics,
+        checkedDifficultyLevels,
+        checkedSubjects,
+        userId,
+        noofquestions
+      } = req.params;
 
-      //  console.log('foundTopics==', foundTopics);
+      //   `/question/${checkedTopics}/${checkedDifficultylevels}/${checkedSubjects}/${userId}/${noofquestions}`
+      console.log(
+        'in /:checkedTopics/:checkedDifficultyLevels/:checkedSubjects/:userId/:noofquestions',
+        checkedTopics,
+        checkedDifficultyLevels,
+        checkedSubjects,
+        userId,
+        noofquestions
+      );
+      //  const ObjectId = mongoose.Types.ObjectId;
+      // Creating a new ObjectId
+      //  const objectId = new mongoose.Types.ObjectId();
 
-      const foundDifficultyLevels = await Question.find({
-        topic: { $in: checkedDifficultyLevels }
-      }).exec();
+      // Using an existing ObjectId string
+      //  const existingObjectId = mongoose.Types.ObjectId(userId);
 
-      //  console.log('foundDifficultyLevels==', foundDifficultyLevels);
+      //      //  MAKE SURE TO DISABLE THIS BLOCK OF CODE AFTER CLEARING ARRAY
+      //      console.log('clearing answered_by array');
+      //      //  await Question.updateMany({}, { $set: { answeredBy: [] } });
+      //
+      //      // Now, update the answeredBy field with valid ObjectId references
+      //      const userIds = []; // Array of user ObjectId values
+      //      await Question.updateMany(
+      //        {},
+      //        { $push: { answeredBy: { $each: userIds.map((id) => ObjectId(id)) } } }
+      //      );
 
-      //   combine the two arrays: foundTopics and foundDifficultyLevels
-      const combinedArray = [...foundTopics, ...foundDifficultyLevels];
+      // Enable this block of code just clear the  answered_by array
+      console.log('clearing answered_by array');
+      await Question.updateMany({}, { $set: { answeredBy: [] } });
+      console.log('answered_by array CLEARED');
 
-      console.log('combinedArray::', combinedArray);
+      noofquestions = parseInt(noofquestions);
 
-      let questionOutput = [];
+      const topicsArray = checkedTopics.split(',');
+      const difficultyLevelsArray = checkedDifficultyLevels.split(',');
+      const subjectsArray = checkedSubjects.split(',');
 
-      //Test: making answeredby empty
-      combinedArray.map((question) => {
-        question.answeredBy.length = 0;
-        console.log(' question.answeredBy.length = 0;', question.answeredBy);
+      const totalQuestions = await Question.countDocuments({
+        topic: { $in: topicsArray },
+        difficulty_level: { $in: difficultyLevelsArray },
+        subject_name: { $in: subjectsArray },
+        answeredBy: { $nin: [userId] }
       });
 
-      //
-      //      // Check if the user has already answered the question
-      //      combinedArray.map((question) => {
-      //        if (!question.answeredBy.includes(userid)) {
-      //          //  console.log('Not in answeredBy');
-      //          question.answeredBy.push(userid);
-      //          question.save();
-      //
-      //          questionOutput.push(question);
-      //        }
-      //      });
+      const actualNoOfQuestions = Math.min(
+        parseInt(noofquestions),
+        totalQuestions > 0 ? totalQuestions : 1
+      );
 
-      return res.json(combinedArray);
+      const questions = await Question.find({
+        topic: { $in: topicsArray },
+        difficulty_level: { $in: difficultyLevelsArray },
+        subject_name: { $in: subjectsArray },
+        answeredBy: { $nin: [userId] } // Assuming you want to filter by the userId in answeredBy array
+      })
+        .limit(parseInt(actualNoOfQuestions)) // Limit the number of questions returned
+        .populate('answeredBy', 'username'); // Populate the user details in answeredBy array
+
+      // Update answeredBy array for each question
+      for (const question of questions) {
+        question.answeredBy.push(userId);
+        await question.save();
+      }
+
+      return res.json(questions);
     } catch (error) {
-      console.error('Error fetching question:', error);
+      console.error('Error fetching questions:', error);
       res
         .status(500)
-        .json({ error: 'An error occurred while fetching question' });
+        .json({ error: 'An error occurred while fetching questions' });
     }
   }
 );
 
-//app.get('/question/:checkedTopics/:checkedDifficultylevels/:userId', (req, res) => {
-router.get('/:checkedTopics/:userId', async (req, res) => {
-  console.log('IN router.get(/question/:checkedTopics/:userId');
+router.get(
+  '/:checkedTopics/:checkedSubjects/:userId/:noofquestions',
 
-  const checkedTopics = req.params.checkedTopics.split(',');
+  async (req, res) => {
+    console.log(
+      'in router.get(/:checkedTopics/:checkedSubjects/:userId/:noofquestions'
+    );
 
-  const userid = req.params.userId;
+    try {
+      const { checkedTopics, checkedSubjects, userId, noofquestions } =
+        req.params;
 
-  try {
-    const foundTopics = await Question.find({
-      topic: { $in: checkedTopics }
-    }).exec();
+      console.log(
+        'req.params: ',
+        checkedTopics,
+        checkedSubjects,
+        userId,
+        noofquestions
+      );
 
-    //  console.log('foundTopics==', foundTopics);
+      const topicsArray = checkedTopics.split(',');
+      const subjectsArray = checkedSubjects.split(',');
 
-    //  console.log('foundDifficultyLevels==', foundDifficultyLevels);
+      // Enable this block of code just clear the  answered_by array
+      //  console.log('clearing answered_by array');
+      //  await Question.updateMany({}, { $set: { answeredBy: [] } });
+      //  console.log('answered_by array CLEARED');
 
-    //   combine the two arrays: foundTopics and foundDifficultyLevels
-    const combinedArray = [...foundTopics];
+      console.log('topicsArray, subjectsArray: ', topicsArray, subjectsArray);
 
-    console.log('combinedArray::', combinedArray);
+      const totalQuestions = await Question.countDocuments({
+        topic: { $in: topicsArray },
+        subject_name: { $in: subjectsArray },
+        answeredBy: { $nin: [userId] }
+      });
 
-    let questionOutput = [];
+      const actualNoOfQuestions = Math.min(
+        parseInt(noofquestions),
+        totalQuestions > 0 ? totalQuestions : 1
+      );
 
-    //Test: making answeredby empty
-    combinedArray.map((question) => {
-      question.answeredBy.length = 0;
-      console.log(' question.answeredBy.length = 0;', question.answeredBy);
-    });
+      console.log('actualNoOfQuestions: ', actualNoOfQuestions);
 
-    //
-    // Check if the user has already answered the question
-    //    combinedArray.map((question) => {
-    //      if (!question.answeredBy.includes(userid)) {
-    //        //  console.log('Not in answeredBy');
-    //        question.answeredBy.push(userid);
-    //        question.save();
-    //
-    //        questionOutput.push(question);
-    //      }
-    //    });
+      const questions = await Question.find({
+        topic: { $in: topicsArray },
+        subject_name: { $in: subjectsArray },
+        answeredBy: { $nin: [userId] } // Assuming you want to filter by the userId in answeredBy array
+      })
+        .limit(parseInt(actualNoOfQuestions)) // Limit the number of questions returned
+        .populate('answeredBy', 'username'); // Populate the user details in answeredBy array
 
-    return res.json(combinedArray);
-  } catch (error) {
-    console.error('Error fetching question:', error);
-    res
-      .status(500)
-      .json({ error: 'An error occurred while fetching question' });
+      // Update answeredBy array for each question
+      for (const question of questions) {
+        question.answeredBy.push(userId);
+        await question.save();
+      }
+
+      return res.json(questions);
+    } catch (error) {
+      console.error('Error fetching questions:', error);
+      res
+        .status(500)
+        .json({ error: 'An error occurred while fetching questions' });
+    }
   }
-});
+);
 
 //app.get('/question/:checkedDifficultylevels/:userId', (req, res) => {
-router.get('/:checkedDifficultyLevels/:userId', async (req, res) => {
-  console.log('IN router.get(/question/:checkedDifficultyLevels/:userId');
+router.get(
+  '/:checkedDifficultyLevels/:checkedSubjects/:userId/:noofquestions',
 
-  const checkedDifficultyLevels = req.params.checkedDifficultyLevels.split(',');
+  async (req, res) => {
+    try {
+      const {
+        checkedDifficultyLevels,
+        checkedSubjects,
+        userId,
+        noofquestions
+      } = req.params;
 
-  const userid = req.params.userId;
+      const difficultyLevelsArray = checkedDifficultyLevels.split(',');
+      const subjectsArray = checkedSubjects.split(',');
 
+      const totalQuestions = await Question.countDocuments({
+        difficulty_level: { $in: difficultyLevelsArray },
+        subject_name: { $in: subjectsArray },
+        answeredBy: { $nin: [userId] }
+      });
+
+      const actualNoOfQuestions = Math.min(
+        parseInt(noofquestions),
+        totalQuestions > 0 ? totalQuestions : 1
+      );
+
+      const questions = await Question.find({
+        difficulty_level: { $in: difficultyLevelsArray },
+        subject_name: { $in: subjectsArray },
+        answeredBy: { $nin: [userId] } // Assuming you want to filter by the userId in answeredBy array
+      })
+        .limit(parseInt(actualNoOfQuestions)) // Limit the number of questions returned
+        .populate('answeredBy', 'username'); // Populate the user details in answeredBy array
+
+      // Update answeredBy array for each question
+      for (const question of questions) {
+        question.answeredBy.push(userId);
+        await question.save();
+      }
+
+      return res.json(questions);
+    } catch (error) {
+      console.error('Error fetching questions:', error);
+      res
+        .status(500)
+        .json({ error: 'An error occurred while fetching questions' });
+    }
+  }
+);
+
+router.get('/:checkedSubjects/:userId/:noofquestions', async (req, res) => {
   try {
-    const foundDifficultyLevels = await Question.find({
-      topic: { $in: checkedDifficultyLevels }
-    }).exec();
+    const { checkedSubjects, userId, noofquestions } = req.params;
 
-    //  console.log('foundDifficultyLevels==', foundDifficultyLevels);
+    const subjectsArray = checkedSubjects.split(',');
 
-    //   combine the two arrays: foundTopics and foundDifficultyLevels
-    const combinedArray = [...foundDifficultyLevels];
-
-    console.log('combinedArray::', combinedArray);
-
-    let questionOutput = [];
-
-    //Test: making answeredby empty
-    combinedArray.map((question) => {
-      question.answeredBy.length = 0;
-      console.log(' question.answeredBy.length = 0;', question.answeredBy);
+    const totalQuestions = await Question.countDocuments({
+      subject_name: { $in: subjectsArray },
+      answeredBy: { $nin: [userId] }
     });
 
-    //
-    // Check if the user has already answered the question
-    //    combinedArray.map((question) => {
-    //      if (!question.answeredBy.includes(userid)) {
-    //        //  console.log('Not in answeredBy');
-    //        question.answeredBy.push(userid);
-    //        question.save();
-    //
-    //        questionOutput.push(question);
-    //      }
-    //    });
+    const actualNoOfQuestions = Math.min(
+      parseInt(noofquestions),
+      totalQuestions > 0 ? totalQuestions : 1
+    );
 
-    return res.json(combinedArray);
+    const questions = await Question.find({
+      difficulty_level: { $in: difficultyLevelsArray },
+      subject_name: { $in: subjectsArray },
+      answeredBy: { $nin: [userId] }
+    })
+      .limit(actualNoOfQuestions)
+      .populate('answeredBy', 'username');
+
+    for (const question of questions) {
+      question.answeredBy.push(userId);
+      await question.save();
+    }
+
+    return res.json(questions);
   } catch (error) {
-    console.error('Error fetching question:', error);
+    console.error('Error fetching questions:', error);
     res
       .status(500)
-      .json({ error: 'An error occurred while fetching question' });
+      .json({ error: 'An error occurred while fetching questions' });
   }
 });
 
@@ -440,6 +523,21 @@ router.post('/answer', async (req, res) => {
     return res.status(500).json({ error: 'Internal server error.' });
   }
 });
+
+//// Define a route to clear the answeredBy array for all questions
+//router.post('/clear_answered_by', async (req, res) => {
+//  try {
+//    console.log('in /clear_answered_by');
+//
+//    // Update all questions to remove all elements from answeredBy array
+//    await Question.updateMany({}, { $set: { answeredBy: [] } });
+//
+//    res.json({ message: 'answeredBy arrays cleared for all questions' });
+//  } catch (error) {
+//    console.error(error);
+//    res.status(500).json({ message: 'Internal server error' });
+//  }
+//});
 
 function uuid() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {

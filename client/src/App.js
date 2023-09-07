@@ -65,6 +65,12 @@ const App = () => {
     });
   }, []);
 
+  useEffect(() => {
+    window.process = {
+      ...window.process,
+    };
+  }, []);
+
   return (
     //<Provider store={store}>
     <Router>

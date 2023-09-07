@@ -46,6 +46,8 @@ export const loadUser = () => async (dispatch) => {
 
 // Register User
 export const register = (formData) => async (dispatch) => {
+  console.log('in register formData: ', formData);
+
   try {
     const res = await api.post('/users', formData);
 
@@ -83,10 +85,10 @@ export const login = (email, password) => async (dispatch) => {
     //
     const [encryptedId, name, email, isAdmin] = detokenize(res.data.token);
 
-    //console.log('encryptedId', encryptedId);
-    //console.log('name', name);
-    //console.log('email', email);
-    //console.log('isAdmin', isAdmin);
+    console.log('encryptedId', encryptedId);
+    console.log('name', name);
+    console.log('email', email);
+    console.log('isAdmin', isAdmin);
 
     localStorage.setItem('id', encryptedId);
     localStorage.setItem('name', name);
@@ -114,6 +116,11 @@ export const login = (email, password) => async (dispatch) => {
 
 // Logout
 export const logout = () => async (dispatch) => {
+  localStorage.removeItem('id');
+  localStorage.removeItem('name');
+  localStorage.removeItem('email');
+  localStorage.removeItem('isAdmin');
+
   dispatch({ type: LOGOUT });
 };
 
@@ -150,7 +157,7 @@ export const userAnsweredQuestions = (userId) => async (dispatch) => {
   try {
     const res = await api.get(`/auth/${userId}/answered-questions`);
 
-    console.log('res.data===', res.data);
+    console.log('RES.DATA===', res.data);
 
     dispatch({ type: COUNTED_QUESTION_SUCCESS, payload: res.data });
   } catch (error) {

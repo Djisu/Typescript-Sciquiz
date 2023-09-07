@@ -8,13 +8,13 @@ const ProfileItem = ({
     status,
     school,
     bio,
+    email,
   },
 }) => {
-//  console.log('name:' + name);
+  //  console.log('avatar:' + avatar);
   return (
     <div className="profile bg-light">
       {avatar && <img src={avatar} alt="" className="round-img" />}
-      {/*{!avatar && <img src={images[0]} alt="" className="round-img" />}*/}
       <div>
         <h2>{name}</h2>
 

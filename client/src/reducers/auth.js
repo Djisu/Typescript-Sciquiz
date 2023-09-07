@@ -62,6 +62,10 @@ function authReducer(state = initialState, action) {
     case AUTH_ERROR:
     case LOGOUT:
       localStorage.removeItem('token');
+       localStorage.removeItem('id');
+       localStorage.removeItem('name');
+       localStorage.removeItem('email');
+       localStorage.removeItem('isAdmin');
       return {
         ...state,
         token: null,

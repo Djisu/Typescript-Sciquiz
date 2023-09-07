@@ -36,14 +36,14 @@ export const getCurrentProfile = () => async (dispatch) => {
 
 // Get all profiles
 export const getProfiles = () => async (dispatch) => {
-  //  console.log('in getProfiles action');
+  console.log('in getProfiles action');
 
   dispatch({ type: CLEAR_PROFILE });
 
   try {
     const res = await api.get('/profile');
 
-    //console.log('in getProfileS action  res.data==', res.data);
+    console.log('in getProfileS action  res.data==', res.data);
 
     dispatch({
       type: GET_PROFILES,
@@ -59,21 +59,27 @@ export const getProfiles = () => async (dispatch) => {
 
 // Get profile by ID
 export const getProfileById = (userId) => async (dispatch) => {
-  //  console.log('in getProfileById=', userId);
+  //  console.log('in  getProfileById: ', userId);
 
   try {
     const res = await api.get(`/profile/user/${userId}`);
 
-    //console.log('in getProfileById res.data=', res.data);
-
-    dispatch({
-      type: GET_PROFILE,
-      payload: res.data,
-    });
+    if (res.data) {
+      dispatch({
+        type: GET_PROFILE,
+        payload: res.data,
+      });
+    } else {
+      dispatch({
+        type: PROFILE_ERROR,
+        payload: { msg: 'Failed to get profile', status: res.status },
+      });
+    }
   } catch (err) {
+    // Handle network errors or other unexpected errors
     dispatch({
       type: PROFILE_ERROR,
-      payload: { msg: err.response.statusText, status: err.response.status },
+      payload: { msg: 'An error occurred', status: 500 }, // You can customize this message
     });
   }
 };
@@ -107,20 +113,50 @@ export const getProfileByStatus = (status) => async (dispatch) => {
 export const createProfile =
   (formData, edit = false) =>
   async (dispatch) => {
-    //console.log('in createProfile action', formData);
+    console.log('in createProfile action', formData);
+
     try {
       const res = await api.post('/profile', formData);
 
-      //  console.log('res.data::', res.data);
+      console.log('res.data::', res.data);
 
       dispatch({
         type: GET_PROFILE,
         payload: res.data,
       });
 
-      dispatch(
-        setAlert(edit ? 'Profile Updated' : 'Profile Created', 'success')
-      );
+      dispatch(setAlert('Profile Created', 'success'));
+    } catch (err) {
+      const errors = err.response.data.errors;
+
+      if (errors) {
+        errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+      }
+
+      dispatch({
+        type: PROFILE_ERROR,
+        payload: { msg: err.response.statusText, status: err.response.status },
+      });
+    }
+  };
+
+// Create or update profile
+export const updateProfile =
+  (formData, edit = true) =>
+  async (dispatch) => {
+    console.log('in updateProfile action', formData);
+
+    try {
+      const res = await api.put('/profile', formData);
+
+      console.log('res.data::', res.data);
+
+      dispatch({
+        type: GET_PROFILE,
+        payload: res.data,
+      });
+
+      dispatch(setAlert('Profile Updated', 'success'));
     } catch (err) {
       const errors = err.response.data.errors;
 

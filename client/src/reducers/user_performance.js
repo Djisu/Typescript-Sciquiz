@@ -14,7 +14,7 @@ function userPerformanceReducer(state = initialState, action) {
   const { type, payload } = action;
 
   switch (action.type) {
-    case USER_PERFORMANCE_LOADED:
+    case USER_PERFORMANCE_SUCCESS:
       return {
         ...state,
         userPerformances: action.payload, // Set the userPerformances data from the action payload

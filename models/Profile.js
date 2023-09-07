@@ -16,6 +16,9 @@ const ProfileSchema = new Schema({
   },
   name: {
     type: String
+  },
+  email: {
+    type: String
   }
 });
 

@@ -10,41 +10,55 @@ import ProfileAbout from './ProfileAbout.js';
 
 import { getProfileById } from '../../actions/profile.js';
 import { userAnsweredQuestions } from '../../actions/auth.js';
+import { setAlert } from '../../actions/alert.js';
+import Chart from '../../components/profiles/Chart.js';
 
-const Profile = ({ getProfileById, profile: { profile }, auth }) => {
-  //  console.log('in Profile');
+const Profile = ({ profile: { profile }, auth }) => {
+  const dispatch = useDispatch();
+  //  console.log('in Profile');  //
 
   const { id } = useParams();
 
-  //  console.log('id==', id);
+  console.log('profile::: ', profile);
 
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    getProfileById(id);
-  }, [getProfileById, id]);
+  console.log('in Profile');
+  console.log('id is ', id);
 
   const profileX = useSelector((state) => state.profile);
 
-  //const auth = useSelector((state) => state.auth);
-
-  //  console.log('XXXXXXX in Profile prolife=========', profileX);
-  //
-  //  if (!profile) {
-  //    console.log('There is no profile loaded');
-  //  }
-  const answeredQuestions = useSelector((state) => state.userAnsweredQuestions);
-  //  const [userAnsweredQuestions] = useSelector(
-  //    (state) => state.userAnsweredQuestions
-  //  );
-
-  console.log(' answeredQuestions:', answeredQuestions.userAnsweredQuestions);
+  if (profileX.length === 0) {
+    dispatch(setAlert('No profile loaded', 'danger'));
+    return;
+  }
 
   useEffect(() => {
-    console.log('in dispatch(userAnsweredQuestions(id));');
+    dispatch(getProfileById(id));
+  }, [dispatch, profile, getProfileById]);
 
-    dispatch(userAnsweredQuestions(id));
-  }, [dispatch]);
+  //  console.log('profileX: ', profileX.profile.email);
+
+  // Destructure the profile object to get individual properties     getProfileById, id
+  const { bio, email, name, school, status } = profile;
+
+  console.log('email===== ', email);
+  //
+  //  const userEmail = profileX.profile.email;
+  //  //  //
+  //  if (!userEmail) {
+  //    console.log('No email fetched');
+  //    return;
+  //  }
+  //  console.log('userEmail:', userEmail);
+
+  //  const answeredQuestions = useSelector((state) => state.userAnsweredQuestions);
+  //
+  //  console.log(' answeredQuestions:', answeredQuestions.userAnsweredQuestions);
+
+  //  useEffect(() => {
+  //    console.log('in dispatch(userAnsweredQuestions(id));');
+  //
+  //    dispatch(userAnsweredQuestions(id));
+  //  }, [dispatch]);
 
   return (
     <section className="container">
@@ -70,17 +84,8 @@ const Profile = ({ getProfileById, profile: { profile }, auth }) => {
           </div>
         </Fragment>
       )}
-      <p>Total Questions Answered: {answeredQuestions.userAnsweredQuestions}</p>
-      {/*<div>
-        <ul>
-          <p>List of questions answered</p>
-          {answeredQuestions &&
-            answeredQuestions.map((question, index) => {
-              return <li key={index}>{question}</li>;
-            })}
-        </ul>
-        
-      </div>*/}
+
+      <Chart email={email} />
     </section>
   );
 };

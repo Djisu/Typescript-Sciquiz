@@ -1,21 +1,21 @@
 /* eslint-disable semi */
-import express from 'express'
-const router = express.Router()
-import gravatar from 'gravatar'
-import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
-import config from 'config'
-import { check, validationResult } from 'express-validator'
+import express from 'express';
+const router = express.Router();
+import gravatar from 'gravatar';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import config from 'config';
+import { check, validationResult } from 'express-validator';
 
-import User from '../../models/User.js'
+import User from '../../models/User.js';
 
 // @route  POST api/users
 // @desc   Test route
 // @access Public
 router.get('/', (req, res) => {
-  console.log(req.body)
-  res.send('User route')
-})
+  console.log(req.body);
+  res.send('User route');
+});
 
 // @route  POST api/users
 // @desc   Register user
@@ -27,75 +27,77 @@ router.post(
     check('email', 'Please include a valid email').isEmail(),
     check(
       'password',
-      'Please enter a password with 6 or more characters',
+      'Please enter a password with 6 or more characters'
     ).isLength({
-      min: 6,
-    }),
+      min: 6
+    })
   ],
   async (req, res) => {
-    const errors = validationResult(req)
+    const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() })
+      return res.status(400).json({ errors: errors.array() });
     }
-    const { name, email, password } = req.body
+    const { name, email, password } = req.body;
+
+    console.log('POST api/users', req.body);
 
     try {
       // See if users exists
-      let user = await User.findOne({ email: email })
+      let user = await User.findOne({ email: email });
 
       if (user) {
         return res
           .status(400)
-          .json({ errors: [{ msg: 'User already exists ' }] })
+          .json({ errors: [{ msg: 'User already exists ' }] });
       }
 
       // Get user's gravatar
       const avatar = gravatar.url(email, {
         s: '200',
         r: 'pg',
-        d: 'mm',
-      })
+        d: 'mm'
+      });
 
       // Create new user instance
       user = new User({
         name,
         email,
         password,
-        avatar,
-      })
+        avatar
+      });
 
       // Encript password
-      const salt = await bcrypt.genSalt(10)
+      const salt = await bcrypt.genSalt(10);
 
-      user.password = await bcrypt.hash(password, salt)
+      user.password = await bcrypt.hash(password, salt);
 
-      await user.save()
+      await user.save();
 
       // Return jsonwebtoken
       const payload = {
         user: {
-          id: user.id,
-        },
-      }
+          id: user.id
+        }
+      };
       jwt.sign(
         payload,
         config.get('jwtSecret'),
         { expiresIn: '5 days' },
         (err, token) => {
-          if (err) throw err
+          if (err) throw err;
 
-          res.json({ token })
-        },
-      )
+          res.json({ token });
+        }
+      );
 
       // res.send('User registered')
     } catch (err) {
       // eslint-disable-next-line
-      console.log(err.message)
+      console.log(err.message);
       // eslint-disable-next-line
-      res.status(500).send('Server error')
+      res.status(500).send('Server error');
     }
-  },
-)
+  }
+);
 
 export default router;

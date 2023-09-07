@@ -18,6 +18,7 @@ import fetchUniqueDifficultyLevels from './fetchUniqueDifficultyLevels.js';
 import fetchUniqueSubjects from './fetchUniqueSubjects.js';
 import selectedQuestions from './selectedQuestions.js';
 import userAnsweredQuestions from './userAnsweredQuestions.js';
+import onePerformance from './one_performance.js';
 
 export default combineReducers({
   alert,
@@ -29,6 +30,7 @@ export default combineReducers({
   difficultyLevel,
   tests,
   subject,
+  onePerformance,
   userPerformance,
   topic,
   otherQuestion,

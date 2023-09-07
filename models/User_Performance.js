@@ -10,7 +10,6 @@ const User_PerformanceSchema = new Schema({
     type: String,
     required: true
   },
-
   score: {
     type: Number,
     required: true
@@ -18,6 +17,14 @@ const User_PerformanceSchema = new Schema({
   date: {
     type: Date,
     default: Date.now
+  },
+  email: {
+    type: String,
+    required: true
+  },
+  test_details: {
+    type: String,
+    required: true
   }
 });
 

@@ -4,6 +4,7 @@ import {
   loadUserPerformances,
   deleteUserPerformance,
 } from '../../actions/user_performance.js';
+import { getProfiles } from '../../actions/profile.js';
 import { useDispatch } from 'react-redux';
 import { setAlert } from '../../actions/alert.js';
 import { Link } from 'react-router-dom';
@@ -12,16 +13,24 @@ import { useSelector } from 'react-redux';
 const User_Performance = () => {
   console.log('in User_Performance  component');
 
-  const [userPerformanceData, setUserPerformanceData] = useState({
+  const [selectedProfile, setSelectedProfile] = useState(''); // Initialize selectedProfile state
+
+  let [userPerformanceData, setUserPerformanceData] = useState({
     userId: '',
     test_name: '',
     score: 0,
     date: '',
+    email: '',
+    test_details: '',
   });
+
+  //  const userEmail = localStorage.getItem('email');
+
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('in useEffect');
+    console.log('in useEffect, loadUserPerformances() ');
+
     dispatch(loadUserPerformances());
   }, [dispatch]);
 
@@ -29,9 +38,20 @@ const User_Performance = () => {
     (state) => state.userPerformance.userPerformances
   );
 
-  //  console.log('userPerformances==', userPerformances);
+  console.log('userPerformances:::', userPerformances);
 
-  const { userId, test_name, score, date } = userPerformanceData;
+  useEffect(() => {
+    console.log('in useEffect getProfiles()');
+
+    dispatch(getProfiles());
+  }, [dispatch]);
+
+  const profiles = useSelector((state) => state.profiles.profiles);
+
+  console.log('profiles==', profiles);
+
+  let { userId, test_name, score, date, email, test_details } =
+    userPerformanceData;
 
   userPerformanceData.userId = localStorage.getItem('id');
   userPerformanceData.date = Date.now();
@@ -41,13 +61,16 @@ const User_Performance = () => {
       ...userPerformanceData,
       [e.target.name]: e.target.value,
     });
+
+    const selectedValue = e.target.value;
+    setSelectedProfile(selectedValue); // Update the selectedProfile state
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!userPerformanceData) {
-      dispatch(setAlert('User Test Results entry Successful', 'success'));
+      dispatch(setAlert('No data found', 'danger'));
     }
 
     if (!test_name) {
@@ -56,8 +79,17 @@ const User_Performance = () => {
     if (score === 0) {
       dispatch(setAlert('Test score missing', 'danger'));
     }
+    email = selectedProfile;
 
-    console.log('user performance data', userPerformanceData);
+    if (!email) {
+      dispatch(setAlert('Email of candidate missing', 'danger'));
+    }
+    if (!test_details) {
+      dispatch(setAlert('Test details missing', 'danger'));
+    }
+    score = parseInt(score);
+
+    //console.log('USER PERFORMANCE DATA', userPerformanceData);
     dispatch(createUserPerformance(userPerformanceData));
   };
 
@@ -87,11 +119,37 @@ const User_Performance = () => {
           />
         </div>
         <div className="form-group">
-          <label>Test Score</label>
+          <label>Test Score:</label>
           <input
             type="text"
             name="score"
             value={score}
+            onChange={handleInputChange}
+          />
+        </div>
+        {/* I HAVE TO USE selector to list all users !admin */}
+        <h2>Email of student/candidate</h2>
+        <select
+          name="profiles"
+          value={selectedProfile}
+          onChange={handleInputChange}
+        >
+          <option disabled value="">
+            Select an email
+          </option>
+          {profiles.map((profile) => (
+            <option key={profile._id} value={profile.email}>
+              {profile.email}
+            </option>
+          ))}
+        </select>
+
+        <div className="form-group">
+          <label>Test Details: Topic and Score for each question</label>
+          <textarea
+            type="text"
+            name="test_details"
+            value={test_details}
             onChange={handleInputChange}
           />
         </div>
@@ -105,7 +163,6 @@ const User_Performance = () => {
       <table className="table">
         <thead>
           <tr>
-            <th>ID</th>
             <th>TEST NAME</th>
             <th>TEST SCORE</th>
             <th>ACTION</th>
@@ -114,13 +171,12 @@ const User_Performance = () => {
         <tbody>
           {userPerformances.map((userPerformance) => (
             <tr key={userPerformance._id}>
-              <td>{userPerformance._id}</td>
               <td>{userPerformance.test_name}</td>
               <td>{userPerformance.score}</td>
               <td>
                 <button
                   type="button"
-                  className="small"
+                  className="btn btn-primary small"
                   onClick={() => deleteHandler(userPerformance._id)}
                 >
                   Delete

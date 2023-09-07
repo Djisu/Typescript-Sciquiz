@@ -44,7 +44,8 @@ router.post(
       check('school', 'School is required').not().isEmpty(),
       check('status', 'Status is required').not().isEmpty(),
       check('name', 'Name is required').not().isEmpty(),
-      check('bio', 'bio is required').not().isEmpty()
+      check('bio', 'Bio is required').not().isEmpty(),
+      check('email', 'Email address is required').not().isEmpty()
     ]
   ],
   async (req, res) => {
@@ -53,9 +54,9 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    console.log('in profile post/put');
+    console.log('in POST api/profile post/put');
 
-    const { user, school, status, name } = req.body;
+    const { user, school, status, name, email } = req.body;
 
     // Build profile object
     const profileFields = {};
@@ -64,6 +65,89 @@ router.post(
     if (school) profileFields.school = school;
     if (status) profileFields.status = status;
     if (name) profileFields.name = name;
+    if (email) profileFields.email = email;
+
+    try {
+      //      let profile = await Profile.findOne({ user: req.user.id });
+      //
+      //      if (profile) {
+      //        // Update
+      //        profile = await Profile.findOneAndUpdate(
+      //          { user: req.user.id },
+      //          { $set: profileFields },
+      //          { new: true }
+      //        );
+      //        return res.json(profile);
+      //      }
+
+      // Create new profile
+      let profile = new Profile(profileFields);
+
+      await profile.save();
+
+      //experiment
+      Profile.updateMany({}, [
+        {
+          $lookup: {
+            from: 'User', // The name of the User collection
+            localField: profileFields.user, // The field in the Profile collection
+            foreignField: user, // The field in the User collection
+            as: 'user_data'
+          }
+        },
+        {
+          $unwind: '$user_data'
+        },
+        {
+          $set: {
+            email: '$user_data.email'
+          }
+        }
+      ]);
+
+      //end of experiment
+
+      return res.json(profile);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    }
+  }
+);
+
+// @route  PUT api/profile
+// @desc   Update a user profile
+// @access Private
+router.put(
+  '/',
+  [
+    auth,
+    [
+      check('school', 'School is required').not().isEmpty(),
+      check('status', 'Status is required').not().isEmpty(),
+      check('name', 'Name is required').not().isEmpty(),
+      check('bio', 'Bio is required').not().isEmpty(),
+      check('email', 'Email address is required').not().isEmpty()
+    ]
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    console.log('in POST api/profile post/put');
+
+    const { user, school, status, name, email } = req.body;
+
+    // Build profile object
+    const profileFields = {};
+
+    profileFields.user = req.user.id;
+    if (school) profileFields.school = school;
+    if (status) profileFields.status = status;
+    if (name) profileFields.name = name;
+    if (email) profileFields.email = email;
 
     try {
       let profile = await Profile.findOne({ user: req.user.id });
@@ -76,13 +160,10 @@ router.post(
           { new: true }
         );
         return res.json(profile);
+      } else {
+        console.log('Profile not found');
+        res.status(404).send('Profile not found');
       }
-
-      // Create new profile
-      profile = new Profile(profileFields);
-
-      await profile.save();
-      return res.json(profile);
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server Error');
@@ -94,9 +175,14 @@ router.post(
 // @desc   GET all profiles
 // @access Public
 router.get('/', async (req, res) => {
+  console.log('in profile router.get(/');
+
   try {
-    const profiles = await Profile.find(); //.populate('user', ['name', 'avatar']);
-    res.json(profiles);
+    const profiles = await Profile.find().populate('user', ['name', 'avatar']);
+
+    //console.log('in profile router.get(/', profiles);
+
+    return res.json(profiles);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -106,11 +192,17 @@ router.get('/', async (req, res) => {
 // @route  GET api/profile/user/:user_id
 // @desc   GET profile by user ID
 // @access Public
-router.get('/user/:id', async (req, res) => {
+router.get('/user/:userId', async (req, res) => {
+  console.log('router.get(/user/:userId');
+
+  console.log(' req.params.userId: ', req.params.userId);
+
   try {
     const profile = await Profile.findOne({
-      _id: req.params.id
-    }); //.populate('user', ['name', 'avatar']);
+      user: req.params.userId
+    }).populate('user', ['name', 'avatar']); //, 'school', 'status'
+
+    //console.log('profile=', profile);
 
     if (!profile) return res.status(400).json({ msg: 'Profile not found' });
 
@@ -129,9 +221,9 @@ router.get('/user/:id', async (req, res) => {
 // @desc   GET profile by status
 // @access Public
 router.get('/:status', async (req, res) => {
-  console.log('in profile by status', req.params.status);
+  //  console.log('in profile by status', req.params.status);
 
-  console.log('req==', req);
+  //  console.log('req==', req);
 
   try {
     // const user = await User.findById(req.user.id).select('-password')

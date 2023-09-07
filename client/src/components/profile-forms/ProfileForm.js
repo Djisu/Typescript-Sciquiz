@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useMatch, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { createProfile, getCurrentProfile } from '../../actions/profile.js';
+import { connect, useDispatch } from 'react-redux';
+import {
+  createProfile,
+  updateProfile,
+  getCurrentProfile,
+} from '../../actions/profile.js';
 
 //  NOTE: declare initialState outside of component
 //  so that it doesn't trigger a useEffect,
@@ -13,6 +17,7 @@ const initialState = {
   status: '',
   bio: '',
   name: '',
+  email: '',
 };
 
 const ProfileForm = ({
@@ -26,7 +31,11 @@ const ProfileForm = ({
 
   const navigate = useNavigate();
 
-  console.log('in ProfileForm profile====', profile);
+  const dispatch = useDispatch();
+
+  //  console.log('in ProfileForm profile====', profile);
+
+  const userEmail = localStorage.getItem('email');
 
   useEffect(() => {
     // if there is no profile, attempt to fetch one
@@ -47,7 +56,7 @@ const ProfileForm = ({
     }
   }, [loading, getCurrentProfile, profile]);
 
-  const { status, school, bio, name } = formData;
+  const { status, school, bio, name, email } = formData;
 
   const onChange = (e) => {
     formData.transDate = new Date();
@@ -56,15 +65,29 @@ const ProfileForm = ({
   };
 
   const onSubmit = (e) => {
+    //console.log('in const onSubmit');
+
+    formData.email = userEmail;
+
     const editing = profile ? true : false;
 
+    //console.log('editing==', editing);
     e.preventDefault();
 
-    createProfile(formData, editing).then(() => {
-      console.log('in createProfile formData==', formData);
+    if (editing) {
+      console.log('in updateProfile formData==', formData);
+      dispatch(updateProfile(formData, editing));
+    } else {
+      dispatch(
+        createProfile(formData, editing).then(() => {
+          console.log('in createProfile formData==', formData);
 
-      if (!editing) navigate('/dashboard');
-    });
+          if (!editing) {
+            navigate('/dashboard');
+          }
+        })
+      );
+    }
   };
 
   return (
@@ -99,6 +122,7 @@ const ProfileForm = ({
             <option value="Inactive">Inactive</option>
           </select>
         </div>
+
         <small className="form-text">Tell us a little bit about yourself</small>
         <div className="form-group">
           <textarea
@@ -117,6 +141,15 @@ const ProfileForm = ({
             onChange={onChange}
           />
         </div>
+        {/*<div className="form-group">
+          <input
+            type="email"
+            placeholder="Email address"
+            name="email"
+            value={email}
+            onChange={onChange}
+          />
+        </div>*/}
         <div>
           <Link to="/dashboard" className="primary m-3">
             Go Back

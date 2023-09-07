@@ -37,9 +37,6 @@ const StuTests = () => {
   }, [dispatch]);
 
   const tests = useSelector((state) => state.tests.tests);
-
-  console.log('tests===', tests);
-
   const {
     userId,
     test_name,
@@ -80,11 +77,7 @@ const StuTests = () => {
       (test) => test.test_name === e.target.value
     );
 
-    console.log('filteredTests====', filteredTests);
-
     const subjectNames = tests.map((test) => test.subject_name);
-
-    console.log('questions=======', questions);
 
     setStuQuestions(questions);
 
