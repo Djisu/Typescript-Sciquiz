@@ -4,6 +4,7 @@ import path from 'path';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import http from 'http';
 import { exec } from 'child_process';
+import cors from 'cors';
 
 import users from './routes/api/users.js';
 import auth from './routes/api/auth.js';
@@ -20,6 +21,7 @@ import unique_topics from './routes/api/unique_topics.js';
 import unique_difficultylevels from './routes/api/unique_difficultylevels.js';
 import unique_subjects from './routes/api/unique_subjects.js';
 import clear_answered_by from './routes/api/clear_answered_by.js';
+import updateDocument from './routes/api/updateDocument.js';
 
 const app = express();
 
@@ -28,6 +30,7 @@ connectDB();
 
 // Init Middleware  /unique-topics
 app.use(express.json());
+app.use(cors());
 
 // Define Routes
 app.use('/api/users', users);
@@ -45,6 +48,7 @@ app.use('/api/unique_topics', unique_topics);
 app.use('/api/unique_difficultylevels', unique_difficultylevels);
 app.use('/api/unique_subjects', unique_subjects);
 app.use('/api/clear_answered_by', clear_answered_by);
+app.use('/api/updateDocument', updateDocument);
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {

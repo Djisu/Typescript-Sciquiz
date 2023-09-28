@@ -128,8 +128,10 @@ const StuTestDashboard = () => {
       // checkedDifficultylevels
       checkedDifficultylevels.length > 0 &&
       checkedTopics.length == 0 &&
-      checkedSubjects.length == 0
+      checkedSubjects.length > 0
     ) {
+      console.log('ONLY DIFFICULTY LEVELS');
+
       console.log(checkedDifficultylevels && !checkedTopics);
       url = `/maintestdifficultylevels/${checkedDifficultylevels}/${checkedSubjects}/${userid}/${noofquestions}`;
     } else if (

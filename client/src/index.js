@@ -15,7 +15,7 @@ import store from './store.js';
 //);
 
 const rootElement = document.getElementById('root');
-const root = ReactDOM.createRoot(rootElement);
+const root = createRoot(rootElement);
 root.render(
   <Provider store={store}>
     <React.StrictMode>

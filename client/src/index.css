@@ -232,4 +232,28 @@ button.small {
   display: block;
 }
 
+/* Styles for the select container */
+.select-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+}
+
+/* Styles for the select element */
+.select-element {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 200px;
+  margin-top: 8px;
+}
+
+/* Styles for the label */
+label {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
 

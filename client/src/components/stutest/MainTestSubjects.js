@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { selectQuestionsSubjects } from '../../actions/question.js';
+import { setAlert } from '../../actions/alert.js';
 
 const MainTestSubjects = () => {
   const dispatch = useDispatch();
@@ -46,6 +47,8 @@ const MainTestSubjects = () => {
       // Replace with actual variable name
       setQuestions(selectedQuestions.selectedQuestions);
       console.log('questions==', questions);
+    } else {
+      setAlert('No question found', danger);
     }
   }, [selectedQuestions]);
 

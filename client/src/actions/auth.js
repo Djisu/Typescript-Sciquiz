@@ -84,11 +84,11 @@ export const login = (email, password) => async (dispatch) => {
     //console.log('res.data.token:', res.data.token);
     //
     const [encryptedId, name, email, isAdmin] = detokenize(res.data.token);
-
-    console.log('encryptedId', encryptedId);
-    console.log('name', name);
-    console.log('email', email);
-    console.log('isAdmin', isAdmin);
+    //
+    //    console.log('encryptedId', encryptedId);
+    //    console.log('name', name);
+    //    console.log('email', email);
+    //    console.log('isAdmin', isAdmin);
 
     localStorage.setItem('id', encryptedId);
     localStorage.setItem('name', name);

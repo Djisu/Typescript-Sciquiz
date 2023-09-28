@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
-const TestsSchema = new Schema({
+const TestSchema = new Schema({
   test_name: {
     type: String,
     required: true
@@ -26,7 +26,7 @@ const TestsSchema = new Schema({
   }
 });
 
-const Tests = mongoose.model('tests', TestsSchema);
+const Tests = mongoose.model('tests', TestSchema);
 export default Tests;
 
 //export DefaultTests = mongoose.model('tests', TestSchema);

@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import api from '../utils/api.js';
 import { setAlert } from './alert.js';
-
+import { toast } from 'react-toastify';
 import {
   QUESTION_REQUEST,
   QUESTION_SUCCESS,
@@ -17,6 +17,9 @@ import {
   COUNTED_QUESTION_SUCCESS,
   COUNTED_QUESTION_FAIL,
   COUNTED_QUESTION_LOADED,
+  POST_QUESTION_REQUEST,
+  POST_QUESTION_SUCCESS,
+  POST_QUESTION_FAIL,
 } from './types.js';
 
 // Load Difficult levels
@@ -140,7 +143,7 @@ export const findQuestion = (question) => async (dispatch) => {
 
 // Delete Question
 export const deleteQuestion = (id) => async (dispatch) => {
-  console.log('in deleteQuestion action:', id);
+  //  console.log('in deleteQuestion action:', id);
 
   dispatch({ type: QUESTION_REQUEST });
   try {
@@ -170,18 +173,18 @@ export const selectQuestions =
   ) =>
   async (dispatch) => {
     dispatch({ type: SELECTED_QUESTION_REQUEST });
-
-    console.log(
-      'checkedTopics, checkedDifficultylevels, userId==',
-      checkedTopics,
-      checkedDifficultylevels,
-      checkedSubjects,
-      userId,
-      noofquestions
-    );
+    //
+    //    console.log(
+    //      'checkedTopics, checkedDifficultylevels, userId==',
+    //      checkedTopics,
+    //      checkedDifficultylevels,
+    //      checkedSubjects,
+    //      userId,
+    //      noofquestions
+    //    );
 
     try {
-      console.log('in selectQuestions about to get');
+      //  console.log('in selectQuestions about to get');
 
       noofquestions = parseInt(noofquestions);
 
@@ -200,7 +203,7 @@ export const selectQuestions =
         );
       }
 
-      console.log('res.data==', res.data);
+      //  console.log('res.data==', res.data);
 
       dispatch({ type: SELECTED_QUESTION_SUCCESS, payload: res.data });
     } catch (error) {
@@ -214,13 +217,18 @@ export const selectQuestionsTopics =
   async (dispatch) => {
     dispatch({ type: SELECTED_QUESTION_REQUEST });
 
-    console.log(
-      'checkedTopics,  userId==',
-      checkedTopics,
-      checkedSubjects,
-      userId,
-      noofquestions
-    );
+    //console.log(
+    //  'checkedTopics,  userId==',
+    //  checkedTopics,
+    //  checkedSubjects,
+    //  userId,
+    //  noofquestions
+    //);
+
+    if (checkedTopics.length == 0) {
+      console.log('No checked topics');
+      return;
+    }
 
     try {
       console.log('in selectQuestionsTopics about to get');
@@ -256,39 +264,56 @@ export const selectQuestionsTopicsDifficultylevels =
     checkedDifficultylevels,
     checkedSubjects,
     userId,
-    noofquestions
+    noofquestions,
+    test_name
   ) =>
   async (dispatch) => {
     dispatch({ type: SELECTED_QUESTION_REQUEST });
 
-    console.log(
-      'checkedTopics,checkedDifficultylevels,  userId==',
-      checkedTopics,
-      checkedDifficultylevels,
-      checkedSubjects,
-      userId,
-      parseInt(noofquestions)
-    );
+    console.log('in selectQuestionsTopicsDifficultylevels action creator');
+
+    //console.log(
+    //  'checkedTopics,checkedDifficultylevels,  userId==',
+    //  checkedTopics,
+    //  checkedDifficultylevels,
+    //  checkedSubjects,
+    //  userId,
+    //  parseInt(noofquestions),
+    //test_name;
+    //);
 
     try {
       console.log('in selectQuestionsTopicsDifficultylevels about to get');
 
+      console.log(
+        checkedTopics,
+        checkedDifficultylevels,
+        checkedSubjects,
+        userId,
+        noofquestions,
+        test_name
+      );
+
       //  const url = `/question/${checkedTopics}/${checkedSubjects}/${userId}`;
-      let res = null;
+
       noofquestions = parseInt(noofquestions);
+      const testName = test_name;
+
+      let res = null;
 
       // Check null selectQuestionsTopics
       if (checkedTopics.length > 0 && checkedDifficultylevels.length > 0) {
         console.log(
-          'in res = await api.get(`/question/${checkedTopics}/${checkedDifficultylevels}/${checkedSubjects}/${userId}`);'
+          'ABOUT TO FETCH DATA',
+          `/question/${checkedTopics}/${checkedDifficultylevels}/${checkedSubjects}/${userId}/${noofquestions}/${testName}`
         );
 
         res = await api.get(
-          `/question/${checkedTopics}/${checkedDifficultylevels}/${checkedSubjects}/${userId}/${noofquestions}`
+          `/question/${checkedTopics}/${checkedDifficultylevels}/${checkedSubjects}/${userId}/${noofquestions}/${testName}`
         );
       }
 
-      console.log('selectQuestionsTopicsDifficultylevels res.data==', res.data);
+      console.log('DATA DATA res.data==', res.data);
 
       dispatch({ type: SELECTED_QUESTION_SUCCESS, payload: res.data });
     } catch (error) {
@@ -302,15 +327,15 @@ export const selectQuestionsDifficultylevels =
   async (dispatch) => {
     dispatch({ type: SELECTED_QUESTION_REQUEST });
 
-    console.log(
-      'checkedDifficultylevels, userId==',
-      checkedDifficultylevels,
-      userId,
-      noofquestions
-    );
+    //console.log(
+    //  'checkedDifficultylevels, userId==',
+    //  checkedDifficultylevels,
+    //  userId,
+    //  noofquestions
+    //);
 
     try {
-      console.log('in selectQuestionsDifficultylevels about to get');
+      //  console.log('in selectQuestionsDifficultylevels about to get');
 
       //  const url = `/question/${checkedTopics}/${checkedDifficultyLevels}/${checkedSubjects}/${userId}`;
       let res = null;
@@ -323,7 +348,7 @@ export const selectQuestionsDifficultylevels =
         );
       }
 
-      console.log('res.data==', res.data);
+      //  console.log('res.data==', res.data);
 
       dispatch({ type: SELECTED_QUESTION_SUCCESS, payload: res.data });
     } catch (error) {
@@ -336,25 +361,62 @@ export const selectQuestionsSubjects =
   (checkedSubjects, userId, noofquestions) => async (dispatch) => {
     dispatch({ type: SELECTED_QUESTION_REQUEST });
 
-    console.log('checkedSubjects,  userId==', checkedSubjects, userId);
+    //console.log('checkedSubjects,  userId==', checkedSubjects, userId);
 
     try {
-      console.log('in selectQuestionsSubjects about to get');
+      //  console.log('in selectQuestionsSubjects about to get');
 
       // Check null values
       if (checkedSubjects.length > 0) {
-        console.log(
-          'in await api.get(`/question/${checkedSubjects}/${userId}`)'
-        );
+        //console.log(
+        //  'in await api.get(`/question/${checkedSubjects}/${userId}`)'
+        //);
       }
       const res = await api.get(
         `/question/${checkedSubjects}/${userId}/${noofquestions}`
       );
-      console.log('res.data==', res.data);
+      //  console.log('res.data==', res.data);
 
       dispatch({ type: SELECTED_QUESTION_SUCCESS, payload: res.data });
     } catch (error) {
       console.error('Error fetching question:', error);
       dispatch({ type: SELECTED_QUESTION_FAIL });
+    }
+  };
+
+export const postAnswer =
+  (questionId, userAnswer, test_name) => async (dispatch) => {
+    console.log('in postAnswer = (questionId, userAnswer, test_name)');
+
+    dispatch({ type: POST_QUESTION_REQUEST });
+
+    try {
+      console.log('before await api.put(/updateDocument)');
+
+      const response = await api.put('/updateDocument', {
+        user_answer: userAnswer,
+        id: questionId,
+        test_name: test_name,
+      });
+
+      console.log('AFTER await api.put(/api/updateDocument)');
+
+      // Handle the response from the server if needed.
+      console.log(response.data);
+
+      // Dispatch a success action
+      dispatch({ type: POST_QUESTION_SUCCESS });
+
+      // Show a success toast
+      toast.success('Answer updated successfully');
+    } catch (error) {
+      // Handle errors if the request fails.
+      console.error(error);
+
+      // Dispatch an error action
+      dispatch({ type: POST_QUESTION_FAIL });
+
+      // Show an error toast
+      toast.error('Failed to update answer');
     }
   };

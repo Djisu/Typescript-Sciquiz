@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import { selectQuestions } from '../../actions/question.js';
-import { selectQuestionsTopics } from '../../actions/question.js';
 import { selectQuestionsTopicsDifficultylevels } from '../../actions/question.js';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import { setAlert } from '../../actions/alert.js';
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useCallback } from 'react';
 
 const MainTest = () => {
   const dispatch = useDispatch();
-
   const [showAnswer, setShowAnswer] = useState(false);
-  const [questions, setQuestions] = useState([]);
 
   const {
     checkedTopics,
@@ -23,56 +24,45 @@ const MainTest = () => {
 
   const selectedQuestions = useSelector((state) => state.selectedQuestions);
 
+  console.log('selectedQuestions:: ', selectedQuestions);
+
+  const name = localStorage.getItem('name');
   const isAdmin = localStorage.getItem('isAdmin');
 
-  console.log('typeof isAdmin===', typeof isAdmin);
+  // Generate test_name
+  const test_name =
+    name + '-' + checkedSubjects + '-' + Math.floor(Math.random() * 1000000);
 
-  console.log(
-    checkedTopics,
-    checkedDifficultylevels,
-    checkedSubjects,
-    userId,
-    noofquestions
-  );
-  //
-  //  setQuestions(selectedQuestions);
-  console.log(
-    'in MainTest 1',
-    checkedTopics,
-    checkedDifficultylevels,
-    checkedSubjects,
-    userId,
-    parseInt(noofquestions)
-  );
-
-  useEffect(() => {
-    console.log('in useEffect MainTest.js');
-
+  const dispatchSelectQuestions = useCallback(() => {
     if (checkedTopics.length > 0 && checkedDifficultylevels.length > 0) {
+      console.log('I AM IN');
       dispatch(
         selectQuestionsTopicsDifficultylevels(
           checkedTopics,
           checkedDifficultylevels,
           checkedSubjects,
           userId,
-          parseInt(noofquestions)
+          parseInt(noofquestions),
+          test_name
         )
       );
+    } else {
+      setAlert('No questions found', danger);
     }
-  }, [dispatch]);
+  }, [
+    dispatch,
+    checkedTopics,
+    checkedDifficultylevels,
+    checkedSubjects,
+    userId,
+    noofquestions,
+    test_name,
+  ]);
 
-  // Update selectedQuestions after API call
   useEffect(() => {
-    console.log(
-      'in useEffect setQuestions(selectedQuestions): ',
-      selectedQuestions
-    );
-    if (selectedQuestions) {
-      // Replace with actual variable name
-      setQuestions(selectedQuestions.selectedQuestions);
-      console.log('questions==', questions);
-    }
-  }, [selectedQuestions]);
+    console.log('in useEffect MainTest.js');
+    dispatchSelectQuestions();
+  }, []);
 
   const handleClick = () => {
     setShowAnswer(true);
@@ -91,6 +81,7 @@ const MainTest = () => {
             See Answers
           </button>
         )}
+        Test name: {test_name}
         <ul>
           <li
             style={{
@@ -99,21 +90,33 @@ const MainTest = () => {
               fontWeight: 'bold',
             }}
           >
-            {questions.map((question, index) => (
-              <div key={index}>
-                <div>
-                  Question:{index} <span> </span>
-                  {question.question}
-                </div>
-
-                {showAnswer && (
-                  <p style={{ color: 'red', backgroundColor: 'white' }}>
-                    Answer: {question.answer}
+            {Array.isArray(selectedQuestions.selectedQuestions) ? (
+              selectedQuestions.selectedQuestions.map((question, index) => (
+                <div key={question._id}>
+                  <p>
+                    Question {index + 1}: {question.question}
                   </p>
-                )}
-                <br />
-              </div>
-            ))}
+
+                  <div>
+                    {isAdmin === 'true' && (
+                      <div style={{ color: 'red', backgroundColor: 'white' }}>
+                        Topic: {question.topic}
+                        Difficulty Level: {question.difficulty_level}
+                      </div>
+                    )}
+                  </div>
+                  {showAnswer && (
+                    <div style={{ color: 'red', backgroundColor: 'white' }}>
+                      <p>Answer: {question.answer}</p>
+                    </div>
+                  )}
+                  <br />
+                  <ToastContainer position="top-right" autoClose={3000} />
+                </div>
+              ))
+            ) : (
+              <p>No questions to display</p>
+            )}
           </li>
         </ul>
       </div>

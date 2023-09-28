@@ -6,16 +6,19 @@ import {
   TESTS_FAIL,
   TESTS_REQUEST,
   TESTS_LOADED,
+  PUT_TEST_REQUEST,
+  PUT_TEST_SUCCESS,
+  PUT_TEST_FAIL,
 } from './types.js';
 
 // Load Tests
 export const loadTests = () => async (dispatch) => {
-  console.log('in action loadTests');
+  console.log('IN ACTION loadTests');
 
   try {
     const res = await api.get('/tests');
 
-    console.log(' res.data:', res.data);
+    console.log('IN ACTION loadTests res.data:', res.data);
 
     dispatch({
       type: TESTS_LOADED,
@@ -51,23 +54,35 @@ export const loadTestsQuestions =
   };
 
 // Get Question
-export const getTest = (id) => async (dispatch) => {
+export const getTest = (test_name) => async (dispatch) => {
+  console.log('in  getTest::', test_name);
+
+  if (test_name.length == 0) {
+    dispatch(setAlert('Tests name not found', 'danger'));
+  }
+
   dispatch({ type: TESTS_REQUEST });
 
   try {
-    const res = await api.get(`/tests/${id}`);
+    const res = await api.get(`/tests/${test_name}`);
 
-    dispatch({
-      type: TESTS_SUCCESS,
-      payload: res.data,
-    });
+    if (res.data.length > 0) {
+      console.log('res.data: ', res.data);
+      dispatch({
+        type: TESTS_SUCCESS,
+        payload: res.data,
+      });
+      dispatch(setAlert('Tests obtained', 'success'));
+      return;
+    }
 
-    dispatch(setAlert('Tests obtained', 'success'));
+    dispatch(setAlert('Tests not obtained', 'danger'));
   } catch (err) {
     dispatch({
       type: TESTS_FAIL,
       payload: { msg: err.response.statusText, status: err.response.status },
     });
+    dispatch(setAlert('Error in fetching data', 'danger'));
   }
 };
 
@@ -111,6 +126,7 @@ export const createTests = (testData) => async (dispatch) => {
       type: TESTS_FAIL,
       payload: { msg: 'Error has occured' },
     });
+    dispatch(setAlert('Test Creation failed', 'danger'));
   }
 };
 
@@ -165,3 +181,35 @@ export const deleteTest = (id) => async (dispatch) => {
     });
   }
 };
+
+export const postAnswer =
+  (questionId, userAnswers, testName) => async (dispatch) => {
+    console.log('in postAnswer = ', questionId, userAnswers, testName);
+
+    dispatch({ type: PUT_TEST_REQUEST });
+
+    try {
+      console.log('before await api.put(/updateDocument)');
+
+      // Make the PUT request to the API endpoint
+      const response = await api.put(`/tests/${testName}/${questionId}`, {
+        answer_flag: userAnswers,
+      });
+
+      console.log('AFTER await api.put(/api/updateDocument)');
+
+      // Handle the response from the server if needed.  questionId, userAnswers, testName
+      console.log(response.data);
+
+      // Dispatch a success action
+      dispatch({ type: PUT_TEST_SUCCESS, payload: response.data });
+      dispatch(setAlert('Answer updated successfully', 'success'));
+    } catch (error) {
+      // Handle errors if the request fails.
+      console.error(error);
+
+      // Dispatch an error action
+      dispatch({ type: PUT_TEST_FAIL, payload: error.msg });
+      dispatch(setAlert('Failed to update answer', 'danger'));
+    }
+  };

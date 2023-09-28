@@ -17,7 +17,7 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
 
   const booleanValue = isAdmin === 'true' ? true : false;
 
-  console.log('isAdmin: ', isAdmin);
+  //  console.log('isAdmin: ', isAdmin);
 
   const toggleDropdown = () => {
     if (!booleanValue) alert('You are not admin.');
@@ -65,11 +65,14 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
                   <li>
                     <Link to="/create-question">Question</Link>
                   </li>
-                  <li>
+                  {/*<li>
                     <Link to="/create-tests">Test</Link>
-                  </li>
-                  <li>
+                  </li>*/}
+                  {/*<li>
                     <Link to="/create-user-performance">Test Result</Link>
+                  </li>*/}
+                  <li>
+                    <Link to="/mark-test">Mark Test</Link>
                   </li>
                 </ul>
               </div>

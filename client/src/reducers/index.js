@@ -19,6 +19,7 @@ import fetchUniqueSubjects from './fetchUniqueSubjects.js';
 import selectedQuestions from './selectedQuestions.js';
 import userAnsweredQuestions from './userAnsweredQuestions.js';
 import onePerformance from './one_performance.js';
+import postAnswer from './postAnswer.js';
 
 export default combineReducers({
   alert,
@@ -39,6 +40,7 @@ export default combineReducers({
   fetchUniqueSubjects,
   selectedQuestions,
   userAnsweredQuestions,
+  postAnswer,
 });
 
 //import { combineReducers } from 'redux';

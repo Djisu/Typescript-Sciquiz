@@ -16,6 +16,7 @@ function testsReducer(state = initialState, action) {
 
   switch (action.type) {
     case TESTS_LOADED:
+    case TESTS_SUCCESS:
       return {
         ...state,
         tests: action.payload, // Set the tests data from the action payload

@@ -33,9 +33,14 @@ const Profile = ({ profile: { profile }, auth }) => {
 
   useEffect(() => {
     dispatch(getProfileById(id));
-  }, [dispatch, profile, getProfileById]);
+  }, [dispatch, id]);
 
   //  console.log('profileX: ', profileX.profile.email);
+
+  if (!profile || Object.keys(profile).length === 0) {
+    dispatch(setAlert('No profile loaded', 'danger'));
+    return <Spinner />;
+  }
 
   // Destructure the profile object to get individual properties     getProfileById, id
   const { bio, email, name, school, status } = profile;

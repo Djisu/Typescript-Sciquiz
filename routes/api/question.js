@@ -11,6 +11,7 @@ import { check, validationResult } from 'express-validator';
 import User from '../../models/User.js';
 import Question from '../../models/Question.js';
 import questionData from '../../questionsData.js';
+import TestQuestion from '../../models/test_question.js';
 
 const router = express.Router();
 const emailPassword = config.get('emailPassword');
@@ -86,9 +87,10 @@ router.get('/questions', async (req, res) => {
   }
 });
 
-//app.get('/question/:checkedTopics/:checkedDifficultylevels/:checkedSubjects/:userId', (req, res) => {
+//app.get('/question/:checkedTopics/:checkedDifficultylevels/:checkedSubjects/:userId', (req, res) => {/:testName
+
 router.get(
-  '/:checkedTopics/:checkedDifficultyLevels/:checkedSubjects/:userId/:noofquestions',
+  '/:checkedTopics/:checkedDifficultyLevels/:checkedSubjects/:userId/:noofquestions/:testName',
   async (req, res) => {
     try {
       let {
@@ -96,18 +98,21 @@ router.get(
         checkedDifficultyLevels,
         checkedSubjects,
         userId,
-        noofquestions
+        noofquestions,
+        testName
       } = req.params;
 
       //   `/question/${checkedTopics}/${checkedDifficultylevels}/${checkedSubjects}/${userId}/${noofquestions}`
-      console.log(
-        'in /:checkedTopics/:checkedDifficultyLevels/:checkedSubjects/:userId/:noofquestions',
-        checkedTopics,
-        checkedDifficultyLevels,
-        checkedSubjects,
-        userId,
-        noofquestions
-      );
+      console.log('in in in in IN IN ');
+      //  console.log(
+      //    'in /:checkedTopics/:checkedDifficultyLevels/:checkedSubjects/:userId/:noofquestions',
+      //    checkedTopics,
+      //    checkedDifficultyLevels,
+      //    checkedSubjects,
+      //    userId,
+      //    noofquestions,
+      //    testName
+      //  );
       //  const ObjectId = mongoose.Types.ObjectId;
       // Creating a new ObjectId
       //  const objectId = new mongoose.Types.ObjectId();
@@ -128,6 +133,7 @@ router.get(
 
       // Enable this block of code just clear the  answered_by array
       console.log('clearing answered_by array');
+
       await Question.updateMany({}, { $set: { answeredBy: [] } });
       console.log('answered_by array CLEARED');
 
@@ -164,7 +170,23 @@ router.get(
         await question.save();
       }
 
-      return res.json(questions);
+      console.log('about to createTest');
+
+      //Create test questions here
+      const result = createTests(questions, testName);
+
+      try {
+        const resolvedValue = await result;
+        console.log('Resolved value:', resolvedValue);
+
+        if (resolvedValue.length == 0) {
+          return res.json([]);
+        }
+
+        return res.json(resolvedValue);
+      } catch (error) {
+        console.error('Error:', error);
+      }
     } catch (error) {
       console.error('Error fetching questions:', error);
       res
@@ -173,6 +195,46 @@ router.get(
     }
   }
 );
+
+const createTests = async (questionData, test_name) => {
+  console.log('in createTests = async (questionData, test_name)');
+
+  for (const question of questionData) {
+    console.log(question.question);
+  }
+
+  if (questionData.length === 0) {
+    return [];
+  }
+
+  const currentDate = new Date();
+  const testQuestions = []; // Initialize an array to store the test questions
+
+  // Iterate through the fetched questions and insert into TestQuestion schema
+  for (const question of questionData) {
+    const testQuestionData = {
+      test_name: test_name, // Set the test_name as needed
+      questionId: question._id,
+      question: question.question,
+      answer: question.answer,
+      difficulty_level: question.difficulty_level,
+      subject_name: question.subject_name,
+      topic: question.topic,
+      question_year: currentDate.getFullYear(),
+      user_answer: question.user_answer
+    };
+
+    // Create a new TestQuestion document and save it
+    const testQuestion = new TestQuestion(testQuestionData);
+    await testQuestion.save();
+
+    // Push the newly created test question to the array
+    testQuestions.push(testQuestion);
+  }
+
+  console.log('Tests created');
+  return testQuestions; // Return the array of test questions after processing all questions
+};
 
 router.get(
   '/:checkedTopics/:checkedSubjects/:userId/:noofquestions',
@@ -230,6 +292,8 @@ router.get(
         question.answeredBy.push(userId);
         await question.save();
       }
+
+      console.log('questions selected: ', questions);
 
       return res.json(questions);
     } catch (error) {
@@ -524,19 +588,22 @@ router.post('/answer', async (req, res) => {
   }
 });
 
-//// Define a route to clear the answeredBy array for all questions
-//router.post('/clear_answered_by', async (req, res) => {
-//  try {
-//    console.log('in /clear_answered_by');
+//// Define a route to handle the PUT request for updating the document.
+//router.put('/api/updateDocument', (req, res) => {
+//  const { user_answer, id } = req.body;
 //
-//    // Update all questions to remove all elements from answeredBy array
-//    await Question.updateMany({}, { $set: { answeredBy: [] } });
+//  // Your MongoDB update logic here.
+//  // You can use a MongoDB library like Mongoose to update the document.
 //
-//    res.json({ message: 'answeredBy arrays cleared for all questions' });
-//  } catch (error) {
-//    console.error(error);
-//    res.status(500).json({ message: 'Internal server error' });
-//  }
+//  // Example using Mongoose:
+//  YourModel.findByIdAndUpdate(id, { user_answer }, (err, doc) => {
+//    if (err) {
+//      console.error(err);
+//      return res.status(500).send('Internal Server Error');
+//    }
+//
+//    return res.status(200).send('Document updated successfully');
+//  });
 //});
 
 function uuid() {

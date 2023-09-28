@@ -20,7 +20,7 @@ import Profile from './components/profile/Profile.js';
 import Difficultylevel from './components/difficultylevel/Difficultylevel.js';
 import Question from './components/question/Question.js';
 import Subject from './components/subject/Subject.js';
-import Tests from './components/tests/Tests.js';
+//import Tests from './components/tests/Tests.js';
 import StuTests from './components/stutest/StuTests.js';
 import Topic from './components/topic/Topic.js';
 import User_Performance from './components/user_performance/User_Performance.js';
@@ -45,6 +45,7 @@ import MainTestDifficultyLevels from './components/stutest/MainTestDifficultyLev
 import MainTestSubjects from './components/stutest/MainTestSubjects.js';
 
 import MainTestTopicsDifficultyLevels from './components/stutest/MainTestTopicsDifficultyLevels.js';
+import MarkTest from './components/stutest/MarkTest.js';
 
 import './App.css';
 
@@ -132,10 +133,11 @@ const App = () => {
 
         <Route path="/create-subject" element={<Subject />} />
 
-        <Route path="/create-tests" element={<Tests />} />
+        {/*<Route path="/create-tests" element={<Tests />} />*/}
         <Route path="/create-stutests" element={<StuTestDashboard />} />
 
         <Route path="/create-user-performance" element={<User_Performance />} />
+        <Route path="/mark-test" element={<MarkTest />} />
 
         <Route path="/*" element={<NotFound />} />
       </Routes>

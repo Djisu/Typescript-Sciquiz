@@ -1,6 +1,10 @@
 import mongoose from 'mongoose';
 
-const QuestionSchema = new mongoose.Schema({
+const TestQuestionSchema = new mongoose.Schema({
+  test_name: {
+    type: String,
+    required: true
+  },
   question: {
     type: String,
     required: true
@@ -35,12 +39,16 @@ const QuestionSchema = new mongoose.Schema({
     }
   ],
   answer_flag: {
-    type: Boolean
+    type: String
   },
   user_answer: {
     type: String
+  },
+  questionId: {
+    type: String,
+    required: true
   }
 });
 
-const Question = mongoose.model('question', QuestionSchema);
-export default Question;
+const TestQuestion = mongoose.model('testQuestion', TestQuestionSchema);
+export default TestQuestion;
