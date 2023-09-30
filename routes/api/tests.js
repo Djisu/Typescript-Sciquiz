@@ -76,9 +76,16 @@ router.put('/:userAnswers/:testName/:questionId', async (req, res) => {
       const newTestItem = new TestQuestion({
         test_name: testName,
         questionId: questionId,
-        answer_flag: Boolean(userAnswers)
+        answer_flag: userAnswers
         // Add other fields here if needed
       });
+
+      //Push userId into answeredBy array
+      //Update answeredBy array for each question
+      for (const question of newTestItem) {
+        question.answeredBy.push(userId);
+        await newTestItem.save();
+      }
 
       await newTestItem.save();
       res
@@ -88,7 +95,7 @@ router.put('/:userAnswers/:testName/:questionId', async (req, res) => {
       // If the document exists, update the answer_flag while keeping other fields unchanged
       const update = {
         $set: {
-          answer_flag: Boolean(userAnswers)
+          answer_flag: userAnswers
         }
       };
 
@@ -270,9 +277,15 @@ router.put(
 router.put('/:testName/:questionId', async (req, res) => {
   try {
     const { testName, questionId } = req.params;
-    const { answer_flag } = req.body;
+    const { answer_flag, userId } = req.body;
 
-    console.log('in test put API endpoint', answer_flag);
+    console.log(
+      'in test put API endpoint',
+      testName,
+      questionId,
+      answer_flag,
+      userId
+    );
 
     // Use the `upsert` option to create a new document if it doesn't exist
     const filter = {
@@ -292,6 +305,21 @@ router.put('/:testName/:questionId', async (req, res) => {
     };
 
     let testItem = await TestQuestion.findOneAndUpdate(filter, update, options);
+
+    // Check if the document was found and updated
+    if (!testItem) {
+      return res.status(404).json({ message: 'Question not found' });
+    }
+
+    // Push the userId into the answeredBy array
+    testItem.answeredBy.push(userId);
+    await testItem.save();
+
+    //// Update answeredBy array for each question
+    //for (const question of testItem) {
+    //  question.answeredBy.push(userId);
+    //  await question.save();
+    //}
 
     res.status(200).json({ message: 'Update successful' });
   } catch (error) {
@@ -314,5 +342,120 @@ router.delete('/:id', async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 });
+
+// Define a route that accepts a name parameter to generate statistics for a candidate tests
+router.get('/:name/:randNum', async (req, res) => {
+  try {
+    const name = req.params.name;
+    console.log('in router.get(/:name OOOO', name);
+
+    // 1. Extract all topics corresponding to the name parameter
+    const topics = await TestQuestion.distinct('topic', { test_name: name });
+
+    console.log('topics== ', topics);
+
+    const topicInfo = [];
+
+    // 2. Count records for each topic
+    for (const topic of topics) {
+      const topicCount = await TestQuestion.countDocuments({
+        test_name: name,
+        topic
+      });
+
+      console.log('topicCount== ', topicCount);
+
+      // 3. Count records with answer_flag as "true" for each topic
+      const topicCountWithFlagTrue = await TestQuestion.countDocuments({
+        test_name: name,
+        topic,
+        answer_flag: 'true'
+      });
+
+      console.log('topicCountWithFlagTrue== ', topicCountWithFlagTrue);
+
+      // 4. Count records with answeredBy array length greater than 0
+      const topicCountAnsweredBy = await TestQuestion.countDocuments({
+        test_name: name,
+        topic,
+        answeredBy: { $exists: true, $ne: [] }
+      });
+
+      console.log('topicCountAnsweredBy== ', topicCountAnsweredBy);
+
+      // 5. Count records with answer_flag as "false" for each topic
+      const topicCountFlagFalse = await TestQuestion.countDocuments({
+        test_name: name,
+        topic,
+        answer_flag: 'false'
+      });
+
+      console.log('topicCountFlagFalse== ', topicCountFlagFalse);
+
+      topicInfo.push({
+        topic,
+        topicCount: topicCount,
+        correct: topicCountWithFlagTrue,
+        used: topicCountAnsweredBy
+      });
+    }
+
+    console.log('topicInfo== ', topicInfo);
+
+    return res.json(topicInfo);
+  } catch (error) {
+    console.error(error);
+    return res.json([]);
+    //res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+//// Define a route that accepts a name parameter to generate statistics for a candidate tests
+//router.get('/:name/:randNum', async (req, res) => {
+//  try {
+//    const name = req.params.name;
+//    console.log('in router.get(/:name OOOO', name);
+//
+//    // 1. Extract all topics corresponding to the name parameter
+//    const topics = await TestQuestion.distinct('topic', { test_name: name });
+//
+//    console.log('topics== ', topics);
+//
+//    const topicInfo = [];
+//
+//    // 2. Count records for each topic
+//    for (const topic of topics) {
+//      const topicCount = await TestQuestion.countDocuments({
+//        test_name: name,
+//        topic
+//      });
+//
+//      console.log('topicCount== ', topicCount);
+//
+//      // 3. Count records with answer_flag as "true" for each topic
+//      const topicCountWithFlag = await TestQuestion.countDocuments({
+//        test_name: name,
+//        topic,
+//        answer_flag: 'true'
+//      });
+//
+//      console.log('topicCountWithFlag== ', topicCountWithFlag);
+//
+//      topicInfo.push({
+//        topic,
+//        total: topicCount,
+//        withFlag: topicCountWithFlag
+//      });
+//    }
+//
+//    console.log('topicInfo== ', topicInfo);
+//
+//    return res.json(topicInfo);
+//  } catch (error) {
+//    console.error(error);
+//    return res.json([]);
+//    //res.status(500).json({ error: 'Internal Server Error' });
+//  }
+//});
 
 export default router;

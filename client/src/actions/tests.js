@@ -9,6 +9,12 @@ import {
   PUT_TEST_REQUEST,
   PUT_TEST_SUCCESS,
   PUT_TEST_FAIL,
+  SCORE_TEST_REQUEST,
+  SCORE_TEST_SUCCESS,
+  SCORE_TEST_FAIL,
+  SCORE_QUESTION_REQUEST,
+  SCORE_QUESTION_SUCCESS,
+  SCORE_QUESTION_FAIL,
 } from './types.js';
 
 // Load Tests
@@ -183,8 +189,8 @@ export const deleteTest = (id) => async (dispatch) => {
 };
 
 export const postAnswer =
-  (questionId, userAnswers, testName) => async (dispatch) => {
-    console.log('in postAnswer = ', questionId, userAnswers, testName);
+  (questionId, userAnswers, testName, userId) => async (dispatch) => {
+    console.log('in postAnswer = ', questionId, userAnswers, testName, userId);
 
     dispatch({ type: PUT_TEST_REQUEST });
 
@@ -194,6 +200,7 @@ export const postAnswer =
       // Make the PUT request to the API endpoint
       const response = await api.put(`/tests/${testName}/${questionId}`, {
         answer_flag: userAnswers,
+        userId: userId,
       });
 
       console.log('AFTER await api.put(/api/updateDocument)');
@@ -213,3 +220,28 @@ export const postAnswer =
       dispatch(setAlert('Failed to update answer', 'danger'));
     }
   };
+
+export const score_test = (name) => async (dispatch) => {
+  dispatch({ type: SCORE_QUESTION_REQUEST });
+
+  console.log('in score_test:: ', name);
+
+  //Generate a random number
+  const randNum = Math.floor(Math.random() * 1000000);
+
+  try {
+    const res = await api.get(`/tests/${name}/${randNum}`);
+
+    console.log('res.data== ', res.data);
+
+    if (res.data.length > 0) {
+      dispatch({ type: SCORE_QUESTION_SUCCESS, payload: res.data });
+      dispatch(setAlert('Test scored succesfully', 'success'));
+    } else {
+      dispatch(setAlert('No result found', 'danger'));
+    }
+  } catch (error) {
+    dispatch({ type: SCORE_QUESTION_FAIL, payload: error.message });
+    dispatch(setAlert('Error in scoring candidate', 'danger'));
+  }
+};

@@ -11,9 +11,18 @@ import ProfileAbout from './ProfileAbout.js';
 import { getProfileById } from '../../actions/profile.js';
 import { userAnsweredQuestions } from '../../actions/auth.js';
 import { setAlert } from '../../actions/alert.js';
-import Chart from '../../components/profiles/Chart.js';
+//import Chart from '../../components/profiles/Chart.js';
+import PieChart from '../profiles/PieChart.js';
+import { Pie } from 'react-chartjs-2';
 
 const Profile = ({ profile: { profile }, auth }) => {
+  const topicsData = useSelector((state) => state.topics.topicsData);
+
+  if (topicsData.length === 0) {
+    dispatch(setAlert('No data found for the pie chart', 'danger'));
+    return;
+  }
+
   const dispatch = useDispatch();
   //  console.log('in Profile');  //
 
@@ -90,7 +99,18 @@ const Profile = ({ profile: { profile }, auth }) => {
         </Fragment>
       )}
 
-      <Chart email={email} />
+      <div>
+        {topicsData.map((topic, index) => (
+          <div key={index}>
+            <h2>{topic.topic}</h2>
+            <PieChart
+              answeredByCount={topic.answeredByCount}
+              flagTrueCount={topic.flagTrueCount}
+              flagFalseCount={topic.flagFalseCount}
+            />
+          </div>
+        ))}
+      </div>
     </section>
   );
 };

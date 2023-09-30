@@ -43,13 +43,16 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
             </Link>
           </li>
           <li>
-            <button
-              //  className="dropbtn"
-              className="btn btn-primary"
-              onClick={toggleDropdown}
-            >
-              Admin
-            </button>
+            {booleanValue && (
+              <button
+                //  className="dropbtn"
+                className="btn btn-primary"
+                onClick={toggleDropdown}
+              >
+                Admin
+              </button>
+            )}
+
             {showDropdown && booleanValue && (
               <div className="dropdown">
                 <ul className="dropdown-content">

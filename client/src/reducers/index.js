@@ -20,6 +20,8 @@ import selectedQuestions from './selectedQuestions.js';
 import userAnsweredQuestions from './userAnsweredQuestions.js';
 import onePerformance from './one_performance.js';
 import postAnswer from './postAnswer.js';
+import scoreCandidate from './scoreCandidate.js';
+//import topicsReducer from './topicsReducer'; // Import your topicsReducer
 
 export default combineReducers({
   alert,
@@ -41,6 +43,7 @@ export default combineReducers({
   selectedQuestions,
   userAnsweredQuestions,
   postAnswer,
+  scoreCandidate,
 });
 
 //import { combineReducers } from 'redux';

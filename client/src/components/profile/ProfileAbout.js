@@ -39,17 +39,6 @@ const ProfileAbout = ({
           <p className="text-primary">{school}</p>
         </Fragment>
       )}
-
-      {/*<div>
-        <ul>
-          <p>List of questions answered</p>
-          {answeredQuestions &&
-            answeredQuestions.map((question, index) => {
-              return <li key={index}>{question}</li>;
-            })}
-        </ul>
-        <p>Total Questions Answered: {answeredQuestions.length}</p>
-      </div>*/}
     </div>
   );
 };

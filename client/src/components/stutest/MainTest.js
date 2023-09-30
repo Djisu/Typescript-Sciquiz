@@ -29,13 +29,21 @@ const MainTest = () => {
   const name = localStorage.getItem('name');
   const isAdmin = localStorage.getItem('isAdmin');
 
-  // Generate test_name
-  const test_name =
-    name + '-' + checkedSubjects + '-' + Math.floor(Math.random() * 1000000);
+  let test_name = '';
 
   const dispatchSelectQuestions = useCallback(() => {
     if (checkedTopics.length > 0 && checkedDifficultylevels.length > 0) {
       console.log('I AM IN');
+
+      test_name =
+        name +
+        '-' +
+        checkedSubjects +
+        '-' +
+        Math.floor(Math.random() * 1000000);
+
+      console.log('test_name=== ', test_name);
+
       dispatch(
         selectQuestionsTopicsDifficultylevels(
           checkedTopics,

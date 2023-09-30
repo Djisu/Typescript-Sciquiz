@@ -256,4 +256,9 @@ label {
   margin-bottom: 8px;
 }
 
+.chart-container {
+  width: 300px; /* Set your desired width */
+  height: 200px; /* Set your desired height */
+}
+
 
