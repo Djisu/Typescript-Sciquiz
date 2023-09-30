@@ -16,6 +16,7 @@ import { useCallback } from 'react';
 import Barchart from '../profiles/BarChart.js';
 import { Chart as ChartJS } from 'chart.js/auto';
 import BarChart from '../profiles/BarChart.js';
+import PieChart from '../profiles/PieChart.js';
 
 const MarkTest = () => {
   const dispatch = useDispatch();
@@ -244,6 +245,7 @@ const MarkTest = () => {
           </div>
         </div>
         <BarChart />
+        <PieChart />
       </div>
       <br />
     </div>

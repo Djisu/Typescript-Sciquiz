@@ -990,12 +990,21 @@ label {
   margin-bottom: 4px;
 }
 
+/* CSS for resizing the pie chart container */
 .chart-container {
   width: 300px; /* Set your desired width */
-  height: 200px; /* Set your desired height */
+  height: 300px; /* Set your desired height */
+  margin: 0 auto; /* Center the chart horizontally */
+}
+/* CSS to reduce the size of the legend */
+.chart-legend {
+  font-size: 12px; /* Adjust the font size as needed */
 }
 
-
+/* CSS to reduce the size of the tooltips */
+.chart-tooltip {
+  font-size: 10px; /* Adjust the font size as needed */
+}
 
 
 
