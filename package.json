@@ -4,11 +4,11 @@
   "version": "1.0.0",
   "description": "Social network for quizzes",
   "main": "server.js",
-  "scripts": {
-    "start": "node server.js",
-    "client": "cd client && yarn start",
-    "dev": "concurrently \"yarn start\" \"yarn client\""
-  },
+"scripts": {
+  "start": "node server.js",
+  "client": "cd client && yarn start",
+  "dev": "concurrently \"nodemon server.js\" \"yarn client\""
+},
   "repository": "https://github.com/Djisu/sciquiz.git",
   "author": "Paul Fleischer-Djoleto <pfleischer2002@yahoo.co.uk>",
   "license": "MIT",

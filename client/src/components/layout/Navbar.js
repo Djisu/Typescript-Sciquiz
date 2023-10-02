@@ -34,6 +34,9 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
           <li>
             <Link to="/create-stutests">Take Test</Link>
           </li>
+          <li>
+            <Link to="/show-general-stats">Test Statistics</Link>
+          </li>
 
           <li>
             <Link to="/dashboard">

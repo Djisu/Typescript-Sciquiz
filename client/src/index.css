@@ -271,3 +271,10 @@ label {
 .chart-tooltip {
   font-size: 10px; /* Adjust the font size as needed */
 }
+
+/* Reduce the size of the pie chart container */
+.pie-chart-container {
+  width: 700px; /* Set your desired width */
+  height: 700px; /* Set your desired height */
+}
+

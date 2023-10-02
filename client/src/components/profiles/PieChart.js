@@ -42,7 +42,7 @@ function PieChart() {
   };
 
   return (
-    <div>
+    <div className="pie-chart-container">
       <h2>Pie Chart</h2>
       <Pie data={data} options={options} />
     </div>

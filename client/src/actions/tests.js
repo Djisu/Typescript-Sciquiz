@@ -15,6 +15,9 @@ import {
   SCORE_QUESTION_REQUEST,
   SCORE_QUESTION_SUCCESS,
   SCORE_QUESTION_FAIL,
+  OVERALL_SCORE_QUESTION_REQUEST,
+  OVERALL_SCORE_QUESTION_SUCCESS,
+  OVERALL_SCORE_QUESTION_FAIL,
 } from './types.js';
 
 // Load Tests
@@ -242,6 +245,31 @@ export const score_test = (name) => async (dispatch) => {
     }
   } catch (error) {
     dispatch({ type: SCORE_QUESTION_FAIL, payload: error.message });
+    dispatch(setAlert('Error in scoring candidate', 'danger'));
+  }
+};
+
+export const overall_score_test = (userId) => async (dispatch) => {
+  dispatch({ type: OVERALL_SCORE_QUESTION_REQUEST });
+
+  console.log('in overall_score_test:: ', userId);
+
+  //Generate a random number
+  //  const specialNum = Math.floor(Math.random() * 1000000);
+
+  try {
+    const res = await api.get(`/scoreCandidate/${userId}`);
+
+    console.log('res.data== ', res.data);
+
+    if (res.data.length > 0) {
+      dispatch({ type: OVERALL_SCORE_QUESTION_SUCCESS, payload: res.data });
+      dispatch(setAlert('Test scored succesfully', 'success'));
+    } else {
+      dispatch(setAlert('No result found', 'danger'));
+    }
+  } catch (error) {
+    dispatch({ type: OVERALL_SCORE_QUESTION_FAIL, payload: error.message });
     dispatch(setAlert('Error in scoring candidate', 'danger'));
   }
 };

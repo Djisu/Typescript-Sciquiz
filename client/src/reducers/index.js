@@ -21,7 +21,7 @@ import userAnsweredQuestions from './userAnsweredQuestions.js';
 import onePerformance from './one_performance.js';
 import postAnswer from './postAnswer.js';
 import scoreCandidate from './scoreCandidate.js';
-//import topicsReducer from './topicsReducer'; // Import your topicsReducer
+import overAllScoreCandidate from './overallScoreCandidate';
 
 export default combineReducers({
   alert,
@@ -44,17 +44,5 @@ export default combineReducers({
   userAnsweredQuestions,
   postAnswer,
   scoreCandidate,
+  overAllScoreCandidate,
 });
-
-//import { combineReducers } from 'redux';
-//import alert from './alert';
-//import auth from './auth';
-//import profile from './profile';
-//import payment from './payment';
-//
-//export default combineReducers({
-//  alert,
-//  auth,
-//  profile,
-//  payment,
-//});

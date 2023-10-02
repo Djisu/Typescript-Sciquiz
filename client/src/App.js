@@ -46,6 +46,7 @@ import MainTestSubjects from './components/stutest/MainTestSubjects.js';
 
 import MainTestTopicsDifficultyLevels from './components/stutest/MainTestTopicsDifficultyLevels.js';
 import MarkTest from './components/stutest/MarkTest.js';
+import GeneralStats from './components/profiles/GeneralStats.js';
 
 import './App.css';
 
@@ -138,6 +139,7 @@ const App = () => {
 
         <Route path="/create-user-performance" element={<User_Performance />} />
         <Route path="/mark-test" element={<MarkTest />} />
+        <Route path="/show-general-stats" element={<GeneralStats />} />
 
         <Route path="/*" element={<NotFound />} />
       </Routes>

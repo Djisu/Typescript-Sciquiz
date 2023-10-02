@@ -19,7 +19,7 @@ import BarChart from '../profiles/BarChart.js';
 import BarChartOverall from '../profiles/BarChartOverall.js';
 import PieChart from '../profiles/PieChart.js';
 
-const MarkTest = () => {
+const GeneralStats = () => {
   const dispatch = useDispatch();
 
   const [showAnswer, setShowAnswer] = useState(false);
@@ -59,7 +59,13 @@ const MarkTest = () => {
   //  console.log('tests.test_name:: ', tests.tests);
 
   const isAdmin = localStorage.getItem('isAdmin');
-  const userId = localStorage.getItem('id');
+  let userId = localStorage.getItem('id');
+  console.log('userId: ', userId);
+
+  useEffect(() => {
+    userId = localStorage.getItem('id');
+    console.log('userId: ', userId);
+  }, [dispatch]);
 
   // Initialize userAnswers inside a useEffect that depends on tests
   useEffect(() => {
@@ -268,4 +274,4 @@ const MarkTest = () => {
   );
 };
 
-export default MarkTest;
+export default GeneralStats;
