@@ -1,30 +1,33 @@
 import express from 'express';
 const router = express.Router();
 
-import { check, validationResult } from 'express-validator';
-
 import TestQuestion from '../../models/test_question.js';
 
 // Define a route that accepts a userId parameter to generate statistics for a candidate tests
-router.get('/:userId', async (req, res) => {
+router.get('/:testName', async (req, res) => {
   try {
-    const userId = req.params.userId;
-    console.log('in router.get(/:userId', userId);
+    //   var searchString = 'Jesu Djoleto-Biology';
+    //   db.testquestions.find({ test_name: { $regex: new RegExp(testName) } });
 
-    // 1. Extract all topics corresponding to the userId parameter
+    const testName = req.params.testName;
+    console.log('in router.get(/:testName', testName);
+
+    console.log('testName==', testName);
+
+    // 1. Extract all topics corresponding to the testName parameter ------
     const topics = await TestQuestion.distinct('topic', {
-      answeredBy: userId
+      test_name: { $regex: new RegExp(testName) }
     });
 
     console.log('topics== ', topics);
 
     const topicInfo = [];
 
-    // 2. Count records for each topic
+    // 2. Count records for each topic -------await
     for (const topic of topics) {
       const topicCount = await TestQuestion.countDocuments({
         topic,
-        answeredBy: userId
+        test_name: { $regex: new RegExp(testName) }
       });
 
       console.log('topicCount== ', topicCount);
@@ -33,7 +36,7 @@ router.get('/:userId', async (req, res) => {
       const topicCountWithFlagTrue = await TestQuestion.countDocuments({
         topic,
         answer_flag: 'true',
-        answeredBy: userId
+        test_name: { $regex: new RegExp(testName) }
       });
 
       console.log('topicCountWithFlagTrue== ', topicCountWithFlagTrue);
@@ -41,16 +44,16 @@ router.get('/:userId', async (req, res) => {
       // 4. Count records with answeredBy array containing the user
       const topicCountAnsweredBy = await TestQuestion.countDocuments({
         topic,
-        answeredBy: userId
+        test_name: { $regex: new RegExp(testName) }
       });
 
       console.log('topicCountAnsweredBy== ', topicCountAnsweredBy);
 
-      // 5. Count records with answer_flag as "false" for each topic
+      // 5. Count records with answer_flag as "false" for each  topic
       const topicCountFlagFalse = await TestQuestion.countDocuments({
         topic,
         answer_flag: 'false',
-        answeredBy: userId
+        test_name: { $regex: new RegExp(testName) }
       });
 
       console.log('topicCountFlagFalse== ', topicCountFlagFalse);

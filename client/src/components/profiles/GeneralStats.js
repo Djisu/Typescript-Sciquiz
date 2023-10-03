@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
+
+import { Link, Navigate } from 'react-router-dom';
 import {
   loadTests,
   getTest,
@@ -28,6 +30,7 @@ const GeneralStats = () => {
   const [testName, setTestName] = useState('');
   const [isDisabled, setIsDisabled] = useState(false);
   const [userAnswers, setUserAnswers] = useState([]);
+  const [userId, setUserId] = useState('');
 
   const overAllScoreCandidateData = useSelector(
     (state) => state.overAllScoreCandidate.overAllScoreCandidate
@@ -54,18 +57,16 @@ const GeneralStats = () => {
   // Check if topicsData is empty
   const isScoreCandidateDataEmpty = scoreCandidate.length === 0;
 
-  //  console.log('selectedQuestions:: ', selectedQuestions);
-
-  //  console.log('tests.test_name:: ', tests.tests);
-
   const isAdmin = localStorage.getItem('isAdmin');
-  let userId = localStorage.getItem('id');
-  console.log('userId: ', userId);
 
+  // Initialize userId from localStorage when the component mounts
   useEffect(() => {
-    userId = localStorage.getItem('id');
-    console.log('userId: ', userId);
-  }, [dispatch]);
+    const userIdFromLocalStorage = localStorage.getItem('id');
+    if (userIdFromLocalStorage) {
+      // Update the userId state with the value from localStorage
+      setUserId(userIdFromLocalStorage);
+    }
+  }, []);
 
   // Initialize userAnswers inside a useEffect that depends on tests
   useEffect(() => {
@@ -106,26 +107,30 @@ const GeneralStats = () => {
   };
 
   const handleScore = (testName) => {
-    //codes here
-
     dispatch(score_test(testName));
   };
 
-  const handleOverallScore = (userId) => {
-    console.log('in handleOverallScore');
+  const handleOverallScore = () => {
+    //    console.log('in handleOverallScore', userId);
+    //
+    //    if (!userId) {
+    //      dispatch(setAlert('Kindly login again', 'danger'));
+    //      return <Navigate to="/login" />;
+    //    }
 
-    dispatch(overall_score_test(userId));
+    dispatch(overall_score_test(cleanName(testName)));
   };
 
   const cleanName = (testName) => {
-    // Split the input string by hyphens ("-")
-    const parts = testName.split('-');
+    //const inputString = 'Jesu Djoleto-Biology-565535';
+    const hyphenIndex = testName.indexOf('-');
 
-    // Extract the desired portion (from the first character to the last hyphen)
-    const extractedString = parts.slice(0, -1).join(' ');
-
-    //console.log(extractedString); // Output: "Paul Fleischer-Djoleto"
-    return extractedString;
+    if (hyphenIndex !== -1) {
+      const extractedString = testName.substring(0, hyphenIndex);
+      return extractedString; // Output: "Jesu Djoleto"
+    } else {
+      console.log('Hyphen not found in the string.');
+    }
   };
 
   return (
@@ -247,7 +252,7 @@ const GeneralStats = () => {
             <button
               type="submit"
               className="btn btn-primary"
-              onClick={() => handleOverallScore(userId)}
+              onClick={() => handleOverallScore()}
             >
               Show candidate overall statistics
             </button>

@@ -95,7 +95,6 @@ router.get('/:test_name', async (req, res) => {
   }
 });
 
-
 router.put('/:userAnswers/:testName/:questionId', async (req, res) => {
   console.log('in test put API endpoint');
 
@@ -376,41 +375,5 @@ router.post(
     }
   }
 );
-
-//const response = await api.put('/updateDocument', {
-//  answer_flag: selectedOption,
-//  questionId: questionId,
-//  test_name: testName
-//});
-
-// Define an API endpoint to update a question in test_details array
-//router.get('/:selectedOption/:testName/:questionId', async (req, res) => {
-//  console.log('in test put api end point');
-//
-//  try {
-//    const { selectedOption, questionId, testName } = req.params;
-//
-//    let testItem = await TestQuestion.findOne(
-//      {
-//        questionId: questionId,
-//        test_name: testName
-//      },
-//      (error, document) => {
-//        if (error) {
-//          console.error('Error:', error);
-//          // Handle the error
-//          res.json([]);
-//        } else {
-//          // The "document" variable contains the found document
-//          console.log('document: ', document);
-//          res.json(document);
-//        }
-//      }
-//    );
-//  } catch (error) {
-//    console.error(error);
-//    res.status(500).json({ message: 'Server Error' });
-//  }
-//});
 
 export default router;

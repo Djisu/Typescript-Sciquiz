@@ -239,6 +239,7 @@ export const score_test = (name) => async (dispatch) => {
 
     if (res.data.length > 0) {
       dispatch({ type: SCORE_QUESTION_SUCCESS, payload: res.data });
+
       dispatch(setAlert('Test scored succesfully', 'success'));
     } else {
       dispatch(setAlert('No result found', 'danger'));
@@ -249,24 +250,24 @@ export const score_test = (name) => async (dispatch) => {
   }
 };
 
-export const overall_score_test = (userId) => async (dispatch) => {
+export const overall_score_test = (testName) => async (dispatch) => {
   dispatch({ type: OVERALL_SCORE_QUESTION_REQUEST });
 
-  console.log('in overall_score_test:: ', userId);
+  console.log('in overall_score_test:: ', testName);
 
   //Generate a random number
   //  const specialNum = Math.floor(Math.random() * 1000000);
 
   try {
-    const res = await api.get(`/scoreCandidate/${userId}`);
+    const res = await api.get(`/scoreCandidate/${testName}`);
 
     console.log('res.data== ', res.data);
 
     if (res.data.length > 0) {
       dispatch({ type: OVERALL_SCORE_QUESTION_SUCCESS, payload: res.data });
-      dispatch(setAlert('Test scored succesfully', 'success'));
+      dispatch(setAlert('Test scored successfully', 'success'));
     } else {
-      dispatch(setAlert('No result found', 'danger'));
+      dispatch(setAlert('No tests found for candidate!!', 'danger'));
     }
   } catch (error) {
     dispatch({ type: OVERALL_SCORE_QUESTION_FAIL, payload: error.message });
