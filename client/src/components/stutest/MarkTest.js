@@ -38,6 +38,7 @@ const MarkTest = () => {
   const topicCounts = overAllScoreCandidateData.map((item) => item.topicCount);
   const correctCounts = overAllScoreCandidateData.map((item) => item.correct);
   const usedCounts = overAllScoreCandidateData.map((item) => item.used);
+  const wrongCounts = overAllScoreCandidateData.map((item) => item.wrong);
 
   const tests = useSelector((state) => state.tests.tests);
 
@@ -254,9 +255,26 @@ const MarkTest = () => {
               </span>
             ))}{' '}
             <br />
-            Count of Topics {topicCounts} <br />
-            Total Correct {correctCounts} <br />
-            Total Used {usedCounts} <br />
+            <br />
+            Count of Topics:{' '}
+            {topicCounts.map((topicCount, index) => (
+              <span key={index}>{topicCount}, </span>
+            ))}{' '}
+            <br />
+            Count of Correct Answers:{' '}
+            {correctCounts.map((correctCount, index) => (
+              <span key={index}>{correctCount}, </span>
+            ))}{' '}
+            <br />
+            Count of Used Questions:{' '}
+            {usedCounts.map((usedCount, index) => (
+              <span key={index}>{usedCount}, </span>
+            ))}{' '}
+            <br />
+            Count of Wrong Answers:{' '}
+            {wrongCounts.map((wrongCount, index) => (
+              <span key={index}>{wrongCount}, </span>
+            ))}{' '}
           </div>
         </div>
         <BarChart />

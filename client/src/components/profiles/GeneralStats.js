@@ -36,12 +36,6 @@ const GeneralStats = () => {
     (state) => state.overAllScoreCandidate.overAllScoreCandidate
   );
 
-  // Extract data from the scoreCandidate array
-  const topics = overAllScoreCandidateData.map((item) => item.topic);
-  const topicCounts = overAllScoreCandidateData.map((item) => item.topicCount);
-  const correctCounts = overAllScoreCandidateData.map((item) => item.correct);
-  const usedCounts = overAllScoreCandidateData.map((item) => item.used);
-
   const tests = useSelector((state) => state.tests.tests);
 
   const selectedQuestions = useSelector((state) => state.selectedQuestions);
@@ -53,6 +47,14 @@ const GeneralStats = () => {
   );
 
   console.log('scoreCandidate:: ', scoreCandidate);
+
+  //  if (scoreCandidate.length > 0) {
+  const topics = scoreCandidate.map((item) => item.topic);
+  const topicCounts = scoreCandidate.map((item) => item.topicCount);
+  const correctCounts = scoreCandidate.map((item) => item.correct);
+  const usedCounts = scoreCandidate.map((item) => item.used);
+  const wrongCounts = scoreCandidate.map((item) => item.wrong);
+  //  }
 
   // Check if topicsData is empty
   const isScoreCandidateDataEmpty = scoreCandidate.length === 0;
@@ -260,14 +262,28 @@ const GeneralStats = () => {
           <div style={{ color: 'black', backgroundColor: 'white' }}>
             Topics:{' '}
             {topics.map((topic, index) => (
-              <span key={index}>
-                {topic} {/* Add a space character here */}
-              </span>
+              <span key={index}>{topic}, </span>
             ))}{' '}
             <br />
-            Count of Topics {topicCounts} <br />
-            Total Correct {correctCounts} <br />
-            Total Used {usedCounts} <br />
+            Count of Topics:{' '}
+            {topicCounts.map((topicCount, index) => (
+              <span key={index}>{topicCount}, </span>
+            ))}{' '}
+            <br />
+            Count of Correct Answers:{' '}
+            {correctCounts.map((correctCount, index) => (
+              <span key={index}>{correctCount}, </span>
+            ))}{' '}
+            <br />
+            Count of Used Questions:{' '}
+            {usedCounts.map((usedCount, index) => (
+              <span key={index}>{usedCount}, </span>
+            ))}{' '}
+            <br />
+            Count of Wrong Answers:{' '}
+            {wrongCounts.map((wrongCount, index) => (
+              <span key={index}>{wrongCount}, </span>
+            ))}{' '}
           </div>
         </div>
         <BarChart />
