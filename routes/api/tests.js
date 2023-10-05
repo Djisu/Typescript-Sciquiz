@@ -32,40 +32,35 @@ router.get('/:name/:randNum', async (req, res) => {
 
       // 3. Count records with answer_flag as "true" for each topic
       const topicCountWithFlagTrue = await TestQuestion.countDocuments({
-        test_name: name,
         topic,
+        test_name: name,
         answer_flag: 'true'
       });
 
-      console.log('topicCountWithFlagTrue== ', topicCountWithFlagTrue);
+      // 4. Count records with answer_flag as "false" for each topic
+      const topicCountWithFlagFalse = await TestQuestion.countDocuments({
+        topic,
+        test_name: name,
+        answer_flag: 'false'
+      });
 
-      // 4. Count records with answeredBy array length greater than 0
+      //   4. Count records with answeredBy array length greater than 0
       const topicCountAnsweredBy = await TestQuestion.countDocuments({
         test_name: name,
         topic,
         answeredBy: { $exists: true, $ne: [] }
       });
 
-      console.log('topicCountAnsweredBy== ', topicCountAnsweredBy);
-
-      // 5. Count records with answer_flag as "false" for each topic
-      const topicCountFlagFalse = await TestQuestion.countDocuments({
-        test_name: name,
-        topic,
-        answer_flag: 'false'
-      });
-
-      console.log('topicCountFlagFalse== ', topicCountFlagFalse);
-
       topicInfo.push({
         topic,
         topicCount: topicCount,
         correct: topicCountWithFlagTrue,
-        used: topicCountAnsweredBy
+        used: topicCountAnsweredBy,
+        wrong: topicCountWithFlagFalse
       });
     }
-
-    console.log('topicInfo== ', topicInfo);
+    //
+    console.log('topicInfoSMALL== ', topicInfo);
 
     return res.json(topicInfo);
   } catch (error) {

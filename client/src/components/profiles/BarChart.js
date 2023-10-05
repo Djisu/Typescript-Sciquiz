@@ -12,6 +12,7 @@ function BarChart() {
   const topicCounts = scoreCandidateData.map((item) => item.topicCount);
   const correctCounts = scoreCandidateData.map((item) => item.correct);
   const usedCounts = scoreCandidateData.map((item) => item.used);
+  const wrongCounts = scoreCandidateData.map((item) => item.wrong);
 
   const data = {
     labels: topics,
@@ -31,10 +32,17 @@ function BarChart() {
         borderWidth: 1,
       },
       {
+        label: 'Wrongly Answered',
+        data: wrongCounts,
+        backgroundColor: 'rgba(25, 162, 235, 0.2)', // Adjust the colors as needed
+        borderColor: 'rgba(25, 162, 235, 1)',
+        borderWidth: 1,
+      },
+      {
         label: 'Used',
         data: usedCounts,
-        backgroundColor: 'rgba(54, 162, 235, 0.2)', // Adjust the colors as needed
-        borderColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: 'rgba(45, 162, 235, 0.2)', // Adjust the colors as needed
+        borderColor: 'rgba(45, 162, 235, 1)',
         borderWidth: 1,
       },
     ],

@@ -13,6 +13,7 @@ import { useCallback } from 'react';
 const MainTest = () => {
   const dispatch = useDispatch();
   const [showAnswer, setShowAnswer] = useState(false);
+  const [testName, setTestName] = useState('');
 
   const {
     checkedTopics,
@@ -29,20 +30,22 @@ const MainTest = () => {
   const name = localStorage.getItem('name');
   const isAdmin = localStorage.getItem('isAdmin');
 
-  let test_name = '';
+  let newTestName = '';
 
   const dispatchSelectQuestions = useCallback(() => {
     if (checkedTopics.length > 0 && checkedDifficultylevels.length > 0) {
       console.log('I AM IN');
 
-      test_name =
+      newTestName =
         name +
         '-' +
         checkedSubjects +
         '-' +
         Math.floor(Math.random() * 1000000);
 
-      console.log('test_name=== ', test_name);
+      console.log('newTestName=== ', newTestName);
+
+      setTestName(newTestName); // Update the test_name state with the new value
 
       dispatch(
         selectQuestionsTopicsDifficultylevels(
@@ -51,7 +54,7 @@ const MainTest = () => {
           checkedSubjects,
           userId,
           parseInt(noofquestions),
-          test_name
+          newTestName
         )
       );
     } else {
@@ -64,7 +67,7 @@ const MainTest = () => {
     checkedSubjects,
     userId,
     noofquestions,
-    test_name,
+    newTestName,
   ]);
 
   useEffect(() => {
@@ -89,7 +92,8 @@ const MainTest = () => {
             See Answers
           </button>
         )}
-        Test name: {test_name}
+        {testName && <p>Test name: {testName}</p>}
+
         <ul>
           <li
             style={{

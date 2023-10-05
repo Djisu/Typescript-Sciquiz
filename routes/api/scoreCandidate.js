@@ -6,9 +6,6 @@ import TestQuestion from '../../models/test_question.js';
 // Define a route that accepts a userId parameter to generate statistics for a candidate tests
 router.get('/:testName', async (req, res) => {
   try {
-    //   var searchString = 'Jesu Djoleto-Biology';
-    //   db.testquestions.find({ test_name: { $regex: new RegExp(testName) } });
-
     const testName = req.params.testName;
     console.log('in router.get(/:testName', testName);
 
@@ -62,7 +59,8 @@ router.get('/:testName', async (req, res) => {
         topic,
         topicCount: topicCount,
         correct: topicCountWithFlagTrue,
-        used: topicCountAnsweredBy
+        used: topicCountAnsweredBy,
+        wrong: topicCountFlagFalse
       });
     }
 
