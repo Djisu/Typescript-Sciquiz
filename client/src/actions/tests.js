@@ -18,6 +18,9 @@ import {
   OVERALL_SCORE_QUESTION_REQUEST,
   OVERALL_SCORE_QUESTION_SUCCESS,
   OVERALL_SCORE_QUESTION_FAIL,
+  DELETE_CANDIDATE_TESTS_REQUEST,
+  DELETE_CANDIDATE_TESTS_SUCCESS,
+  DELETE_CANDIDATE_TESTS_FAIL,
 } from './types.js';
 
 // Load Tests
@@ -272,5 +275,28 @@ export const overall_score_test = (testName) => async (dispatch) => {
   } catch (error) {
     dispatch({ type: OVERALL_SCORE_QUESTION_FAIL, payload: error.message });
     dispatch(setAlert('Error in scoring candidate', 'danger'));
+  }
+};
+
+// Delete Question
+export const deleteCandidateTests = (testName) => async (dispatch) => {
+  dispatch({ type: DELETE_CANDIDATE_TESTS_REQUEST });
+
+  console.log('in deleteCandidateTests action');
+
+  try {
+    const res = await api.delete(`/scoreCandidate/${testName}`);
+
+    dispatch({
+      type: DELETE_CANDIDATE_TESTS_SUCCESS,
+      payload: res.data,
+    });
+
+    dispatch(setAlert('Tests Removed', 'success'));
+  } catch (err) {
+    dispatch({
+      type: DELETE_CANDIDATE_TESTS_FAIL,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
   }
 };

@@ -7,9 +7,18 @@ function PieChart() {
     (state) => state.scoreCandidate.scoreCandidate
   );
 
-  // Extract data from the scoreCandidate array
-  const correctCounts = scoreCandidateData.map((item) => item.correct);
-  const wrongCounts = scoreCandidateData.map((item) => item.wrong);
+  const correctCounts = scoreCandidateData.reduce(
+    (accumulator, data) => accumulator + data.correct,
+    0
+  );
+
+  const wrongCounts = scoreCandidateData.reduce(
+    (accumulator, data) => accumulator + data.wrong,
+    0
+  );
+
+  console.log('correctCounts: ', correctCounts);
+  console.log('wrongCounts: ', wrongCounts);
 
   // Create an array of labels
   const labels = ['Correct', 'Wrong'];
@@ -18,9 +27,9 @@ function PieChart() {
     labels: labels, // Set the labels to the 'labels' array
     datasets: [
       {
-        data: [wrongCounts[1], correctCounts[0]], // Use the correct and wrong counts
-        backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)'],
-        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
+        data: [correctCounts, wrongCounts], // Use the correct and wrong counts
+        backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(75, 192, 192, 0.2)'],
+        borderColor: ['rgba(255, 99, 132, 1)', 'rgba(75, 192, 192, 1)'],
         borderWidth: 1,
       },
     ],

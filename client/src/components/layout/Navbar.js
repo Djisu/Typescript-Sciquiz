@@ -119,7 +119,7 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
   );
 
   return (
-    <nav className="navbar bg-dark">
+    <nav className="navbar navbar-expand-lg navbar-light bg-dark">
       <h1>
         <Link to="/">
           <i className="fas fa-code" /> iQuiz

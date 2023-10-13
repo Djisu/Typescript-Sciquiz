@@ -67,8 +67,6 @@ router.post(
 
     console.log('in stutest post api end point');
 
-    
-
     try {
       const {
         userid,
@@ -114,7 +112,9 @@ router.post(
 router.put(
   '/:userid/:test_name',
   [
-    check('userid', 'User id is required. Login before taking the test').not().isEmpty(),
+    check('userid', 'User id is required. Login before taking the test')
+      .not()
+      .isEmpty(),
     check('question', 'Question is required').not().isEmpty(),
     check('answer', 'Answer is required').not().isEmpty(),
     check('marks', 'Marks is required').not().isEmpty(),
@@ -132,9 +132,16 @@ router.put(
     console.log('in stutest put api end point');
 
     try {
-        const { userid, test_nameX } = req.params;
-        const {userId, test_name, question, answer, marks, pass_marks, subject_name } =
-            req.body;
+      const { userid, test_nameX } = req.params;
+      const {
+        userId,
+        test_name,
+        question,
+        answer,
+        marks,
+        pass_marks,
+        subject_name
+      } = req.body;
 
       //Create stutests object
       let stutestFields = {};
@@ -146,17 +153,15 @@ router.put(
       if (marks) stutestFields.marks = marks;
       if (pass_marks) stutestFields.pass_marks = pass_marks;
       if (subject_name) stutestFields.subject_name = subject_name;
-  
+
       // Update old question
       const stutestItem = await StuTests.findOneAndUpdate(
-            { userid: userid, test_name: test_nameX },
-            { $set: stutestFields },
-            { new: true }
-       );
-       
-        return res.json(stutestItem);
-     
-  
+        { userid: userid, test_name: test_nameX },
+        { $set: stutestFields },
+        { new: true }
+      );
+
+      return res.json(stutestItem);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Server Error' });
@@ -170,8 +175,8 @@ router.put(
 router.delete('/:userid/:test_name', async (req, res) => {
   console.log('in test delete api', req.params.id);
 
-   const { userid, test_name } = req.params;
-   
+  const { userid, test_name } = req.params;
+
   try {
     // Find the test by id and Remove question
     await StuTests.deleteOne({ _id: req.params.id });

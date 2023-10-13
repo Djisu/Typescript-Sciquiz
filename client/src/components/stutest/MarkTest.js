@@ -8,6 +8,7 @@ import {
   postAnswer,
   score_test,
   overall_score_test,
+  deleteCandidateTests,
 } from '../../actions/tests.js';
 import { setAlert } from '../../actions/alert.js';
 import { ToastContainer, toast } from 'react-toastify';
@@ -123,6 +124,35 @@ const MarkTest = () => {
     return extractedString;
   };
 
+  const getOnlyName = (testName) => {
+    // Use the split method to split the string by the hyphen character
+    const parts = testName.split('-');
+
+    // The part before the hyphen is at index 0
+    const extractedPart = parts[0];
+    return extractedPart;
+  };
+
+  const deleteCandidate = (testname) => {
+    if (testname) {
+      console.log('testname before: ', testname);
+      const newTestName = getOnlyName(testName);
+
+      console.log('testname after: ', newTestName);
+
+      const result = window.confirm(
+        'Are you sure you want to delete this item?'
+      );
+      if (result) {
+        dispatch(deleteCandidateTests(newTestName));
+        dispatch(setAlert('Deletion successful!', 'success'));
+        dispatch(loadTests());
+      } else {
+        dispatch(setAlert('Deletion aborted!', 'danger'));
+      }
+    }
+  };
+
   return (
     <div>
       <br />
@@ -156,6 +186,14 @@ const MarkTest = () => {
                   </option>
                 ))}
               </select>
+              {isAdmin === 'true' && (
+                <button
+                  className="btn btn-danger"
+                  onClick={() => deleteCandidate(testName)}
+                >
+                  Delete Old Candidate
+                </button>
+              )}
             </div>
           </li>
 

@@ -22,6 +22,7 @@ import onePerformance from './one_performance.js';
 import postAnswer from './postAnswer.js';
 import scoreCandidate from './scoreCandidate.js';
 import overAllScoreCandidate from './overallScoreCandidate';
+import deleteCandidateTests from './deleteCandidateTests.js';
 
 export default combineReducers({
   alert,
@@ -40,9 +41,10 @@ export default combineReducers({
   fetchUniqueTopics,
   fetchUniqueDifficultyLevels,
   fetchUniqueSubjects,
+  overAllScoreCandidate,
   selectedQuestions,
   userAnsweredQuestions,
   postAnswer,
   scoreCandidate,
-  overAllScoreCandidate,
+  deleteCandidateTests,
 });

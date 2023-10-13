@@ -74,4 +74,26 @@ router.get('/:testName', async (req, res) => {
   }
 });
 
+// @route  DELETE api/test
+// @desc   Delete test
+// @access Public
+router.delete('/:testName', async (req, res) => {
+  console.log('in test delete /:testName', req.params.testName);
+
+  try {
+    const partialTestName = req.params.testName;
+
+    // Create a regex pattern for the partialTestName as a wildcard
+    const regexPattern = new RegExp(partialTestName, 'i'); // 'i' for case-insensitive
+
+    // Use the regex pattern to delete matching documents
+    await TestQuestion.deleteMany({ test_name: { $regex: regexPattern } });
+
+    res.json({ msg: 'All tests of candidate deleted' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
 export default router;

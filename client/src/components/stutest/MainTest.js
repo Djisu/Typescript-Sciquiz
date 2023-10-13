@@ -79,6 +79,8 @@ const MainTest = () => {
     setShowAnswer(true);
   };
 
+  const deleteQuestion = (questionId) => {};
+
   return (
     <div>
       <br />
