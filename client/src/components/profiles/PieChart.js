@@ -2,34 +2,48 @@ import React from 'react';
 import { Pie } from 'react-chartjs-2';
 import { useSelector } from 'react-redux';
 
-function PieChart() {
-  const scoreCandidateData = useSelector(
-    (state) => state.scoreCandidate.scoreCandidate
-  );
+function PieChart({ topic, correct, used }) {
+  console.log('PieChart topic: ', topic);
+  console.log('PieChart correct: ', correct);
+  console.log('PieChart used: ', used);
+  //  const scoreCandidateData = useSelector(
+  //    (state) => state.scoreCandidate.scoreCandidate
+  //  );
 
-  const correctCounts = scoreCandidateData.reduce(
-    (accumulator, data) => accumulator + data.correct,
-    0
-  );
+  //  <PieChart topic={score.topic} correct={score.correct} used={score.used} />;
+  // Check if the array is not empty and has at least one element before accessing topicCount
+  //  let topicCount;
+  //  if (scoreCandidateData.length > 0) {
+  //    topicCount = scoreCandidateData[0].topicCount;
+  //  } else {
+  //    console.log('scoreCandidateData not fetched');
+  //    return null;
+  //  }
 
-  const wrongCounts = scoreCandidateData.reduce(
-    (accumulator, data) => accumulator + data.wrong,
-    0
-  );
+  //  const topicLabel = scoreCandidateData[0].topic;
+  const topicLabel = topic;
 
-  console.log('correctCounts: ', correctCounts);
-  console.log('wrongCounts: ', wrongCounts);
+  //  const correctCounts = scoreCandidateData.reduce(
+  //    (accumulator, data) => accumulator + data.correct,
+  //    0
+  //  );
+  const correctCounts = correct;
 
-  // Create an array of labels
-  const labels = ['Correct', 'Wrong'];
+  //  const usedCounts = scoreCandidateData.reduce(
+  //    (accumulator, data) => accumulator + data.used,
+  //    0
+  //  );
+  const usedCounts = used;
+
+  const labels = ['Correct', 'Used'];
 
   const data = {
-    labels: labels, // Set the labels to the 'labels' array
+    labels: labels,
     datasets: [
       {
-        data: [correctCounts, wrongCounts], // Use the correct and wrong counts
-        backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(75, 192, 192, 0.2)'],
-        borderColor: ['rgba(255, 99, 132, 1)', 'rgba(75, 192, 192, 1)'],
+        data: [topic, correctCounts, usedCounts],
+        backgroundColor: ['rgba(255, 0, 0, 1)', 'rgba(0, 0, 255, 1)'],
+        borderColor: ['rgba(255, 0, 0, 0.5)', 'rgba(0, 0, 255, 0.75)'],
         borderWidth: 1,
       },
     ],
@@ -43,67 +57,25 @@ function PieChart() {
     },
   };
 
+  const chartStyle = {
+    width: '30%', // Reduce the width by 50%
+    height: '30%', // Reduce the height by 50%,
+    textAlign: 'center', // Center-align text
+    margin: 'auto', // Center horizontally
+  };
+
+  const h2Style = {
+    fontSize: '20px', // Adjust the font size as needed
+    color: 'black',
+  };
+
   return (
-    <div className="pie-chart-container">
-      <h2>Pie Chart</h2>
+    <div className="pie-chart-container" style={chartStyle}>
+      {topic && <h2 style={h2Style}>Pie Chart for {topic}</h2>}
+
       <Pie data={data} options={options} />
     </div>
   );
 }
 
 export default PieChart;
-
-//import React from 'react';
-//import { Pie } from 'react-chartjs-2';
-//import { useSelector } from 'react-redux';
-//
-//function PieChart() {
-//  const scoreCandidateData = useSelector(
-//    (state) => state.scoreCandidate.scoreCandidate
-//  );
-//
-//  // Extract data from the scoreCandidate array
-//  const topics = scoreCandidateData.map((item) => item.topic);
-//  const topicCounts = scoreCandidateData.map((item) => item.topicCount);
-//  const correctCounts = scoreCandidateData.map((item) => item.correct);
-//  const wrongCounts = scoreCandidateData.map((item) => item.wrong);
-//
-//  const data = {
-//    labels: topics,
-//    datasets: [
-//      {
-//        data: correctCounts,
-//        backgroundColor: [
-//          'rgba(75, 192, 192, 0.2)',
-//          'rgba(255, 99, 132, 0.2)',
-//          'rgba(54, 162, 235, 0.2)',
-//          // Add more colors as needed for additional topics
-//        ],
-//        borderColor: [
-//          'rgba(75, 192, 192, 1)',
-//          'rgba(255, 99, 132, 1)',
-//          'rgba(54, 162, 235, 1)',
-//          // Add corresponding border colors for each topic
-//        ],
-//        borderWidth: 1,
-//      },
-//    ],
-//  };
-//
-//  const options = {
-//    scales: {
-//      y: {
-//        beginAtZero: true,
-//      },
-//    },
-//  };
-//
-//  return (
-//    <div className="pie-chart-container">
-//      <h2>Pie Chart</h2>
-//      <Pie data={data} options={options} />
-//    </div>
-//  );
-//}
-//
-//export default PieChart;

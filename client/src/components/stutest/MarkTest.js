@@ -16,9 +16,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useCallback } from 'react';
 import Barchart from '../profiles/BarChart.js';
 import { Chart as ChartJS } from 'chart.js/auto';
-import BarChart from '../profiles/BarChart.js';
-import BarChartOverall from '../profiles/BarChartOverall.js';
+//import BarChart from '../profiles/BarChart.js';
+//import BarChartOverall from '../profiles/BarChartOverall.js';
+//import PieChart2 from '../profiles/PieChart2.js';
 import PieChart from '../profiles/PieChart.js';
+import ProgressBar from '../profiles/Progressbar.js';
 
 const MarkTest = () => {
   const dispatch = useDispatch();
@@ -33,6 +35,8 @@ const MarkTest = () => {
   const overAllScoreCandidateData = useSelector(
     (state) => state.overAllScoreCandidate.overAllScoreCandidate
   );
+
+  console.log('overAllScoreCandidateData==== ', overAllScoreCandidateData);
 
   // Extract data from the scoreCandidate array
   const topics = overAllScoreCandidateData.map((item) => item.topic);
@@ -51,7 +55,7 @@ const MarkTest = () => {
     (state) => state.scoreCandidate
   );
 
-  console.log('scoreCandidate:: ', scoreCandidate);
+  console.log('I AM scoreCandidate:: ', scoreCandidate);
 
   // Check if topicsData is empty
   const isScoreCandidateDataEmpty = scoreCandidate.length === 0;
@@ -107,10 +111,10 @@ const MarkTest = () => {
     dispatch(score_test(testName));
   };
 
-  const handleOverallScore = (userId) => {
+  const handleOverallScore = (testName) => {
     console.log('in handleOverallScore');
 
-    dispatch(overall_score_test(userId));
+    dispatch(overall_score_test(getOnlyName(testName)));
   };
 
   const cleanName = (testName) => {
@@ -124,7 +128,7 @@ const MarkTest = () => {
     return extractedString;
   };
 
-  const getOnlyName = (testName) => {
+  const getOnlyName = () => {
     // Use the split method to split the string by the hyphen character
     const parts = testName.split('-');
 
@@ -135,11 +139,7 @@ const MarkTest = () => {
 
   const deleteCandidate = (testname) => {
     if (testname) {
-      console.log('testname before: ', testname);
       const newTestName = getOnlyName(testName);
-
-      console.log('testname after: ', newTestName);
-
       const result = window.confirm(
         'Are you sure you want to delete this item?'
       );
@@ -170,13 +170,11 @@ const MarkTest = () => {
             }}
           >
             <div className="form-group">
-              {/*<label htmlFor="optionTest">Select a test:</label>*/}
               Select a test:
               <select
                 name="testName"
                 value={testName}
                 onChange={handleInputChange}
-                //disabled={isDisabled}
                 className="select-element"
               >
                 <option key="default" value=""></option>
@@ -280,13 +278,13 @@ const MarkTest = () => {
             <button
               type="submit"
               className="btn btn-primary"
-              onClick={() => handleOverallScore(userId)}
+              onClick={(e) => handleOverallScore(testName)}
             >
               Show candidate overall statistics
             </button>
           </div>
           <div style={{ color: 'black', backgroundColor: 'white' }}>
-            Topics:{' '}
+            {/*Topics:{' '}*/}
             {topics.map((topic, index) => (
               <span key={index}>
                 {topic} {/* Add a space character here */}
@@ -294,7 +292,7 @@ const MarkTest = () => {
             ))}{' '}
             <br />
             <br />
-            Count of Topics:{' '}
+            {/*Count of Topics:{' '}
             {topicCounts.map((topicCount, index) => (
               <span key={index}>{topicCount}, </span>
             ))}{' '}
@@ -312,12 +310,25 @@ const MarkTest = () => {
             Count of Wrong Answers:{' '}
             {wrongCounts.map((wrongCount, index) => (
               <span key={index}>{wrongCount}, </span>
-            ))}{' '}
+            ))}{' '}*/}
           </div>
         </div>
-        <BarChart />
-        <PieChart />
-        <BarChartOverall />
+        <ul>
+          {scoreCandidate.map((score, index) => (
+            <li key={index}>
+              <PieChart
+                topic={score.topic}
+                correct={score.correct}
+                used={score.used}
+              />
+              <ProgressBar
+                topic={score.topic}
+                used={score.used}
+                topicCount={score.topicCount}
+              />
+            </li>
+          ))}
+        </ul>
       </div>
       <br />
     </div>

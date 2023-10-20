@@ -23,6 +23,7 @@ import postAnswer from './postAnswer.js';
 import scoreCandidate from './scoreCandidate.js';
 import overAllScoreCandidate from './overallScoreCandidate';
 import deleteCandidateTests from './deleteCandidateTests.js';
+import userUpdate from './user_update.js';
 
 export default combineReducers({
   alert,
@@ -47,4 +48,5 @@ export default combineReducers({
   postAnswer,
   scoreCandidate,
   deleteCandidateTests,
+  userUpdate,
 });

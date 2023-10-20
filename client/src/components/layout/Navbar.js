@@ -71,9 +71,9 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
                   <li>
                     <Link to="/create-question">Question</Link>
                   </li>
-                  {/*<li>
-                    <Link to="/create-tests">Test</Link>
-                  </li>*/}
+                  <li>
+                    <Link to="/user-edit">Edit User</Link>
+                  </li>
                   {/*<li>
                     <Link to="/create-user-performance">Test Result</Link>
                   </li>*/}
@@ -109,12 +109,6 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
       <li>
         <Link to="/login">Login</Link>
       </li>
-      {/*<li>
-        <a onClick={logout} href="#!">
-          <i className="fas fa-sign-out-alt" />{' '}
-          <span className="hide-sm">Logout</span>
-        </a>
-      </li>*/}
     </ul>
   );
 

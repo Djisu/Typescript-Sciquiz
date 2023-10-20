@@ -19,6 +19,9 @@ import {
   COUNTED_QUESTION_SUCCESS,
   COUNTED_QUESTION_FAIL,
   COUNTED_QUESTION_LOADED,
+  USER_UPDATE_REQUEST,
+  USER_UPDATE_SUCCESS,
+  USER_UPDATE_FAIL,
 } from './types.js';
 
 /*
@@ -162,5 +165,23 @@ export const userAnsweredQuestions = (userId) => async (dispatch) => {
     dispatch({ type: COUNTED_QUESTION_SUCCESS, payload: res.data });
   } catch (error) {
     dispatch({ type: COUNTED_QUESTION_FAIL, payload: error.message });
+  }
+};
+
+export const updateUser = (user) => async (dispatch, getState) => {
+  console.log('in updateUser action creator');
+  const { email, isAdmin } = user;
+
+  dispatch({ type: USER_UPDATE_REQUEST });
+
+  try {
+    const { data } = await api.put(`/users/${email}`, user);
+    if (data) {
+      dispatch({ type: USER_UPDATE_SUCCESS, payload: data });
+      dispatch(setAlert('Admin created', 'success'));
+    }
+  } catch (error) {
+    const message = error.message;
+    dispatch({ type: USER_UPDATE_FAIL, payload: message });
   }
 };

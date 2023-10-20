@@ -257,10 +257,6 @@ export const overall_score_test = (testName) => async (dispatch) => {
   dispatch({ type: OVERALL_SCORE_QUESTION_REQUEST });
 
   console.log('in overall_score_test:: ', testName);
-
-  //Generate a random number
-  //  const specialNum = Math.floor(Math.random() * 1000000);
-
   try {
     const res = await api.get(`/scoreCandidate/${testName}`);
 

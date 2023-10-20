@@ -55,24 +55,6 @@ const Profile = ({ profile: { profile }, auth }) => {
   const { bio, email, name, school, status } = profile;
 
   console.log('email===== ', email);
-  //
-  //  const userEmail = profileX.profile.email;
-  //  //  //
-  //  if (!userEmail) {
-  //    console.log('No email fetched');
-  //    return;
-  //  }
-  //  console.log('userEmail:', userEmail);
-
-  //  const answeredQuestions = useSelector((state) => state.userAnsweredQuestions);
-  //
-  //  console.log(' answeredQuestions:', answeredQuestions.userAnsweredQuestions);
-
-  //  useEffect(() => {
-  //    console.log('in dispatch(userAnsweredQuestions(id));');
-  //
-  //    dispatch(userAnsweredQuestions(id));
-  //  }, [dispatch]);
 
   return (
     <section className="container">

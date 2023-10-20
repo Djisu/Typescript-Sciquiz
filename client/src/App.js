@@ -9,6 +9,8 @@ import Navbar from './components/layout/Navbar.js';
 import Landing from './components/layout/Landing.js';
 import Register from './components/auth/Register.js';
 import Login from './components/auth/Login.js';
+import UserEdit from './components/auth/UserEdit.js';
+
 import Alert from './components/layout/Alert.js';
 import AdminRoute from './components/AdminRoute.js';
 import Dashboard from './components/dashboard/Dashboard.js';
@@ -83,6 +85,9 @@ const App = () => {
         <Route path="/" element={<Landing />} />
         <Route path="register" element={<Register />} />
         <Route path="login" element={<Login />} />
+
+        <Route path="/user-edit" element={<UserEdit />} />
+
         <Route path="profiles" element={<Profiles />} />
         <Route path="profile/:id" element={<Profile />} />
         <Route path="profile/:status" element={<SearchText />} />

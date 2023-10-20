@@ -7,7 +7,7 @@ import TestQuestion from '../../models/test_question.js';
 router.get('/:testName', async (req, res) => {
   try {
     const testName = req.params.testName;
-    console.log('in router.get(/:testName', testName);
+    console.log('in scoreCandidate router.get(/:testName', testName);
 
     console.log('testName==', testName);
 

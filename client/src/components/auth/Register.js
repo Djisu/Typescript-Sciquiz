@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Link, Navigate } from 'react-router-dom'; //Link for routes, Navigate for redirecting to different page
 import PropTypes from 'prop-types';
-import { setAlert } from '../../actions/alert.js'; //setAlert for notification
+//import { setAlert } from '../../actions/alert.js'; //setAlert for notification
+import { setAlert } from '../../actions/alert';
 import { register } from '../../actions/auth.js'; //action to post formdata to the backend
 
 // isAuthenticated from the state, from the reducer. It is in the state so it found everywhere

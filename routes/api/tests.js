@@ -7,6 +7,8 @@ import TestQuestion from '../../models/test_question.js';
 import User from '../../models/User.js';
 import Profile from '../../models/Profile.js';
 
+import Question from '../../models/Question.js';
+
 // Define a route that accepts a name parameter to generate statistics for a candidate tests
 router.get('/:name/:randNum', async (req, res) => {
   try {
@@ -22,30 +24,26 @@ router.get('/:name/:randNum', async (req, res) => {
 
     // 2. Count records for each topic
     for (const topic of topics) {
-      const topicCount = await TestQuestion.countDocuments({
-        test_name: name,
-        topic
+      const topicCount = await Question.count({
+        topic: topic
       });
 
-      console.log('topicCount== ', topicCount);
+      console.log('topicCount== ', topic + ' = ' + topicCount);
 
       // 3. Count records with answer_flag as "true" for each topic
       const topicCountWithFlagTrue = await TestQuestion.countDocuments({
         topic,
-        test_name: name,
         answer_flag: 'true'
       });
 
       // 4. Count records with answer_flag as "false" for each topic
       const topicCountWithFlagFalse = await TestQuestion.countDocuments({
         topic,
-        test_name: name,
         answer_flag: 'false'
       });
 
       //   4. Count records with answeredBy array length greater than 0
       const topicCountAnsweredBy = await TestQuestion.countDocuments({
-        test_name: name,
         topic,
         answeredBy: { $exists: true, $ne: [] }
       });
