@@ -15,7 +15,7 @@ const initialState = {
 function deleteCandidateTestsReducer(state = initialState, action) {
   const { type, payload } = action;
 
-  console.log('in deleteCandidateTestsReducer', payload);
+  //  console.log('in deleteCandidateTestsReducer', payload);
 
   switch (action.type) {
     case DELETE_CANDIDATE_TESTS_REQUEST:

@@ -9,11 +9,20 @@ import Profile from '../../models/Profile.js';
 
 import Question from '../../models/Question.js';
 
-// Define a route that accepts a name parameter to generate statistics for a candidate tests
-router.get('/:name/:randNum', async (req, res) => {
+router.get('/:name/:userId/:randNum', async (req, res) => {
   try {
     const name = req.params.name;
+    const userId = req.params.userId;
+
     console.log('in router.get(/:name/:randNum', name);
+
+    // Get user's name from the userId
+    const user = await getOnlyName(name);
+    let userName = '';
+
+    if (user) {
+      userName = user;
+    }
 
     // 1. Extract all topics corresponding to the name parameter
     const topics = await TestQuestion.distinct('topic', { test_name: name });
@@ -32,20 +41,34 @@ router.get('/:name/:randNum', async (req, res) => {
 
       // 3. Count records with answer_flag as "true" for each topic
       const topicCountWithFlagTrue = await TestQuestion.countDocuments({
-        topic,
-        answer_flag: 'true'
+        $and: [
+          {
+            topic,
+            answer_flag: 'true'
+          },
+          {
+            test_name: { $regex: userName, $options: 'i' }
+          }
+        ]
       });
 
       // 4. Count records with answer_flag as "false" for each topic
       const topicCountWithFlagFalse = await TestQuestion.countDocuments({
-        topic,
-        answer_flag: 'false'
+        $and: [
+          {
+            topic,
+            answer_flag: 'false'
+          },
+          {
+            test_name: { $regex: userName, $options: 'i' }
+          }
+        ]
       });
 
       //   4. Count records with answeredBy array length greater than 0
       const topicCountAnsweredBy = await TestQuestion.countDocuments({
         topic,
-        answeredBy: { $exists: true, $ne: [] }
+        answeredBy: { $exists: true, $ne: [], $in: [userId] }
       });
 
       topicInfo.push({
@@ -66,7 +89,7 @@ router.get('/:name/:randNum', async (req, res) => {
     //res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-//
+
 //// Define an API endpoint to get the test by test ID
 router.get('/:test_name', async (req, res) => {
   console.log('in router.get(/:test_name');
@@ -74,12 +97,13 @@ router.get('/:test_name', async (req, res) => {
   try {
     const { test_name } = req.params;
 
-    // Find the test by ID
+    // Find the test by test_name
     const test = await TestQuestion.find({ test_name: test_name });
 
-    if (!test) {
+    if (test.length === 0) {
       return res.status(404).json({ message: 'Test not found' });
     }
+
     res.json(test);
   } catch (error) {
     console.error(error);
@@ -319,8 +343,6 @@ router.post(
   [
     check('question', 'Question is required').not().isEmpty(),
     check('answer', 'Answer is required').not().isEmpty(),
-    //check('marks', 'Marks is required').not().isEmpty(),
-    //check('pass_marks', 'Pass marks is required').not().isEmpty(),
     check('test_name', 'Test name is required').not().isEmpty(),
     check('subject_name', 'Test name is required').not().isEmpty()
   ],
@@ -367,5 +389,45 @@ router.post(
     }
   }
 );
+
+async function getUserById(userId) {
+  try {
+    // Find the user by their _id (assuming userId is the user's ObjectId)
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return null; // User not found
+    }
+
+    // Return the user object
+    return user;
+  } catch (error) {
+    console.error('Error retrieving user:', error);
+    throw error; // You can handle the error in the calling code
+  }
+}
+
+async function getTestNamesContainingString(searchString) {
+  try {
+    // Use a regular expression to find test names that include the searchString
+    const testNames = await TestQuestion.distinct('test_name', {
+      test_name: { $regex: searchString, $options: 'i' } // 'i' for case-insensitive search
+    });
+
+    return testNames;
+  } catch (error) {
+    console.error('Error retrieving test names:', error);
+    throw error; // You can handle the error in the calling code
+  }
+}
+
+async function getOnlyName(testName) {
+  // Use the split method to split the string by the hyphen character
+  const parts = await testName.split('-');
+
+  // The part before the hyphen is at index 0
+  const extractedPart = parts[0];
+  return extractedPart;
+}
 
 export default router;

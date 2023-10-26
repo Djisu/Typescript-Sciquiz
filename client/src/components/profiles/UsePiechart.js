@@ -1,6 +1,6 @@
 // App.js
 import React from 'react';
-import PieChart from './PieChart';
+import PieChart from './PieChartCorrect';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAlert } from '../../actions/alert';
 

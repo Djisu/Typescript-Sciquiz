@@ -315,6 +315,12 @@ export const selectQuestionsTopicsDifficultylevels =
 
       console.log('DATA DATA res.data==', res.data);
 
+      if (res.data.length == 0) {
+        dispatch(
+          setAlert('All selected questions ALREADY attempted', 'danger')
+        );
+        dispatch({ type: SELECTED_QUESTION_FAIL });
+      }
       dispatch({ type: SELECTED_QUESTION_SUCCESS, payload: res.data });
     } catch (error) {
       console.error('Error fetching question:', error);

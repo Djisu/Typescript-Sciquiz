@@ -19,7 +19,7 @@ import Barchart from '../profiles/BarChart.js';
 import { Chart as ChartJS } from 'chart.js/auto';
 import BarChart from '../profiles/BarChart.js';
 import BarChartOverall from '../profiles/BarChartOverall.js';
-import PieChart from '../profiles/PieChart.js';
+import PieChart from './PieChartCorrect.js';
 
 const GeneralStats = () => {
   const dispatch = useDispatch();

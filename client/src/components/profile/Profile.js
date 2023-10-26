@@ -12,7 +12,7 @@ import { getProfileById } from '../../actions/profile.js';
 import { userAnsweredQuestions } from '../../actions/auth.js';
 import { setAlert } from '../../actions/alert.js';
 //import Chart from '../../components/profiles/Chart.js';
-import PieChart from '../profiles/PieChart.js';
+import PieChart from '../profiles/PieChartCorrect.js';
 import { Pie } from 'react-chartjs-2';
 
 const Profile = ({ profile: { profile }, auth }) => {

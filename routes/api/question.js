@@ -103,39 +103,28 @@ router.get(
       } = req.params;
 
       //   `/question/${checkedTopics}/${checkedDifficultylevels}/${checkedSubjects}/${userId}/${noofquestions}`
-      console.log('in in in in IN IN ');
-      //  console.log(
-      //    'in /:checkedTopics/:checkedDifficultyLevels/:checkedSubjects/:userId/:noofquestions',
-      //    checkedTopics,
-      //    checkedDifficultyLevels,
-      //    checkedSubjects,
-      //    userId,
-      //    noofquestions,
-      //    testName
-      //  );
-      //  const ObjectId = mongoose.Types.ObjectId;
-      // Creating a new ObjectId
-      //  const objectId = new mongoose.Types.ObjectId();
+      console.log(
+        'in in in in IN IN '
+        //checkedTopics,
+        //checkedDifficultyLevels,
+        //checkedSubjects,
+        //userId,
+        //noofquestions,
+        //testName
+      );
 
-      // Using an existing ObjectId string
-      //  const existingObjectId = mongoose.Types.ObjectId(userId);
+      const userIdObject = new mongoose.Types.ObjectId(userId);
 
-      //      //  MAKE SURE TO DISABLE THIS BLOCK OF CODE AFTER CLEARING ARRAY
+      // Now, convert it back to a plain string
+      const userIdStringPlain = userIdObject.toString();
+
+      //      // Enable this block of code just clear the  answered_by array
       //      console.log('clearing answered_by array');
-      //      //  await Question.updateMany({}, { $set: { answeredBy: [] } });
       //
-      //      // Now, update the answeredBy field with valid ObjectId references
-      //      const userIds = []; // Array of user ObjectId values
-      //      await Question.updateMany(
-      //        {},
-      //        { $push: { answeredBy: { $each: userIds.map((id) => ObjectId(id)) } } }
-      //      );
-
-      // Enable this block of code just clear the  answered_by array
-      console.log('clearing answered_by array');
-
-      await Question.updateMany({}, { $set: { answeredBy: [] } });
-      console.log('answered_by array CLEARED');
+      //      await Question.updateMany({}, { $set: { answeredBy: [] } });
+      //      console.log('answered_by array CLEARED');
+      //
+      //      console.log('  userId= ', userId);
 
       noofquestions = parseInt(noofquestions);
 
@@ -143,41 +132,73 @@ router.get(
       const difficultyLevelsArray = checkedDifficultyLevels.split(',');
       const subjectsArray = checkedSubjects.split(',');
 
+      //  console.log('topicsArray== ', topicsArray);//,answeredBy: { $nin: [userId] },
+      //answeredBy: { $nin: [userId] } // Filter to ensure userId is not already in the array
+
       const totalQuestions = await Question.countDocuments({
         topic: { $in: topicsArray },
         difficulty_level: { $in: difficultyLevelsArray },
-        subject_name: { $in: subjectsArray },
-        answeredBy: { $nin: [userId] }
+        subject_name: { $in: subjectsArray }
       });
+
+      console.log('totalQuestions: ', totalQuestions);
 
       const actualNoOfQuestions = Math.min(
         parseInt(noofquestions),
         totalQuestions > 0 ? totalQuestions : 1
       );
-
+      //
       const questions = await Question.find({
         topic: { $in: topicsArray },
         difficulty_level: { $in: difficultyLevelsArray },
-        subject_name: { $in: subjectsArray },
-        answeredBy: { $nin: [userId] } // Assuming you want to filter by the userId in answeredBy array
-      })
-        .limit(parseInt(actualNoOfQuestions)) // Limit the number of questions returned
-        .populate('answeredBy', 'username'); // Populate the user details in answeredBy array
+        subject_name: { $in: subjectsArray }
+      }).limit(parseInt(actualNoOfQuestions));
 
-      // Update answeredBy array for each question
+      //  console.log('questions: ', questions);
+      let testArray = [];
+
+      // Update the "answeredBy" array by pushing the userId
       for (const question of questions) {
-        question.answeredBy.push(userId);
-        await question.save();
+        if (!question.answeredBy.includes(userId)) {
+          //  question.answeredBy.push(userId);
+
+          const filter = { _id: question._id };
+          const update = {
+            $push: {
+              answeredBy: userId
+            }
+          };
+          Question.updateOne(filter, update)
+            .then((result) => {
+              console.log(
+                `Matched ${result.matchedCount} document(s) and modified ${result.modifiedCount} document(s)`
+              );
+            })
+            .catch((err) => {
+              console.error(`Error updating document: ${err}`);
+            });
+          testArray.push(question);
+
+          console.log('answeredBy updated with ', question._id, userId);
+        } else {
+          console.log('IT SEEMS QUESTION ALREADY DONE BY CANDIDATE!!!');
+        }
       }
 
-      console.log('about to createTest');
+      console.log('testArray.length===', testArray.length);
+      //  console.log('about to createTest', questions, testName);
 
       //Create test questions here
+      if (testArray.length == 0) {
+        console.log('Test already tckled by candidate. EMPTY TESTS');
+        return res.json([]);
+      }
+
       const result = createTests(questions, testName);
 
       try {
         const resolvedValue = await result;
-        console.log('Resolved value:', resolvedValue);
+        //console.log('Resolved value:', resolvedValue);
 
         if (resolvedValue.length == 0) {
           return res.json([]);
@@ -203,37 +224,41 @@ const createTests = async (questionData, test_name) => {
     console.log(question.question);
   }
 
-  if (questionData.length === 0) {
+  try {
+    if (questionData.length === 0) {
+      return [];
+    }
+
+    const currentDate = new Date();
+    const testQuestions = []; // Initialize an array to store the test questions
+
+    // Iterate through the fetched questions and insert into TestQuestion schema
+    for (const question of questionData) {
+      const testQuestionData = {
+        test_name: test_name, // Set the test_name as needed
+        questionId: question._id,
+        question: question.question,
+        answer: question.answer,
+        difficulty_level: question.difficulty_level,
+        subject_name: question.subject_name,
+        topic: question.topic,
+        question_year: currentDate.getFullYear(),
+        user_answer: question.user_answer
+      };
+
+      // Create a new TestQuestion document and save it
+      const testQuestion = new TestQuestion(testQuestionData);
+      await testQuestion.save();
+
+      // Push the newly created test question to the array
+      testQuestions.push(testQuestion);
+    }
+
+    console.log('Tests created');
+    return testQuestions; // Return the array of test questions after processing all questions
+  } catch (error) {
     return [];
   }
-
-  const currentDate = new Date();
-  const testQuestions = []; // Initialize an array to store the test questions
-
-  // Iterate through the fetched questions and insert into TestQuestion schema
-  for (const question of questionData) {
-    const testQuestionData = {
-      test_name: test_name, // Set the test_name as needed
-      questionId: question._id,
-      question: question.question,
-      answer: question.answer,
-      difficulty_level: question.difficulty_level,
-      subject_name: question.subject_name,
-      topic: question.topic,
-      question_year: currentDate.getFullYear(),
-      user_answer: question.user_answer
-    };
-
-    // Create a new TestQuestion document and save it
-    const testQuestion = new TestQuestion(testQuestionData);
-    await testQuestion.save();
-
-    // Push the newly created test question to the array
-    testQuestions.push(testQuestion);
-  }
-
-  console.log('Tests created');
-  return testQuestions; // Return the array of test questions after processing all questions
 };
 
 router.get(

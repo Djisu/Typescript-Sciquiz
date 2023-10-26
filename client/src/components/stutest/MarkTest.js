@@ -19,7 +19,8 @@ import { Chart as ChartJS } from 'chart.js/auto';
 //import BarChart from '../profiles/BarChart.js';
 //import BarChartOverall from '../profiles/BarChartOverall.js';
 //import PieChart2 from '../profiles/PieChart2.js';
-import PieChart from '../profiles/PieChart.js';
+import PieChartCorrect from '../profiles/PieChartCorrect.js';
+import PieChartUsed from '../profiles/PieChartUsed.js';
 import ProgressBar from '../profiles/Progressbar.js';
 
 const MarkTest = () => {
@@ -106,9 +107,7 @@ const MarkTest = () => {
   };
 
   const handleScore = (testName) => {
-    //codes here
-
-    dispatch(score_test(testName));
+    dispatch(score_test(testName, userId));
   };
 
   const handleOverallScore = (testName) => {
@@ -316,10 +315,15 @@ const MarkTest = () => {
         <ul>
           {scoreCandidate.map((score, index) => (
             <li key={index}>
-              <PieChart
+              <PieChartCorrect
                 topic={score.topic}
                 correct={score.correct}
+                topicCount={score.topicCount}
+              />
+              <PieChartUsed
+                topic={score.topic}
                 used={score.used}
+                topicCount={score.topicCount}
               />
               <ProgressBar
                 topic={score.topic}

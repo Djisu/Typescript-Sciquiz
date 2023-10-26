@@ -227,7 +227,7 @@ export const postAnswer =
     }
   };
 
-export const score_test = (name) => async (dispatch) => {
+export const score_test = (name, userId) => async (dispatch) => {
   dispatch({ type: SCORE_QUESTION_REQUEST });
 
   console.log('in score_test:: ', name);
@@ -236,7 +236,7 @@ export const score_test = (name) => async (dispatch) => {
   const randNum = Math.floor(Math.random() * 1000000);
 
   try {
-    const res = await api.get(`/tests/${name}/${randNum}`);
+    const res = await api.get(`/tests/${name}/${userId}/${randNum}`);
 
     console.log('res.data== ', res.data);
 

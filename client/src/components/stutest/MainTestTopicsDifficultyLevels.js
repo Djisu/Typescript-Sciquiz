@@ -14,11 +14,12 @@ const MainTestTopicsDifficultyLevels = () => {
 
   const [showAnswer, setShowAnswer] = useState(false);
   let [questions, setQuestions] = useState([]);
+
   const isAdmin = localStorage.getItem('isAdmin');
-   const [userAnswers, setUserAnswers] = useState(
+
+  const [userAnswers, setUserAnswers] = useState(
     Array(questions.length).fill('')
   );
-
 
   const {
     checkedTopics,
@@ -94,7 +95,7 @@ const MainTestTopicsDifficultyLevels = () => {
               fontWeight: 'bold',
             }}
           >
-                    {questions.map((question, index) => (
+            {questions.map((question, index) => (
               <div key={question._id}>
                 <div>
                   <p>
