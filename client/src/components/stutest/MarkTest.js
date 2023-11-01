@@ -22,6 +22,7 @@ import { Chart as ChartJS } from 'chart.js/auto';
 import PieChartCorrect from '../profiles/PieChartCorrect.js';
 import PieChartUsed from '../profiles/PieChartUsed.js';
 import ProgressBar from '../profiles/Progressbar.js';
+import PieChartOverall from '../profiles/PieChartOverall.js';
 
 const MarkTest = () => {
   const dispatch = useDispatch();
@@ -45,6 +46,9 @@ const MarkTest = () => {
   const correctCounts = overAllScoreCandidateData.map((item) => item.correct);
   const usedCounts = overAllScoreCandidateData.map((item) => item.used);
   const wrongCounts = overAllScoreCandidateData.map((item) => item.wrong);
+
+  console.log('correctCounts==', correctCounts);
+  console.log('usedCounts==', usedCounts);
 
   const tests = useSelector((state) => state.tests.tests);
 
@@ -295,6 +299,9 @@ const MarkTest = () => {
             {topicCounts.map((topicCount, index) => (
               <span key={index}>{topicCount}, </span>
             ))}{' '}
+
+          
+
             <br />
             Count of Correct Answers:{' '}
             {correctCounts.map((correctCount, index) => (
@@ -318,13 +325,9 @@ const MarkTest = () => {
               <PieChartCorrect
                 topic={score.topic}
                 correct={score.correct}
-                topicCount={score.topicCount}
-              />
-              <PieChartUsed
-                topic={score.topic}
                 used={score.used}
-                topicCount={score.topicCount}
               />
+
               <ProgressBar
                 topic={score.topic}
                 used={score.used}
@@ -332,6 +335,9 @@ const MarkTest = () => {
               />
             </li>
           ))}
+          <li>
+            <PieChartOverall topicCounts={topicCounts} used={usedCounts} />
+          </li>
         </ul>
       </div>
       <br />

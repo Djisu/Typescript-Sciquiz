@@ -33,12 +33,16 @@ router.get('/:name/:userId/:randNum', async (req, res) => {
 
     // 2. Count records for each topic
     for (const topic of topics) {
-      const topicCount = await Question.count({
-        topic: topic
-      });
+      //  const topicCount = await Question.distinct({
+      //    topic: topic
+      //  });
+      //  const tCount = await Question.distinct('topic', {
+      //    topic: topic
+      //  }).exec();
 
-      console.log('topicCount== ', topic + ' = ' + topicCount);
+      const topicCount = await Question.countDocuments();
 
+      console.log('topicCount== ', topicCount);
       // 3. Count records with answer_flag as "true" for each topic
       const topicCountWithFlagTrue = await TestQuestion.countDocuments({
         $and: [
@@ -65,11 +69,22 @@ router.get('/:name/:userId/:randNum', async (req, res) => {
         ]
       });
 
+      const tempUserId = await User.findOne({ name: userName });
+
+      //  if (tempUserId) {
+      //    console.log('tempUserId==', tempUserId._id);
+      //    return tempUserId._id;
+      //  } else {
+      //    console.log('User not found!!!');
+      //  }
+
       //   4. Count records with answeredBy array length greater than 0
-      const topicCountAnsweredBy = await TestQuestion.countDocuments({
+      const topicCountAnsweredBy = await Question.countDocuments({
         topic,
-        answeredBy: { $exists: true, $ne: [], $in: [userId] }
+        answeredBy: { $exists: true, $ne: [], $in: [tempUserId] }
       });
+
+      console.log('topicCountAnsweredBy== ', topicCountAnsweredBy);
 
       topicInfo.push({
         topic,

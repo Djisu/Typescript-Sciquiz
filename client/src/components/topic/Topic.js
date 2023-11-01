@@ -12,7 +12,6 @@ const Topic = () => {
     subject_name: '',
   });
 
- 
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -20,14 +19,14 @@ const Topic = () => {
     dispatch(loadSubjects());
   }, [dispatch]);
 
-  useEffect(() => {
-    console.log('in useEffect');
-    dispatch(loadTopics());
-  }, [dispatch]);
+//  useEffect(() => {
+//    console.log('in useEffect');
+//    dispatch(loadTopics());
+//  }, [dispatch]);
 
   const subjects = useSelector((state) => state.subject.subjects);
   const subjectLoading = useSelector((state) => state.subject.loading);
-   const topics = useSelector((state) => state.topic.topics);
+  const topics = useSelector((state) => state.topic.topics);
 
   if (subjectLoading) {
     // Optionally, you can show a loading state while the data is being fetched
@@ -40,6 +39,8 @@ const Topic = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
+    dispatch(loadTopics(topic));
 
     setTopicData({ ...topicData, [name]: value });
     console.log('topicData:', topicData);
@@ -88,10 +89,10 @@ const Topic = () => {
         </div>
 
         <div className="form-group">
-          <h2>Select Subject:</h2>
           <select
             name="subject_name"
             value={subject_name}
+            placeholder=" Select a Subject"
             onChange={handleInputChange}
           >
             <option key="default" value="">

@@ -317,7 +317,7 @@ export const selectQuestionsTopicsDifficultylevels =
 
       if (res.data.length == 0) {
         dispatch(
-          setAlert('All selected questions ALREADY attempted', 'danger')
+          setAlert('All selected questions criteria not found', 'danger')
         );
         dispatch({ type: SELECTED_QUESTION_FAIL });
       }

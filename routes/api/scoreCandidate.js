@@ -1,8 +1,9 @@
 import express from 'express';
-const router = express.Router();
-
 import TestQuestion from '../../models/test_question.js';
 import User from '../../models/User.js';
+import Profile from '../../models/Profile.js';
+import Question from '../../models/Question.js';
+const router = express.Router();
 
 // Define a route that accepts a userId parameter to generate statistics for a candidate tests
 router.get('/:testName', async (req, res) => {
@@ -39,11 +40,31 @@ router.get('/:testName', async (req, res) => {
 
       console.log('topicCountWithFlagTrue== ', topicCountWithFlagTrue);
 
+      // Get user's name from the userId
+      //      const user = await getOnlyName(name);
+      //      let userName = '';
+      //
+      //      if (user) {
+      //        userName = user;
+      //      }
+
+      //  const tempUserId = getUserId(testName);
+      const tempUserId = await User.findOne({ name: testName });
+
+      console.log('tempUserId._id=== ', tempUserId._id);
+
       // 4. Count records with answeredBy array containing the user
-      const topicCountAnsweredBy = await TestQuestion.countDocuments({
+      const topicCountAnsweredBy = await Question.countDocuments({
         topic,
-        test_name: { $regex: new RegExp(testName) }
+        answeredBy: { $exists: true, $ne: [], $in: [tempUserId._id] }
       });
+
+      console.log('topicCountAnsweredBy== ', topicCountAnsweredBy);
+
+      //  const topicCountAnsweredBy = await TestQuestion.countDocuments({
+      //    topic,
+      //    test_name: { $regex: new RegExp(testName) }
+      //  });
 
       console.log('topicCountAnsweredBy== ', topicCountAnsweredBy);
 

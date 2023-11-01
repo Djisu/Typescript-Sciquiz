@@ -5,45 +5,59 @@ const router = express.Router();
 import { check, validationResult } from 'express-validator';
 
 import Topic from '../../models/Topic.js';
+import Question from '../../models/Question.js';
 
-// @route  POST api/topic
+// @route  POST api/topic/:topic
 // @desc   find all topic
 // @access Public
-router.get('/',  async (req, res) => {
-    console.log("in topic router.get('/', ");
+router.get('/:subjectName', async (req, res) => {
+  const subject_name = req.params.subjectName;
+
+  //  console.log('In subjectName router.get("/:subjectName")', subject_name);
+
   try {
-    //const topic = await Topic.find({}, { topic: 1, _id: 1 });
+    const questions = await Question.find({ subject_name });
 
-    const topic = await Topic.find({});
+    if (questions.length === 0) {
+      return res
+        .status(404)
+        .json({ message: 'No topics found for the given subject_name.' });
+    }
 
-    res.send(topic);
+    // Use Set to store distinct topic names
+    const distinctTopics = new Set(questions.map((question) => question.topic));
+
+    // Convert the Set to an array and sort it in ascending order
+    const sortedDistinctTopics = Array.from(distinctTopics).sort();
+
+    //console.log('Fetched Question topics:', Array.from(distinctTopics));
+
+    res.json(Array.from(distinctTopics));
   } catch (err) {
-    console.log(err.message)
-    res.status(500).send('Server Error')
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
   }
-})
+});
 
 // @route  POST api/topic
 // @desc   find all topic
 // @access Public
 // Define a GET endpoint to fetch unique topics
 router.get('/unique-topics', async (req, res) => {
-
-    console.log('/unique-topics backend api');
+  console.log('/unique-topics backend api');
 
   try {
     const uniqueTopics = await Topic.distinct('topic');
 
-console.log('after uniqueTopics:', uniqueTopics);
+    console.log('after uniqueTopics:', uniqueTopics);
 
-    res.json( uniqueTopics );
+    res.json(uniqueTopics);
   } catch (error) {
     console.error('Error fetching unique topics:', error);
 
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
 
 // @route  POST api/topic
 // @desc   Post topic

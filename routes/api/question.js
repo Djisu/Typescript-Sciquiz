@@ -18,24 +18,21 @@ const emailPassword = config.get('emailPassword');
 //import checkQuestionSelected from '../../middleware/checkQuestionSelected';
 
 // Route for seeding data
-router.get('/seed', async (req, res) => {
-  //  const client = new MongoClient(url);
-
-  try {
-    // Insert the data into the collection
-    const result = await Question.insertMany(questionData);
-    console.log(`${result.insertedCount} documents inserted.`);
-
-    res.json({ message: `${result.insertedCount} documents inserted.` });
-  } catch (err) {
-    console.error('Error:', err);
-    res.status(500).json({ error: 'An error occurred while seeding data.' });
-  } finally {
-    console.log(err.message);
-
-    res.status(500).send('Server Error');
-  }
-});
+//router.get('/seed', async (req, res) => {
+//  //  const client = new MongoClient(url);
+//  console.log('router.get(seed)');
+//
+//  try {
+//    // Insert the data into the collection
+//    const result = await Question.insertMany(questionData);
+//    console.log(`${result.insertedCount} documents inserted.`);
+//
+//    res.json({ message: `${result.insertedCount} documents inserted.` });
+//  } catch (err) {
+//    console.error('Error:', err);
+//    res.status(500).json({ error: 'An error occurred while seeding data.' });
+//  }
+//});
 
 // @route  POST api/question
 // @desc   find all question
@@ -104,13 +101,13 @@ router.get(
 
       //   `/question/${checkedTopics}/${checkedDifficultylevels}/${checkedSubjects}/${userId}/${noofquestions}`
       console.log(
-        'in in in in IN IN '
-        //checkedTopics,
-        //checkedDifficultyLevels,
-        //checkedSubjects,
-        //userId,
-        //noofquestions,
-        //testName
+        'IN IN ',
+        checkedTopics,
+        checkedDifficultyLevels,
+        checkedSubjects,
+        userId,
+        noofquestions,
+        testName
       );
 
       const userIdObject = new mongoose.Types.ObjectId(userId);
@@ -132,8 +129,7 @@ router.get(
       const difficultyLevelsArray = checkedDifficultyLevels.split(',');
       const subjectsArray = checkedSubjects.split(',');
 
-      //  console.log('topicsArray== ', topicsArray);//,answeredBy: { $nin: [userId] },
-      //answeredBy: { $nin: [userId] } // Filter to ensure userId is not already in the array
+      //  console.log('ARRAYS' + topicsArray + difficultyLevelsArray + subjectsArray);
 
       const totalQuestions = await Question.countDocuments({
         topic: { $in: topicsArray },
@@ -141,6 +137,9 @@ router.get(
         subject_name: { $in: subjectsArray }
       });
 
+      if (totalQuestions === 0) {
+        return res.json([]);
+      }
       console.log('totalQuestions: ', totalQuestions);
 
       const actualNoOfQuestions = Math.min(
@@ -154,7 +153,7 @@ router.get(
         subject_name: { $in: subjectsArray }
       }).limit(parseInt(actualNoOfQuestions));
 
-      //  console.log('questions: ', questions);
+      console.log('questions SELECTED: ', questions);
       let testArray = [];
 
       // Update the "answeredBy" array by pushing the userId

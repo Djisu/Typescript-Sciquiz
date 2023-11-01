@@ -1,18 +1,14 @@
+// components/stutest/StuCreateTest.js
+
 import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
+
 import { fetchTopics } from '../../actions/topic.js';
+import { fetchDifficultyLevels } from '../../actions/difficulty_level.js';
+import { fetchUniqueSubjects } from '../../actions/subject.js';
 
-//import { fetchUniqueTopics } from '../../actions/topic.js';
-//import { fetchUniqueDifficultyLevels } from '../../actions/difficulty_level.js';
-//import { fetchUniqueSubjects } from '../../actions/subject.js';
-import MainTest from './MainTest.js';
-import MainTestTopics from './MainTestTopics.js';
-import MainTestDifficultyLevels from './MainTestDifficultyLevels.js';
-import MainTestSubjects from './MainTestSubjects.js';
-
-const StuTestDashboard = () => {
+const StuCreateTest = () => {
   const selectStyle = {
     backgroundColor: '#f4f4f4',
     padding: '10px',
@@ -26,37 +22,68 @@ const StuTestDashboard = () => {
     marginBottom: '10px', // Add space below the label
   };
 
-  const dispatch = useDispatch();
+  const [loadTopics, setLoadTopics] = useState(false);
+  const [loadDifficultLevel, setLoadDifficultLevel] = useState(false);
 
-  const navigate = useNavigate();
+  const [selectedSubject, setSelectedSubject] = useState('');
 
   let [checkedTopics, setCheckedTopics] = useState([]);
   let [checkedDifficultylevels, setCheckedDifficultylevels] = useState([]);
   let [checkedSubjects, setCheckedSubjects] = useState([]);
   let [noofquestions, setNoofquestions] = useState(0);
 
-  const [selectedOption, setSelectedOption] = useState(''); // initial selected option
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const topics = useSelector((state) => state.topics);
-  const [selectedSubject, setSelectedSubject] = useState('');
-  const [loadTopics, setLoadTopics] = useState(false);
+  const topics = useSelector((state) => state.topics.topics);
+  const initialDifficultyLevels = useSelector(
+    (state) => state.difficultyLevel.difficultyLevels
+  );
 
+  //  console.log('TOPICS ARE== ', topics);
+
+  //  console.log('initialDifficultyLevelsXXXX== ', initialDifficultyLevels);
 
   const initialSubjects = useSelector(
     (state) => state.fetchUniqueSubjects.fetchUniqueSubjects
   );
 
+  useEffect(() => {
+    dispatch(fetchUniqueSubjects());
+  }, []);
+
   const userid = localStorage.getItem('id');
 
   const newSubjects = initialSubjects;
 
-useEffect(() => {
-  if (loadTopics && selectedSubject) {
-    dispatch(fetchTopics(selectedSubject));
-  }
-}, [dispatch, selectedSubject, loadTopics]);
+  const handleNoofQuestions = (e) => {
+    setNoofquestions(e.target.value);
+  };
 
-  const toggleCheckboxTopic = (topic, level) => {
+  const handleSelectChange = (e) => {
+    //console.log('in handleSelectChange', e.target.value);
+    const selectedSubject = e.target.value;
+
+    setSelectedSubject(selectedSubject);
+
+    //console.log('selectedSubject==== ', selectedSubject);
+
+    // Fetch topics based on the selected subject
+    if (selectedSubject) {
+      //  console.log('dispatch(fetchTopics(selectedSubject));');
+
+      dispatch(fetchTopics(selectedSubject));
+    }
+
+    //Fetch difficult levels based on the selected subject
+    if (selectedSubject) {
+      //  console.log('in dispatch(fetchDifficultyLevels(selectedSubject));');
+
+      dispatch(fetchDifficultyLevels(selectedSubject));
+    }
+  };
+
+  const toggleCheckboxTopic = (topic) => {
     if (checkedTopics.includes(topic)) {
       setCheckedTopics(checkedTopics.filter((item) => item !== topic));
     } else {
@@ -74,24 +101,10 @@ useEffect(() => {
     }
   };
 
-  const handleInputChange = (e) => {
-    const selectedValue = e.target.value;
-    setSelectedSubject(selectedValue);
-    //setSelectedOption(e.target.value);
-
-    if (selectedValue) {
-      // Fetch topics when a subject is selected
-      dispatch(fetchTopics(selectedValue));
-    }
-  };
-
-  const handleNoofQuestions = (e) => {
-    setNoofquestions(e.target.value);
-  };
-  // I HAVE TO ADD THE SELECTED SUBJECT TO THE FETCH PARAMETERS FOR QUESTIONS!!!!!
-
   const handleButtonClick = () => {
-    checkedSubjects = [selectedOption.toString()];
+    console.log('in handleButtonClick');
+
+    checkedSubjects = [selectedSubject.toString()];
 
     if (!checkedSubjects) {
       console.log('Select the subject');
@@ -105,7 +118,7 @@ useEffect(() => {
 
     let url = '';
 
-    setCheckedSubjects([...checkedSubjects, selectedOption]);
+    setCheckedSubjects([...checkedSubjects, selectedSubject]);
 
     if (
       // checkedTopics
@@ -162,20 +175,21 @@ useEffect(() => {
     navigate(url);
   };
 
+  const handleInputChange = (e) => {
+    setSelectedOption(e.target.value);
+  };
+
   return (
     <div>
       <br />
       <br />
       <br />
       <br />
-
       <div className="form-group">
-        <h2>Select Subject:</h2>
+        <h4>Select Subject:</h4>
         <select
           style={selectStyle}
-          name="newSubjects"
-          //  value={selectedOption}
-          onChange={handleInputChange}
+          onChange={handleSelectChange}
           value={selectedSubject}
         >
           <option key="default" value="">
@@ -187,6 +201,7 @@ useEffect(() => {
             </option>
           ))}
         </select>
+        &nbsp; &nbsp;
         <input
           type="number"
           style={selectStyle}
@@ -195,20 +210,17 @@ useEffect(() => {
           value={noofquestions}
           placeholder="Number of questions"
         />
+        &nbsp; &nbsp;
+        <button className="btn btn-primary" onClick={handleButtonClick}>
+          Get Checked Questions
+        </button>
       </div>
       <br />
+      <br />
 
-      <button className="btn btn-primary" onClick={handleButtonClick}>
-        Get Checked Questions
-      </button>
       <div className="float-left">
-        <h2 style={labelStyle}>Topics:</h2>
-
-        {topics.loading ? (
-          <p>Loading...</p>
-        ) : topics.error ? (
-          <p>Error: {topics.error}</p>
-        ) : (
+        <h4 style={labelStyle}>Topics:</h4>
+        {Array.isArray(topics) ? (
           <ul>
             {topics.map((topic, index) => (
               <li key={index}>
@@ -218,43 +230,51 @@ useEffect(() => {
                   checked={checkedTopics.includes(topic)}
                   onChange={() => toggleCheckboxTopic(topic)}
                 />
-                <span> </span>
+
                 <label
                   htmlFor={`topic-${index}`}
                   style={{ color: 'black', backgroundColor: 'white' }}
                 >
-                  {topic.topic}
+                  {topic}
                 </label>
               </li>
             ))}
           </ul>
+        ) : (
+          <p>No data available</p>
         )}
       </div>
-      <span> </span>
-      {/*<div className="float-left">
-        <h2 style={labelStyle}>Levels:</h2>
-        <ul>
-          {initialDifficultyLevels.map((level, index) => (
-            <li key={index}>
-              <input
-                type="checkbox"
-                id={`level-${index}`}
-                checked={checkedDifficultylevels.includes(level)}
-                onChange={() => toggleCheckboxLevel(level)}
-              />
-              <span> </span>
-              <label
-                htmlFor={`level-  ${index}`}
-                style={{ color: 'black', backgroundColor: 'white' }}
-              >
-                {level}
-              </label>
-            </li>
-          ))}
-        </ul>
-      </div>*/}
+
+      <span></span>
+
+      <div className="float-left">
+        <h4 style={labelStyle}>Difficulty Levels:</h4>
+
+        {Array.isArray(initialDifficultyLevels) ? (
+          <ul>
+            {initialDifficultyLevels.map((level, index) => (
+              <li key={index}>
+                <input
+                  type="checkbox"
+                  id={`level-${index}`}
+                  checked={checkedDifficultylevels.includes(level)}
+                  onChange={() => toggleCheckboxLevel(level)}
+                />
+                {/*<span> </span>*/}
+                <label
+                  htmlFor={`topic-${index}`}
+                  style={{ color: 'black', backgroundColor: 'white' }}
+                >
+                  {level}
+                </label>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No data available</p>
+        )}
+      </div>
     </div>
   );
 };
-
-export default StuTestDashboard;
+export default StuCreateTest;

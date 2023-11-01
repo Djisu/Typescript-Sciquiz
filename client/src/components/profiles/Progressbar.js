@@ -44,10 +44,15 @@ function ProgressBar({ topic, used, topicCount }) {
     textAlign: 'center', // Center-align text
     margin: 'auto', // Center horizontally
   };
+  const h2Style = {
+    fontSize: '20px', // Adjust the font size as needed
+    color: 'black',
+  };
 
   return (
     <div className="progress-bar-container" style={progressBarStyle}>
-      <h2 style={{ color: 'black' }}>Progress Bar for {topic}</h2>
+      {/*<h2 style={{ color: 'black' }}>Progress Bar for {topic}</h2>*/}
+      {/*{topic && <h2 style={h2Style}>Piechart for {topic}</h2>}*/}
       <div className="progress">
         <div className="progress-bar" style={{ width: `${percentage}%` }}></div>
       </div>

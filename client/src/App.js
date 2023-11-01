@@ -39,7 +39,8 @@ import store from './store.js';
 import { loadUser } from './actions/auth.js';
 import setAuthToken from './utils/setAuthToken.js';
 //import PaymentEntry from './components/payments/PaymentEntry.js';
-import StuTestDashboard from './components/stutest/StuTestDashboard.js';
+//import StuTestDashboard from './components/stutest/StuTestDashboard.js';
+import StuCreateTest from './components/stutest/StuCreateTest.js';
 
 import MainTest from './components/stutest/MainTest.js';
 import MainTestTopics from './components/stutest/MainTestTopics.js';
@@ -85,9 +86,7 @@ const App = () => {
         <Route path="/" element={<Landing />} />
         <Route path="register" element={<Register />} />
         <Route path="login" element={<Login />} />
-
         <Route path="/user-edit" element={<UserEdit />} />
-
         <Route path="profiles" element={<Profiles />} />
         <Route path="profile/:id" element={<Profile />} />
         <Route path="profile/:status" element={<SearchText />} />
@@ -97,27 +96,22 @@ const App = () => {
           path="/maintest/:checkedTopics/:checkedDifficultylevels/:checkedSubjects/:userId/:noofquestions"
           element={<MainTest />}
         />
-
         <Route
           path="/maintesttopics/:checkedTopics/:checkedSubjects/:userId/:noofquestions"
           element={<MainTestTopics />}
         />
-
         <Route
           path="/maintestdifficultylevels/:checkedDifficultylevels/:checkedSubjects/:userId/:noofquestions"
           element={<MainTestDifficultyLevels />}
         />
-
         <Route
           path="/maintestsubjects/:checkedSubjects/:userId/:noofquestions"
           element={<MainTestSubjects />}
         />
-
         <Route
           path="/maintesttopicsdifficultylevels/:checkedTopics/:checkedDifficultylevels/:checkedSubjects/:userId/:noofquestions"
           element={<MainTestTopicsDifficultyLevels />}
         />
-
         <Route
           path="dashboard"
           element={<PrivateRoute component={Dashboard} />}
@@ -130,22 +124,17 @@ const App = () => {
           path="edit-profile"
           element={<PrivateRoute component={ProfileForm} />}
         />
-
         <Route path="/create-difficultylevel" element={<Difficultylevel />} />
-
         <Route path="/create-question" element={<Question />} />
-
         <Route path="/create-topic" element={<Topic />} />
-
         <Route path="/create-subject" element={<Subject />} />
-
         {/*<Route path="/create-tests" element={<Tests />} />*/}
-        <Route path="/create-stutests" element={<StuTestDashboard />} />
+        <Route path="/create-stutests" element={<StuCreateTest />} />
 
+        {/*<Route path="/create-stutests" element={<StuTestDashboard />} />*/}
         <Route path="/create-user-performance" element={<User_Performance />} />
         <Route path="/mark-test" element={<MarkTest />} />
         <Route path="/show-general-stats" element={<GeneralStats />} />
-
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </Router>

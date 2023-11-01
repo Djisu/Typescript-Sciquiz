@@ -256,7 +256,7 @@ export const score_test = (name, userId) => async (dispatch) => {
 export const overall_score_test = (testName) => async (dispatch) => {
   dispatch({ type: OVERALL_SCORE_QUESTION_REQUEST });
 
-  console.log('in overall_score_test:: ', testName);
+  console.log('in overall_score_test action creator:: ', testName);
   try {
     const res = await api.get(`/scoreCandidate/${testName}`);
 

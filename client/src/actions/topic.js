@@ -12,6 +12,28 @@ import {
   UNIC_TOPIC_LOADED,
 } from './types.js';
 
+// Fetch Topics
+export const fetchTopics = (subjectName) => async (dispatch) => {
+  //  console.log('in fetchTopics');
+
+  dispatch({ type: TOPIC_REQUEST });
+
+  try {
+    const res = await api.get(`/topic/${subjectName}`);
+
+    //console.log(' res.data:', res.data);
+
+    dispatch({
+      type: TOPIC_LOADED,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: TOPIC_FAIL,
+    });
+  }
+};
+
 // Load Topics
 export const loadTopics = () => async (dispatch) => {
   console.log('in loadTopics');

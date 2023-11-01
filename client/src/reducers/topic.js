@@ -1,7 +1,7 @@
 import {
+  TOPIC_REQUEST,
   TOPIC_SUCCESS,
   TOPIC_FAIL,
-  TOPIC_REQUEST,
   TOPIC_LOADED,
 } from '../actions/types.js';
 
@@ -14,7 +14,16 @@ const initialState = {
 function topicReducer(state = initialState, action) {
   const { type, payload } = action;
 
+//  console.log('in topicReducer== ', action.payload);
+
   switch (action.type) {
+    case 'TOPIC_REQUEST':
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
     case TOPIC_LOADED:
       return {
         ...state,

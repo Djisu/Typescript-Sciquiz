@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import {
   createDifficultyLevel,
   deleteDifficultyLevel,
-  loadDifficultyLevels,
+  fetchDifficultyLevels,
 } from '../../actions/difficulty_level.js';
 import { setAlert } from '../../actions/alert.js';
 

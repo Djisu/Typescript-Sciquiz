@@ -11,7 +11,7 @@ import question from './question.js';
 import tests from './tests.js';
 import subject from './subject.js';
 import userPerformance from './user_performance.js';
-import topic from './topic.js';
+import topics from './topic.js';
 import otherQuestion from './otherQuestion.js';
 import fetchUniqueTopics from './fetchUniqueTopics.js';
 import fetchUniqueDifficultyLevels from './fetchUniqueDifficultyLevels.js';
@@ -37,7 +37,7 @@ export default combineReducers({
   subject,
   onePerformance,
   userPerformance,
-  topic,
+  topics,
   otherQuestion,
   fetchUniqueTopics,
   fetchUniqueDifficultyLevels,

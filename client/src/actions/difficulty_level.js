@@ -12,6 +12,32 @@ import {
   UNIC_DIFFICULTY_LEVEL_LOADED,
 } from './types.js';
 
+// Fetch Topics
+export const fetchDifficultyLevels = (subjectName) => async (dispatch) => {
+  //  console.log('in fetchDifficultyLevels');
+
+  dispatch({ type: DIFFICULTY_LEVEL_REQUEST });
+
+  try {
+    //console.log('in fetchTopics api.get(/difficulty_level/:difficulty_level');
+
+    const res = await api.get('/difficulty_level/:difficulty_level', {
+      params: { subject_name: subjectName },
+    });
+
+    //console.log(' Fetched difficulty levels????:', res.data);
+
+    dispatch({
+      type: DIFFICULTY_LEVEL_SUCCESS,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: DIFFICULTY_LEVEL_FAIL,
+    });
+  }
+};
+
 // Load User
 export const loadDifficultyLevels = () => async (dispatch) => {
   console.log('in loadDifficultyLevels');

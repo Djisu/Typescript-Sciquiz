@@ -11,7 +11,7 @@ import Question from '../../models/Question.js';
 // @access Public
 // Define a GET endpoint to fetch unique subjects
 router.get('/', async (req, res) => {
-  //  console.log('/unique_subjects backend api');
+  console.log('/unique_subjects backend api');
 
   try {
     const uniqueSubjects = await Question.distinct('subject_name');
@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
 
     res.json(uniqueSubjects);
   } catch (error) {
-    console.error('Error fetching unique sbjects:', error);
+    //console.error('Error fetching unique sbjects:', error);
 
     res.status(500).json({ error: 'Internal server error' });
   }

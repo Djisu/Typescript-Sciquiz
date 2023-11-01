@@ -6,12 +6,10 @@ const QuestionSchema = new mongoose.Schema({
     required: true
   },
   answer: {
-    type: String,
-    required: true
+    type: String
   },
   difficulty_level: {
-    type: String,
-    required: true
+    type: String
   },
   subject_name: {
     type: String,
@@ -22,8 +20,7 @@ const QuestionSchema = new mongoose.Schema({
     required: true
   },
   question_year: {
-    type: Number,
-    required: true
+    type: Number
   },
   question_stats: {
     type: Number
