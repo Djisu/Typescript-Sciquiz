@@ -11,7 +11,7 @@ import Question from '../../models/Question.js';
 // @access Public
 // Define a GET endpoint to fetch unique subjects
 router.get('/', async (req, res) => {
-  console.log('/unique_subjects backend api');
+  //  console.log('/unique_subjects backend api');
 
   try {
     const uniqueSubjects = await Question.distinct('subject_name');

@@ -15,7 +15,7 @@ import Question from '../../models/Question.js';
 // @desc   find all topic
 // @access Public
 router.get('/:difficulty_level', async (req, res) => {
-  console.log("in router.get('/:difficulty_level', ");
+  //  console.log("in router.get('/:difficulty_level', ");
 
   const subject_name = req.query.subject_name;
 
@@ -26,7 +26,7 @@ router.get('/:difficulty_level', async (req, res) => {
       subject_name: subject_name
     });
 
-    console.log('Distinct Difficulty Levels:', difficultyLevels);
+    //console.log('Distinct Difficulty Levels:', difficultyLevels);
     res.json(difficultyLevels);
   } catch (err) {
     console.error('Error:', err);

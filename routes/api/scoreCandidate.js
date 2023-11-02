@@ -14,81 +14,22 @@ router.get('/:testName', async (req, res) => {
     console.log('testName==', testName);
 
     // 1. Extract all topics corresponding to the testName parameter ------
-    const topics = await TestQuestion.distinct('topic', {
-      test_name: { $regex: new RegExp(testName) }
+    const questionCount = await Question.countDocuments({});
+
+    console.log('questionCount== ', questionCount);
+
+    //  const tempUserId = getUserId(testName);
+    const tempUserId = await User.findOne({ name: testName });
+
+    //console.log('tempUserId._id=== ', tempUserId._id);
+
+    const topicCountAnsweredBy = await Question.countDocuments({
+      answeredBy: { $exists: true, $ne: [], $in: [tempUserId._id] }
     });
 
-    console.log('topics== ', topics);
+    console.log('topicCountAnsweredBy== ', topicCountAnsweredBy);
 
-    const topicInfo = [];
-
-    // 2. Count records for each topic -------await
-    for (const topic of topics) {
-      const topicCount = await TestQuestion.countDocuments({
-        topic,
-        test_name: { $regex: new RegExp(testName) }
-      });
-
-      console.log('topicCount== ', topicCount);
-
-      // 3. Count records with answer_flag as "true" for each topic
-      const topicCountWithFlagTrue = await TestQuestion.countDocuments({
-        topic,
-        answer_flag: 'true',
-        test_name: { $regex: new RegExp(testName) }
-      });
-
-      console.log('topicCountWithFlagTrue== ', topicCountWithFlagTrue);
-
-      // Get user's name from the userId
-      //      const user = await getOnlyName(name);
-      //      let userName = '';
-      //
-      //      if (user) {
-      //        userName = user;
-      //      }
-
-      //  const tempUserId = getUserId(testName);
-      const tempUserId = await User.findOne({ name: testName });
-
-      console.log('tempUserId._id=== ', tempUserId._id);
-
-      // 4. Count records with answeredBy array containing the user
-      const topicCountAnsweredBy = await Question.countDocuments({
-        topic,
-        answeredBy: { $exists: true, $ne: [], $in: [tempUserId._id] }
-      });
-
-      console.log('topicCountAnsweredBy== ', topicCountAnsweredBy);
-
-      //  const topicCountAnsweredBy = await TestQuestion.countDocuments({
-      //    topic,
-      //    test_name: { $regex: new RegExp(testName) }
-      //  });
-
-      console.log('topicCountAnsweredBy== ', topicCountAnsweredBy);
-
-      // 5. Count records with answer_flag as "false" for each  topic
-      const topicCountFlagFalse = await TestQuestion.countDocuments({
-        topic,
-        answer_flag: 'false',
-        test_name: { $regex: new RegExp(testName) }
-      });
-
-      console.log('topicCountFlagFalse== ', topicCountFlagFalse);
-
-      topicInfo.push({
-        topic,
-        topicCount: topicCount,
-        correct: topicCountWithFlagTrue,
-        used: topicCountAnsweredBy,
-        wrong: topicCountFlagFalse
-      });
-    }
-
-    console.log('topicInfo== ', topicInfo);
-
-    return res.json(topicInfo);
+    return res.json([questionCount, topicCountAnsweredBy]);
   } catch (error) {
     console.error(error);
     return res.json([]);

@@ -268,60 +268,35 @@ export const selectQuestionsTopicsDifficultylevels =
     test_name
   ) =>
   async (dispatch) => {
-    dispatch({ type: SELECTED_QUESTION_REQUEST });
+    //dispatch({ type: SELECTED_QUESTION_REQUEST });
 
     console.log('in selectQuestionsTopicsDifficultylevels action creator');
 
-    //console.log(
-    //  'checkedTopics,checkedDifficultylevels,  userId==',
-    //  checkedTopics,
-    //  checkedDifficultylevels,
-    //  checkedSubjects,
-    //  userId,
-    //  parseInt(noofquestions),
-    //test_name;
-    //);
-
     try {
-      console.log('in selectQuestionsTopicsDifficultylevels about to get');
-
-      console.log(
-        checkedTopics,
-        checkedDifficultylevels,
-        checkedSubjects,
-        userId,
-        noofquestions,
-        test_name
-      );
-
-      //  const url = `/question/${checkedTopics}/${checkedSubjects}/${userId}`;
-
       noofquestions = parseInt(noofquestions);
       const testName = test_name;
 
-      let res = null;
+      //  let res = null;
 
       // Check null selectQuestionsTopics
-      if (checkedTopics.length > 0 && checkedDifficultylevels.length > 0) {
-        console.log(
-          'ABOUT TO FETCH DATA',
-          `/question/${checkedTopics}/${checkedDifficultylevels}/${checkedSubjects}/${userId}/${noofquestions}/${testName}`
-        );
-
-        res = await api.get(
-          `/question/${checkedTopics}/${checkedDifficultylevels}/${checkedSubjects}/${userId}/${noofquestions}/${testName}`
-        );
-      }
+      //  if (checkedTopics.length > 0 && checkedDifficultylevels.length > 0) {
+      const res = await api.get(
+        `/question/${checkedTopics}/${checkedDifficultylevels}/${checkedSubjects}/${userId}/${noofquestions}/${testName}`
+      );
+      //  }
 
       console.log('DATA DATA res.data==', res.data);
 
-      if (res.data.length == 0) {
-        dispatch(
-          setAlert('All selected questions criteria not found', 'danger')
-        );
-        dispatch({ type: SELECTED_QUESTION_FAIL });
-      }
-      dispatch({ type: SELECTED_QUESTION_SUCCESS, payload: res.data });
+      //  if (res.data.length == 0) {
+      //dispatch(
+      //  setAlert('All selected questions criteria not found', 'danger')
+      //);
+      //    dispatch({ type: SELECTED_QUESTION_FAIL });
+      //  }
+      dispatch({
+        type: SELECTED_QUESTION_SUCCESS,
+        payload: res.data,
+      });
     } catch (error) {
       console.error('Error fetching question:', error);
       dispatch({ type: SELECTED_QUESTION_FAIL });

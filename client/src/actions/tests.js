@@ -260,7 +260,7 @@ export const overall_score_test = (testName) => async (dispatch) => {
   try {
     const res = await api.get(`/scoreCandidate/${testName}`);
 
-    console.log('res.data== ', res.data);
+    console.log('in overall_score_test action creator res.data== ', res.data);
 
     if (res.data.length > 0) {
       dispatch({ type: OVERALL_SCORE_QUESTION_SUCCESS, payload: res.data });

@@ -164,10 +164,17 @@ const StuCreateTest = () => {
       // checkedTopics checkedDifficultylevels checkedSubjects
       checkedTopics.length > 0 &&
       checkedDifficultylevels.length > 0 &&
-      checkedSubjects.length > 0
+      checkedSubjects.length > 0 &&
+      userid.length > 0 &&
+      parseInt(noofquestions) > 0
     ) {
       console.log(
-        'in checkedTopics && checkedDifficultylevels && checkedsubjects'
+        'in checkedTopics && checkedDifficultylevels && checkedsubjects LOOOOOK',
+        checkedTopics,
+        checkedDifficultylevels,
+        checkedSubjects,
+        userid,
+        noofquestions
       );
       url = `/maintest/${checkedTopics}/${checkedDifficultylevels}/${checkedSubjects}/${userid}/${noofquestions}`;
     }

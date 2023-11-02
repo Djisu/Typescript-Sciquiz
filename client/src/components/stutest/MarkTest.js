@@ -40,6 +40,13 @@ const MarkTest = () => {
 
   console.log('overAllScoreCandidateData==== ', overAllScoreCandidateData);
 
+  const { questionCount, topicCountAnsweredBy } = overAllScoreCandidateData;
+  console.log('questionCount==== ', overAllScoreCandidateData.questionCount);
+  console.log(
+    'topicCountAnsweredBy==== ',
+    overAllScoreCandidateData.topicCountAnsweredBy
+  );
+
   // Extract data from the scoreCandidate array
   const topics = overAllScoreCandidateData.map((item) => item.topic);
   const topicCounts = overAllScoreCandidateData.map((item) => item.topicCount);
@@ -47,7 +54,7 @@ const MarkTest = () => {
   const usedCounts = overAllScoreCandidateData.map((item) => item.used);
   const wrongCounts = overAllScoreCandidateData.map((item) => item.wrong);
 
-  console.log('correctCounts==', correctCounts);
+  console.log('topicCounts==', topicCounts);
   console.log('usedCounts==', usedCounts);
 
   const tests = useSelector((state) => state.tests.tests);
@@ -336,7 +343,10 @@ const MarkTest = () => {
             </li>
           ))}
           <li>
-            <PieChartOverall topicCounts={topicCounts} used={usedCounts} />
+            <PieChartOverall
+              questionCount={overAllScoreCandidateData[0]}
+              topicCountAnsweredBy={overAllScoreCandidateData[1]}
+            />
           </li>
         </ul>
       </div>

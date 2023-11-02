@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { fetchTopics } from '../../actions/topic.js';
@@ -11,6 +12,7 @@ import MainTest from './MainTest.js';
 import MainTestTopics from './MainTestTopics.js';
 import MainTestDifficultyLevels from './MainTestDifficultyLevels.js';
 import MainTestSubjects from './MainTestSubjects.js';
+import { setAlert } from '../../actions/alert.js';
 
 const StuTestDashboard = () => {
   const selectStyle = {
@@ -41,7 +43,6 @@ const StuTestDashboard = () => {
   const [selectedSubject, setSelectedSubject] = useState('');
   const [loadTopics, setLoadTopics] = useState(false);
 
-
   const initialSubjects = useSelector(
     (state) => state.fetchUniqueSubjects.fetchUniqueSubjects
   );
@@ -50,11 +51,19 @@ const StuTestDashboard = () => {
 
   const newSubjects = initialSubjects;
 
-useEffect(() => {
-  if (loadTopics && selectedSubject) {
-    dispatch(fetchTopics(selectedSubject));
-  }
-}, [dispatch, selectedSubject, loadTopics]);
+  //Find out if user is authenticated or not
+  useEffect(() => {
+    if (!userid || userid.length == 0) {
+      dispatch(setAlert('You have to login!!', 'danger'));
+      return <Navigate to="/login" />;
+    }
+  });
+
+  useEffect(() => {
+    if (loadTopics && selectedSubject) {
+      dispatch(fetchTopics(selectedSubject));
+    }
+  }, [dispatch, selectedSubject, loadTopics]);
 
   const toggleCheckboxTopic = (topic, level) => {
     if (checkedTopics.includes(topic)) {

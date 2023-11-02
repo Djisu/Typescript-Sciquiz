@@ -87,7 +87,7 @@ router.get('/questions', async (req, res) => {
 //app.get('/question/:checkedTopics/:checkedDifficultylevels/:checkedSubjects/:userId', (req, res) => {/:testName
 
 router.get(
-  '/:checkedTopics/:checkedDifficultyLevels/:checkedSubjects/:userId/:noofquestions/:testName',
+  '/:checkedTopics/:checkedDifficultyLevels/:checkedSubjects/:userId/:noofquestions/:name',
   async (req, res) => {
     try {
       let {
@@ -96,7 +96,7 @@ router.get(
         checkedSubjects,
         userId,
         noofquestions,
-        testName
+        name
       } = req.params;
 
       //   `/question/${checkedTopics}/${checkedDifficultylevels}/${checkedSubjects}/${userId}/${noofquestions}`
@@ -107,8 +107,18 @@ router.get(
         checkedSubjects,
         userId,
         noofquestions,
-        testName
+        name
       );
+
+      //Generate test name at the backend
+      const testNameX =
+        name +
+        '-' +
+        checkedSubjects +
+        '-' +
+        Math.floor(Math.random() * 1000000);
+
+      const testName = testNameX;
 
       const userIdObject = new mongoose.Types.ObjectId(userId);
 
@@ -116,10 +126,10 @@ router.get(
       const userIdStringPlain = userIdObject.toString();
 
       //      // Enable this block of code just clear the  answered_by array
-      //      console.log('clearing answered_by array');
-      //
-      //      await Question.updateMany({}, { $set: { answeredBy: [] } });
-      //      console.log('answered_by array CLEARED');
+      //  console.log('clearing answered_by array');
+
+      await Question.updateMany({}, { $set: { answeredBy: [] } });
+      console.log('answered_by array CLEARED');
       //
       //      console.log('  userId= ', userId);
 
@@ -140,12 +150,13 @@ router.get(
       if (totalQuestions === 0) {
         return res.json([]);
       }
-      console.log('totalQuestions: ', totalQuestions);
 
       const actualNoOfQuestions = Math.min(
         parseInt(noofquestions),
         totalQuestions > 0 ? totalQuestions : 1
       );
+
+      console.log('actualNoOfQuestions: ', actualNoOfQuestions);
       //
       const questions = await Question.find({
         topic: { $in: topicsArray },
@@ -153,14 +164,12 @@ router.get(
         subject_name: { $in: subjectsArray }
       }).limit(parseInt(actualNoOfQuestions));
 
-      console.log('questions SELECTED: ', questions);
+      //  console.log('questions SELECTED: ', questions);
       let testArray = [];
 
       // Update the "answeredBy" array by pushing the userId
       for (const question of questions) {
         if (!question.answeredBy.includes(userId)) {
-          //  question.answeredBy.push(userId);
-
           const filter = { _id: question._id };
           const update = {
             $push: {
@@ -178,7 +187,7 @@ router.get(
             });
           testArray.push(question);
 
-          console.log('answeredBy updated with ', question._id, userId);
+          //  console.log('answeredBy updated with ', question._id, userId);
         } else {
           console.log('IT SEEMS QUESTION ALREADY DONE BY CANDIDATE!!!');
         }
@@ -189,23 +198,40 @@ router.get(
 
       //Create test questions here
       if (testArray.length == 0) {
-        console.log('Test already tckled by candidate. EMPTY TESTS');
+        console.log('Test already tackled by candidate. EMPTY TESTS');
         return res.json([]);
       }
+      if (testArray.length > 0) {
+        const currentDate = new Date();
+        const testQuestions = []; // Initialize an array to store the test questions
 
-      const result = createTests(questions, testName);
+        // Iterate through the fetched questions and insert into TestQuestion schema
+        for (const question of questions) {
+          const testQuestionData = {
+            test_name: testName, // Set the test_name as needed
+            questionId: question._id,
+            question: question.question,
+            answer: question.answer || 'answer later',
+            difficulty_level: question.difficulty_level,
+            subject_name: question.subject_name,
+            topic: question.topic,
+            question_year: currentDate.getFullYear(),
+            user_answer: question.user_answer
+          };
 
-      try {
-        const resolvedValue = await result;
-        //console.log('Resolved value:', resolvedValue);
+          // Create a new TestQuestion document and save it
+          const testQuestion = new TestQuestion(testQuestionData);
+          await testQuestion.save();
 
-        if (resolvedValue.length == 0) {
+          // Push the newly created test question to the array
+          testQuestions.push(testQuestion);
+        }
+        if (testQuestions.length == 0) {
           return res.json([]);
         }
+        console.log('SUCCESS, SUCCESS, SUCCESS: ', testName);
 
-        return res.json(resolvedValue);
-      } catch (error) {
-        console.error('Error:', error);
+        return res.json(testQuestions);
       }
     } catch (error) {
       console.error('Error fetching questions:', error);
@@ -220,7 +246,7 @@ const createTests = async (questionData, test_name) => {
   console.log('in createTests = async (questionData, test_name)');
 
   for (const question of questionData) {
-    console.log(question.question);
+    console.log('test_name:::: ', test_name);
   }
 
   try {
@@ -253,7 +279,7 @@ const createTests = async (questionData, test_name) => {
       testQuestions.push(testQuestion);
     }
 
-    console.log('Tests created');
+    //console.log('Tests created== ', test_name);
     return testQuestions; // Return the array of test questions after processing all questions
   } catch (error) {
     return [];
