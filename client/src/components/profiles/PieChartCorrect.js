@@ -49,12 +49,12 @@ function PieChartCorrect({ topic, correct, used }) {
   return (
     <div className="pie-chart-container" style={chartStyle}>
       {topic && <h2 style={h2Style}> {topic}</h2>}
-      <h2 style={h2Style}>
+      <h4 style={h2Style}>
         Piechart <br /> Correct&nbsp;
         <span>{correct}</span> <br /> Attempted&nbsp;
         <span>{used}</span>
         <Pie data={data} options={options} />
-      </h2>
+      </h4>
     </div>
   );
 }

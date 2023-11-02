@@ -54,11 +54,11 @@ function PieChartOverall({ questionCount, topicCountAnsweredBy }) {
 
   return (
     <div className="pie-chart-container" style={chartStyle}>
-      <h2 style={h2Style}>
+      <h4 style={h2Style}>
         Overall Piechart <br /> Attempted&nbsp;
         <span>{topicCountAnsweredBy}</span> <br /> Total Questions&nbsp;
         <span>{questionCount}</span>
-      </h2>
+      </h4>
       <Pie data={data} options={options} />
     </div>
   );

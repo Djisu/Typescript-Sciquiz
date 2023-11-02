@@ -283,7 +283,7 @@ const MarkTest = () => {
               className="btn btn-primary"
               onClick={() => handleScore(testName)}
             >
-              Click to Finished
+              Show individual statistics
             </button>
             <button
               type="submit"
