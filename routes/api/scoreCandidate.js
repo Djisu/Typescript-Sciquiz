@@ -29,7 +29,23 @@ router.get('/:testName', async (req, res) => {
 
     console.log('topicCountAnsweredBy== ', topicCountAnsweredBy);
 
-    return res.json([questionCount, topicCountAnsweredBy]);
+    // 3. Count records with answer_flag as "true" for each topic   topic,
+    const topicCountWithFlagTrue = await TestQuestion.countDocuments({
+      $and: [
+        {
+          answer_flag: 'true'
+        },
+        {
+          test_name: { $regex: testName, $options: 'i' }
+        }
+      ]
+    });
+
+    return res.json([
+      questionCount,
+      topicCountAnsweredBy,
+      topicCountWithFlagTrue
+    ]);
   } catch (error) {
     console.error(error);
     return res.json([]);

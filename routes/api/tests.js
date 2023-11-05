@@ -11,13 +11,13 @@ import Question from '../../models/Question.js';
 
 router.get('/:name/:userId/:randNum', async (req, res) => {
   try {
-    const name = req.params.name;
+    const testName = req.params.name;
     const userId = req.params.userId;
 
-    console.log('in router.get(/:name/:randNum', name);
+    console.log('in router.get(/:name/:randNum');
 
     // Get user's name from the userId
-    const user = await getOnlyName(name);
+    const user = await getOnlyName(testName);
     let userName = '';
 
     if (user) {
@@ -25,7 +25,9 @@ router.get('/:name/:userId/:randNum', async (req, res) => {
     }
 
     // 1. Extract all topics corresponding to the name parameter
-    const topics = await TestQuestion.distinct('topic', { test_name: name });
+    const topics = await TestQuestion.distinct('topic', {
+      test_name: testName
+    });
 
     console.log('topics== ', topics);
 
@@ -33,16 +35,19 @@ router.get('/:name/:userId/:randNum', async (req, res) => {
 
     // 2. Count records for each topic
     for (const topic of topics) {
-      //  const topicCount = await Question.distinct({
-      //    topic: topic
-      //  });
-      //  const tCount = await Question.distinct('topic', {
-      //    topic: topic
-      //  }).exec();
+      const individualTopicCount = await TestQuestion.countDocuments({
+        test_name: testName,
+        topic: topic
+      });
 
-      const topicCount = await Question.countDocuments();
+      console.log('individualTopicCount==', individualTopicCount);
 
-      console.log('topicCount== ', topicCount);
+      const questionCount = await TestQuestion.countDocuments({
+        test_name: testName
+      });
+
+      console.log('questionCount== ', questionCount);
+
       // 3. Count records with answer_flag as "true" for each topic
       const topicCountWithFlagTrue = await TestQuestion.countDocuments({
         $and: [
@@ -71,12 +76,12 @@ router.get('/:name/:userId/:randNum', async (req, res) => {
 
       const tempUserId = await User.findOne({ name: userName });
 
-      //  if (tempUserId) {
-      //    console.log('tempUserId==', tempUserId._id);
-      //    return tempUserId._id;
-      //  } else {
-      //    console.log('User not found!!!');
-      //  }
+      if (tempUserId) {
+        console.log('tempUserId==', tempUserId._id);
+        //return tempUserId._id;
+      } else {
+        console.log('User not found!!!');
+      }
 
       //   4. Count records with answeredBy array length greater than 0
       const topicCountAnsweredBy = await Question.countDocuments({
@@ -88,7 +93,8 @@ router.get('/:name/:userId/:randNum', async (req, res) => {
 
       topicInfo.push({
         topic,
-        topicCount: topicCount,
+        questionCount: questionCount,
+        individualTopicCount: individualTopicCount,
         correct: topicCountWithFlagTrue,
         used: topicCountAnsweredBy,
         wrong: topicCountWithFlagFalse

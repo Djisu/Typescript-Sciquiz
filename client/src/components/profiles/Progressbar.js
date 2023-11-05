@@ -1,10 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-function ProgressBar({ topic, used, topicCount }) {
-  console.log('ProgressBar topic: ', topic);
-  console.log('ProgressBar used: ', used);
-  console.log('ProgressBar topicCount: ', topicCount);
+function ProgressBar({ topic, correct, individualTopicCount }) {
+  console.log('ProgressBar individualTopicCount: ', individualTopicCount);
+  console.log('ProgressBar correct: ', correct);
+  //  console.log('ProgressBar topicCount: ', topicCount);
   //  const scoreCandidateData = useSelector(
   //    (state) => state.scoreCandidate.scoreCandidate
   //  );
@@ -30,9 +30,9 @@ function ProgressBar({ topic, used, topicCount }) {
   //    (accumulator, data) => accumulator + data.used,
   //    0
   //  );
-  const usedCounts = used;
+  //  const usedCounts = used;
 
-  const percentage = (usedCounts / topicCount) * 100;
+  const percentage = (correct / individualTopicCount) * 100;
 
   //  const progressBarStyle = {
   //    width: '100%', // Reduce the width by 50%
@@ -57,7 +57,7 @@ function ProgressBar({ topic, used, topicCount }) {
         <div className="progress-bar" style={{ width: `${percentage}%` }}></div>
       </div>
       <p style={{ color: 'black' }}>
-        {usedCounts} Used Questions out of {topicCount} Total Topics
+        {correct} Correct Questions out of {individualTopicCount}
       </p>
     </div>
   );

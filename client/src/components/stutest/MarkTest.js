@@ -23,6 +23,7 @@ import PieChartCorrect from '../profiles/PieChartCorrect.js';
 import PieChartUsed from '../profiles/PieChartUsed.js';
 import ProgressBar from '../profiles/Progressbar.js';
 import PieChartOverall from '../profiles/PieChartOverall.js';
+import PieChartOverallCorrect from '../profiles/PieChartOverallCorrect.js';
 
 const MarkTest = () => {
   const dispatch = useDispatch();
@@ -337,8 +338,8 @@ const MarkTest = () => {
 
               <ProgressBar
                 topic={score.topic}
-                used={score.used}
-                topicCount={score.topicCount}
+                correct={score.correct}
+                individualTopicCount={score.individualTopicCount}
               />
             </li>
           ))}
@@ -347,6 +348,10 @@ const MarkTest = () => {
               questionCount={overAllScoreCandidateData[0]}
               topicCountAnsweredBy={overAllScoreCandidateData[1]}
             />
+            {/*<PieChartOverallCorrect
+              topicCountWithFlagTrue={overAllScoreCandidateData[2]}
+              questionCount={overAllScoreCandidateData[0]}            
+            />*/}
           </li>
         </ul>
       </div>
