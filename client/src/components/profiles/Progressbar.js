@@ -1,42 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-function ProgressBar({ topic, correct, individualTopicCount }) {
-  console.log('ProgressBar individualTopicCount: ', individualTopicCount);
-  console.log('ProgressBar correct: ', correct);
-  //  console.log('ProgressBar topicCount: ', topicCount);
-  //  const scoreCandidateData = useSelector(
-  //    (state) => state.scoreCandidate.scoreCandidate
-  //  );
+function ProgressBar({ used, questionCount }) {
+  console.log('ProgressBar questionCount: ', questionCount);
+  console.log('ProgressBar correct: ', used);
 
-  // Check if the array is not empty and has at least one element before accessing topicCount
-  //  let topicCount;
-  //  if (scoreCandidateData.length > 0) {
-  //    topicCount = scoreCandidateData[0].topicCount;
-  //  } else {
-  //    console.log('scoreCandidateData not fetched');
-  //    return null;
-  //  }
-
-  //  const topicLabel = scoreCandidateData[0].topic;
-  //  const topicLabel = topic;
-
-  //  const correctCounts = scoreCandidateData.reduce(
-  //    (accumulator, data) => accumulator + data.correct,
-  //    0
-  //  );
-
-  //  const usedCounts = scoreCandidateData.reduce(
-  //    (accumulator, data) => accumulator + data.used,
-  //    0
-  //  );
-  //  const usedCounts = used;
-
-  const percentage = (correct / individualTopicCount) * 100;
-
-  //  const progressBarStyle = {
-  //    width: '100%', // Reduce the width by 50%
-  //  };
+  const percentage = (used / questionCount) * 100;
 
   const progressBarStyle = {
     width: '100%', // Reduce the width by 50%
@@ -57,7 +26,7 @@ function ProgressBar({ topic, correct, individualTopicCount }) {
         <div className="progress-bar" style={{ width: `${percentage}%` }}></div>
       </div>
       <p style={{ color: 'black' }}>
-        {correct} Correct Questions out of {individualTopicCount}
+        {used} Attempted Questions out of {questionCount}
       </p>
     </div>
   );

@@ -18,6 +18,8 @@ router.get('/:name/:userId/:randNum', async (req, res) => {
 
     // Get user's name from the userId
     const user = await getOnlyName(testName);
+
+    console.log('user= ', user);
     let userName = '';
 
     if (user) {
@@ -25,85 +27,65 @@ router.get('/:name/:userId/:randNum', async (req, res) => {
     }
 
     // 1. Extract all topics corresponding to the name parameter
-    const topics = await TestQuestion.distinct('topic', {
-      test_name: testName
+    const testCount = await TestQuestion.count({ test_name: testName });
+    console.log('testCount== ', testCount);
+
+    // Count of total questions in the database
+    const questionCount = await Question.estimatedDocumentCount()
+      .then((count) => {
+        console.log(`Total count of documents in the collection: ${count}`);
+        return count;
+      })
+      .catch((err) => {
+        console.log('Error:', err);
+        return 0;
+      });
+
+    console.log('questionCount== ', questionCount);
+
+    // Total number of questions answered correctly
+    const correctAnswers = await TestQuestion.countDocuments({
+      $and: [
+        {
+          answer_flag: 'true'
+        },
+        {
+          test_name: { $regex: user, $options: 'i' }
+        }
+      ]
     });
 
-    console.log('topics== ', topics);
+    // Use a regular expression to find test names that include the searchString
+    const usedQuestions = await TestQuestion.find({
+      test_name: { $regex: user, $options: 'i' }
+    });
 
-    const topicInfo = [];
+    console.log('usedQuestions.length== ', usedQuestions.length);
 
-    // 2. Count records for each topic
-    for (const topic of topics) {
-      const individualTopicCount = await TestQuestion.countDocuments({
-        test_name: testName,
-        topic: topic
-      });
+    console.log(
+      'questionCount:  ' +
+        ' ' +
+        questionCount +
+        +' ' +
+        'correct:  ' +
+        correctAnswers +
+        +' ' +
+        'used:  ' +
+        usedQuestions.length +
+        'testCount:  ' +
+        testCount
+    );
 
-      console.log('individualTopicCount==', individualTopicCount);
+    const resultArray = [
+      questionCount,
+      correctAnswers,
+      usedQuestions.length,
+      testCount
+    ];
 
-      const questionCount = await TestQuestion.countDocuments({
-        test_name: testName
-      });
+    console.log('resultArray:: ', resultArray);
 
-      console.log('questionCount== ', questionCount);
-
-      // 3. Count records with answer_flag as "true" for each topic
-      const topicCountWithFlagTrue = await TestQuestion.countDocuments({
-        $and: [
-          {
-            topic,
-            answer_flag: 'true'
-          },
-          {
-            test_name: { $regex: userName, $options: 'i' }
-          }
-        ]
-      });
-
-      // 4. Count records with answer_flag as "false" for each topic
-      const topicCountWithFlagFalse = await TestQuestion.countDocuments({
-        $and: [
-          {
-            topic,
-            answer_flag: 'false'
-          },
-          {
-            test_name: { $regex: userName, $options: 'i' }
-          }
-        ]
-      });
-
-      const tempUserId = await User.findOne({ name: userName });
-
-      if (tempUserId) {
-        console.log('tempUserId==', tempUserId._id);
-        //return tempUserId._id;
-      } else {
-        console.log('User not found!!!');
-      }
-
-      //   4. Count records with answeredBy array length greater than 0
-      const topicCountAnsweredBy = await Question.countDocuments({
-        topic,
-        answeredBy: { $exists: true, $ne: [], $in: [tempUserId] }
-      });
-
-      console.log('topicCountAnsweredBy== ', topicCountAnsweredBy);
-
-      topicInfo.push({
-        topic,
-        questionCount: questionCount,
-        individualTopicCount: individualTopicCount,
-        correct: topicCountWithFlagTrue,
-        used: topicCountAnsweredBy,
-        wrong: topicCountWithFlagFalse
-      });
-    }
-    //
-    console.log('topicInfoSMALL== ', topicInfo);
-
-    return res.json(topicInfo);
+    return res.json(resultArray);
   } catch (error) {
     console.error(error);
     return res.json([]);
@@ -112,8 +94,8 @@ router.get('/:name/:userId/:randNum', async (req, res) => {
 });
 
 //// Define an API endpoint to get the test by test ID
-router.get('/:test_name', async (req, res) => {
-  console.log('in router.get(/:test_name');
+router.get('/:rand/:userId', async (req, res) => {
+  console.log('in router.get(/:userId');
 
   try {
     const { test_name } = req.params;
@@ -124,6 +106,56 @@ router.get('/:test_name', async (req, res) => {
     if (test.length === 0) {
       return res.status(404).json({ message: 'Test not found' });
     }
+
+    res.json(test);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+//// Define an API endpoint to get the test by test ID
+router.get('/:test_name', async (req, res) => {
+  console.log('in router.get(/:test_name');
+
+  try {
+    const test_name = req.params.test_name;
+    const userId = getUserId(test_name);
+
+    // Create a regex pattern for the partialTestName as a wildcard
+    //const regexPattern = new RegExp(partialTestName, 'i'); // 'i' for case-insensitive
+
+    //
+    //  console.log('testName=== ', testName);
+    //  const user = await getOnlyName(testName);
+    //
+    //  console.log('user= ', user);
+    //
+    //  //  const tempUserId = getUserId(testName);
+    //  const tempUserId = await User.findOne({ name: user });
+    //
+    //  console.log('tempUserId=== ', tempUserId._id);
+    //
+    //    const answeredQuestion = await Question.find({
+    //      answeredBy: {
+    //        $elemMatch: {
+    //          $exists: true,
+    //          $ne: [],
+    //          $in: [tempUserId._id]
+    //        }
+    //      }
+    //    });
+    //
+    //    console.log('XXXXXX answeredQuestion:: ', answeredQuestion);
+
+    // Find the test by test_name
+    const test = await TestQuestion.find({ test_name: test_name });
+
+    if (test.length === 0) {
+      return res.status(404).json({ message: 'Test not found' });
+    }
+
+    console.log('test is ', test);
 
     res.json(test);
   } catch (error) {
@@ -426,6 +458,20 @@ async function getUserById(userId) {
     console.error('Error retrieving user:', error);
     throw error; // You can handle the error in the calling code
   }
+}
+async function getUserId(testName) {
+  // Use the split method to split the string by the hyphen character
+  const parts = await testName.split('-');
+
+  // The part before the hyphen is at index 0
+  const extractedPart = parts[0];
+  const tempUser = User.findOne({ name: extractedPart });
+
+  if (tempUser) {
+    return tempUser._id;
+  }
+
+  return '';
 }
 
 async function getTestNamesContainingString(searchString) {

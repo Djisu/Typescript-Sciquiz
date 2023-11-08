@@ -35,12 +35,20 @@ const StuCreateTest = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const topics = useSelector((state) => state.topics.topics);
+  //  const topics = useSelector((state) => state.topics.topics);
+  const topics = useSelector((state) =>
+    state.topics.topics.map(({ topic, count }) => ({ topic, count }))
+  );
+
   const initialDifficultyLevels = useSelector(
     (state) => state.difficultyLevel.difficultyLevels
   );
 
-  //  console.log('TOPICS ARE== ', topics);
+  //  const { topic, count } = topics;
+  //  console.log('topics==  ', topics);
+  //  console.log('count== ', count);
+
+  console.log('TOPICS ARE== ', topics);
 
   //  console.log('initialDifficultyLevelsXXXX== ', initialDifficultyLevels);
 
@@ -229,20 +237,27 @@ const StuCreateTest = () => {
         <h4 style={labelStyle}>Topics:</h4>
         {Array.isArray(topics) ? (
           <ul>
-            {topics.map((topic, index) => (
+            {topics.map((topicData, index) => (
               <li key={index}>
                 <input
                   type="checkbox"
                   id={`topic-${index}`}
-                  checked={checkedTopics.includes(topic)}
-                  onChange={() => toggleCheckboxTopic(topic)}
+                  checked={checkedTopics.includes(topicData)}
+                  onChange={() => toggleCheckboxTopic(topicData)}
                 />
-
+                &nbsp;
                 <label
                   htmlFor={`topic-${index}`}
                   style={{ color: 'black', backgroundColor: 'white' }}
                 >
-                  {topic}
+                  {topicData.topic}
+                </label>
+                &nbsp;
+                <label
+                  htmlFor={`topic-${index}`}
+                  style={{ color: 'red', backgroundColor: 'white' }}
+                >
+                  {topicData.count}
                 </label>
               </li>
             ))}
@@ -267,7 +282,7 @@ const StuCreateTest = () => {
                   checked={checkedDifficultylevels.includes(level)}
                   onChange={() => toggleCheckboxLevel(level)}
                 />
-                {/*<span> </span>*/}
+                &nbsp;
                 <label
                   htmlFor={`topic-${index}`}
                   style={{ color: 'black', backgroundColor: 'white' }}

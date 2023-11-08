@@ -7,13 +7,8 @@ import { check, validationResult } from 'express-validator';
 import Topic from '../../models/Topic.js';
 import Question from '../../models/Question.js';
 
-// @route  POST api/topic/:topic
-// @desc   find all topic
-// @access Public
 router.get('/:subjectName', async (req, res) => {
   const subject_name = req.params.subjectName;
-
-  //  console.log('In subjectName router.get("/:subjectName")', subject_name);
 
   try {
     const questions = await Question.find({ subject_name });
@@ -24,20 +19,63 @@ router.get('/:subjectName', async (req, res) => {
         .json({ message: 'No topics found for the given subject_name.' });
     }
 
-    // Use Set to store distinct topic names
-    const distinctTopics = new Set(questions.map((question) => question.topic));
+    // Count the occurrences of each topic
+    const topicCounts = {};
 
-    // Convert the Set to an array and sort it in ascending order
-    const sortedDistinctTopics = Array.from(distinctTopics).sort();
+    questions.forEach((question) => {
+      const topic = question.topic;
+      
+      topicCounts[topic] = (topicCounts[topic] || 0) + 1;
+    });
 
-    //console.log('Fetched Question topics:', Array.from(distinctTopics));
+    // Convert topicCounts into an array of objects
+    const topicsWithCounts = Object.keys(topicCounts).map((topic) => ({
+      topic: topic,
+      count: topicCounts[topic]
+    }));
 
-    res.json(Array.from(distinctTopics));
+    // Sort the array of objects by topic
+    topicsWithCounts.sort((a, b) => a.topic.localeCompare(b.topic));
+
+    res.json(topicsWithCounts);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+
+// @route  POST api/topic/:topic
+// @desc   find all topic
+// @access Public
+//router.get('/:subjectName', async (req, res) => {
+//  const subject_name = req.params.subjectName;
+//
+//  //  console.log('In subjectName router.get("/:subjectName")', subject_name);
+//
+//  try {
+//    const questions = await Question.find({ subject_name });
+//
+//    if (questions.length === 0) {
+//      return res
+//        .status(404)
+//        .json({ message: 'No topics found for the given subject_name.' });
+//    }
+//
+//    // Use Set to store distinct topic names
+//    const distinctTopics = new Set(questions.map((question) => question.topic));
+//
+//    // Convert the Set to an array and sort it in ascending order
+//    const sortedDistinctTopics = Array.from(distinctTopics).sort();
+//
+//    //console.log('Fetched Question topics:', Array.from(distinctTopics));
+//
+//    res.json(Array.from(distinctTopics));
+//  } catch (err) {
+//    console.error(err);
+//    res.status(500).json({ message: 'Server error' });
+//  }
+//});
 
 // @route  POST api/topic
 // @desc   find all topic

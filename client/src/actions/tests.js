@@ -44,6 +44,30 @@ export const loadTests = () => async (dispatch) => {
 };
 
 // Load Tests Questions Only
+export const loadTestsUserid =
+  ({ userId }) =>
+  async (dispatch) => {
+    console.log('in loadTests');
+
+    const randNum = Math.floor(Math.random() * 1000000);
+
+    try {
+      const res = await api.get(`/tests/${randNum}/${userId}`);
+
+      console.log(' res.data[0]:', res.data[0]);
+
+      dispatch({
+        type: TESTS_LOADED,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: TESTS_FAIL,
+      });
+    }
+  };
+
+// Load Tests Questions Only
 export const loadTestsQuestions =
   ({ test_name }) =>
   async (dispatch) => {
@@ -79,7 +103,7 @@ export const getTest = (test_name) => async (dispatch) => {
     const res = await api.get(`/tests/${test_name}`);
 
     if (res.data.length > 0) {
-      console.log('res.data: ', res.data);
+      console.log('TEST FETCHED res.data: ', res.data);
       dispatch({
         type: TESTS_SUCCESS,
         payload: res.data,
@@ -230,7 +254,7 @@ export const postAnswer =
 export const score_test = (name, userId) => async (dispatch) => {
   dispatch({ type: SCORE_QUESTION_REQUEST });
 
-  console.log('in score_test:: ', name);
+  console.log('in score_test action creator :: ', name);
 
   //Generate a random number
   const randNum = Math.floor(Math.random() * 1000000);
@@ -238,7 +262,7 @@ export const score_test = (name, userId) => async (dispatch) => {
   try {
     const res = await api.get(`/tests/${name}/${userId}/${randNum}`);
 
-    console.log('res.data== ', res.data);
+    console.log('score_test action creator res.data== ', res.data);
 
     if (res.data.length > 0) {
       dispatch({ type: SCORE_QUESTION_SUCCESS, payload: res.data });

@@ -18,6 +18,7 @@ import SearchText from './components/layout/SearchText.js';
 import ProfileForm from './components/profile-forms/ProfileForm.js';
 import Profiles from './components/profiles/Profiles.js';
 import Profile from './components/profile/Profile.js';
+import ProfileTestResult from './components/profile/ProfileTestResult.js';
 
 import Difficultylevel from './components/difficultylevel/Difficultylevel.js';
 import Question from './components/question/Question.js';
@@ -88,6 +89,9 @@ const App = () => {
         <Route path="login" element={<Login />} />
         <Route path="/user-edit" element={<UserEdit />} />
         <Route path="profiles" element={<Profiles />} />
+
+        <Route path="profiletestresult" element={<ProfileTestResult />} />
+
         <Route path="profile/:id" element={<Profile />} />
         <Route path="profile/:status" element={<SearchText />} />
         {/*<Route path="payment-entry" element={<PaymentEntry />} />*/}

@@ -14,14 +14,15 @@ import { setAlert } from '../../actions/alert.js';
 //import Chart from '../../components/profiles/Chart.js';
 import PieChart from '../profiles/PieChartCorrect.js';
 import { Pie } from 'react-chartjs-2';
+import ProfileTestResult from './ProfileTestResult.js';
 
 const Profile = ({ profile: { profile }, auth }) => {
-  const topicsData = useSelector((state) => state.topics.topicsData);
-
-  if (topicsData.length === 0) {
-    dispatch(setAlert('No data found for the pie chart', 'danger'));
-    return;
-  }
+  //  const topicsData = useSelector((state) => state.topics.topicsData);
+  //
+  //  if (topicsData.length === 0) {
+  //    dispatch(setAlert('No data found for the pie chart', 'danger'));
+  //    return;
+  //  }
 
   const dispatch = useDispatch();
   //  console.log('in Profile');  //
@@ -77,12 +78,13 @@ const Profile = ({ profile: { profile }, auth }) => {
           <div className="profile-grid my-1">
             <ProfileTop profile={profile} />
             <ProfileAbout profile={profile} />
+            <ProfileTestResult />
           </div>
         </Fragment>
       )}
 
       <div>
-        {topicsData.map((topic, index) => (
+        {/*{topicsData.map((topic, index) => (
           <div key={index}>
             <h2>{topic.topic}</h2>
             <PieChart
@@ -91,7 +93,7 @@ const Profile = ({ profile: { profile }, auth }) => {
               flagFalseCount={topic.flagFalseCount}
             />
           </div>
-        ))}
+        ))}*/}
       </div>
     </section>
   );

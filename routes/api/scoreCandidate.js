@@ -21,11 +21,13 @@ router.get('/:testName', async (req, res) => {
     //  const tempUserId = getUserId(testName);
     const tempUserId = await User.findOne({ name: testName });
 
-    //console.log('tempUserId._id=== ', tempUserId._id);
+    console.log('tempUserId._id=== ', tempUserId._id);
 
     const topicCountAnsweredBy = await Question.countDocuments({
       answeredBy: { $exists: true, $ne: [], $in: [tempUserId._id] }
     });
+
+  
 
     console.log('topicCountAnsweredBy== ', topicCountAnsweredBy);
 
@@ -40,6 +42,8 @@ router.get('/:testName', async (req, res) => {
         }
       ]
     });
+
+    console.log('answeredQuestion:: ', answeredQuestion);
 
     return res.json([
       questionCount,

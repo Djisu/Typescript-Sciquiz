@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import {
   loadTests,
+  loadTestsUserid,
   getTest,
   postAnswer,
   score_test,
@@ -16,14 +17,16 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useCallback } from 'react';
 import Barchart from '../profiles/BarChart.js';
 import { Chart as ChartJS } from 'chart.js/auto';
-
+//import BarChart from '../profiles/BarChart.js';
+//import BarChartOverall from '../profiles/BarChartOverall.js';
+//import PieChart2 from '../profiles/PieChart2.js';
 import PieChartCorrect from '../profiles/PieChartCorrect.js';
 import PieChartUsed from '../profiles/PieChartUsed.js';
 import ProgressBar from '../profiles/Progressbar.js';
 import PieChartOverall from '../profiles/PieChartOverall.js';
 import PieChartOverallCorrect from '../profiles/PieChartOverallCorrect.js';
 
-const MarkTest = () => {
+const ProfileTestResult = () => {
   const dispatch = useDispatch();
 
   const [showAnswer, setShowAnswer] = useState(false);
@@ -33,34 +36,17 @@ const MarkTest = () => {
   const [isDisabled, setIsDisabled] = useState(false);
   const [userAnswers, setUserAnswers] = useState([]);
 
-  const tests = useSelector((state) => state.tests.tests);
-
-  const selectedQuestions = useSelector((state) => state.selectedQuestions);
-
-  //  const topicsData = useSelector((state) => state.scoreCandidate);
   const overAllScoreCandidateData = useSelector(
     (state) => state.overAllScoreCandidate.overAllScoreCandidate
   );
+
   console.log('overAllScoreCandidateData==== ', overAllScoreCandidateData);
 
-  const scoreCandidate = useSelector((state) => state.scoreCandidate);
-
-  console.log('I AM scoreCandidate:: ', scoreCandidate);
-  const testScore = scoreCandidate;
-
-  console.log('testScore:: ', testScore);
-  //  const { questionCount, used, correct } = scoreCandidate.scoreCandidate;
-  const questionCount = scoreCandidate.scoreCandidate[0];
-  const used = scoreCandidate.scoreCandidate[1];
-  const correct = scoreCandidate.scoreCandidate[2];
-  const testCount = scoreCandidate.scoreCandidate[3];
-
+  const { questionCount, topicCountAnsweredBy } = overAllScoreCandidateData;
+  console.log('questionCount==== ', overAllScoreCandidateData.questionCount);
   console.log(
-    'questionCount, used, correct',
-    questionCount,
-    used,
-    correct,
-    testCount
+    'topicCountAnsweredBy==== ',
+    overAllScoreCandidateData.topicCountAnsweredBy
   );
 
   // Extract data from the scoreCandidate array
@@ -70,17 +56,23 @@ const MarkTest = () => {
   const usedCounts = overAllScoreCandidateData.map((item) => item.used);
   const wrongCounts = overAllScoreCandidateData.map((item) => item.wrong);
 
-//  console.log('topicCounts==', topicCounts);
-//  console.log('usedCounts==', usedCounts);
+  console.log('topicCounts==', topicCounts);
+  console.log('usedCounts==', usedCounts);
 
-  //  const selectedQuestions = useSelector((state) => state.selectedQuestions);
+  const tests = useSelector((state) => state.tests.tests);
 
-  //  const tests = useSelector((state) => state.tests.tests);
+  const selectedQuestions = useSelector((state) => state.selectedQuestions);
 
-  //  const selectedQuestions = useSelector((state) => state.selectedQuestions);
+  //  const topicsData = useSelector((state) => state.scoreCandidate);
+
+  const { scoreCandidate, loading } = useSelector(
+    (state) => state.scoreCandidate
+  );
+
+  console.log('I AM scoreCandidate:: ', scoreCandidate);
 
   // Check if topicsData is empty
-  //  const isScoreCandidateDataEmpty = scoreCandidate.length === 0;
+  const isScoreCandidateDataEmpty = scoreCandidate.length === 0;
 
   //  console.log('selectedQuestions:: ', selectedQuestions);
 
@@ -102,7 +94,7 @@ const MarkTest = () => {
   }, [dispatch]);
 
   const handleInputChange = (e) => {
-    console.log('in handleInputChange: ', e.target.value);
+    //console.log('in handleInputChange: ', e.target.value);
 
     e.preventDefault();
     setTestName(e.target.value);
@@ -204,85 +196,7 @@ const MarkTest = () => {
                   </option>
                 ))}
               </select>
-              {isAdmin === 'true' && (
-                <button
-                  className="btn btn-danger"
-                  onClick={() => deleteCandidate(testName)}
-                >
-                  Delete Old Candidate
-                </button>
-              )}
             </div>
-          </li>
-
-          <li
-            style={{
-              color: 'black',
-              backgroundColor: 'white',
-              fontWeight: 'bold',
-            }}
-          >
-            {Array.isArray(tests) ? (
-              tests.map((question, index) => (
-                <div key={question._id}>
-                  <p>
-                    Question {index + 1}: {question.question}
-                  </p>
-
-                  {isAdmin === 'true' && (
-                    <div style={{ color: 'black', backgroundColor: 'white' }}>
-                      <p style={{ color: 'red', backgroundColor: 'white' }}>
-                        Answer: {question.answer}
-                      </p>
-
-                      <div>
-                        Topic: {question.topic} <br />
-                        Difficulty Level: {question.difficulty_level}
-                        <br />
-                        Question Id: {question.questionId}
-                        <br />
-                        Test Name: {question.test_name}
-                      </div>
-
-                      <div>
-                        <label htmlFor="optionSelect">Select an option:</label>
-                        <select
-                          id="optionSelect"
-                          value={userAnswers[index] || ''}
-                          onChange={(e) => {
-                            const updatedAnswers = [...userAnswers]; // Create a copy of the state array
-                            updatedAnswers[index] = e.target.value; // Update the corresponding value
-                            setUserAnswers(updatedAnswers); // Set the new state
-                          }}
-                          className="select-element"
-                        >
-                          <option value="">Select an option</option>
-                          <option value="true">true</option>
-                          <option value="false">false</option>
-                        </select>
-
-                        <button
-                          type="submit"
-                          className="btn btn-primary"
-                          onClick={() =>
-                            handleAnswer(
-                              userAnswers[index],
-                              question.questionId,
-                              question.test_name
-                            )
-                          }
-                        >
-                          Post Answer
-                        </button>
-                      </div>
-                      <br />
-                    </div>
-                  )}
-                </div>
-              ))
-            ) : (
-              <p>No questions to display</p>
-            )}
           </li>
         </ul>
 
@@ -312,34 +226,12 @@ const MarkTest = () => {
             ))}{' '}
             <br />
             <br />
-            {/*Count of Topics:{' '}
-            {topicCounts.map((topicCount, index) => (
-              <span key={index}>{topicCount}, </span>
-            ))}{' '}
-
-          
-
-            <br />
-            Count of Correct Answers:{' '}
-            {correctCounts.map((correctCount, index) => (
-              <span key={index}>{correctCount}, </span>
-            ))}{' '}
-            <br />
-            Count of Used Questions:{' '}
-            {usedCounts.map((usedCount, index) => (
-              <span key={index}>{usedCount}, </span>
-            ))}{' '}
-            <br />
-            Count of Wrong Answers:{' '}
-            {wrongCounts.map((wrongCount, index) => (
-              <span key={index}>{wrongCount}, </span>
-            ))}{' '}*/}
           </div>
         </div>
         <ul>
-          {/*{scoreCandidate.map((score, index) => (
-            <li key={index}>*/}
-          {/*<PieChartCorrect
+          {scoreCandidate.map((score, index) => (
+            <li key={index}>
+              <PieChartCorrect
                 topic={score.topic}
                 correct={score.correct}
                 used={score.used}
@@ -347,20 +239,20 @@ const MarkTest = () => {
 
               <ProgressBar
                 topic={score.topic}
-                used={score.used}
-                topicCounts={score.questionCount}
-              />*/}
-          {/*</li>
-          ))}*/}
+                correct={score.correct}
+                individualTopicCount={score.individualTopicCount}
+              />
+            </li>
+          ))}
           <li>
-            {/*<PieChartOverall
+            <PieChartOverall
               questionCount={overAllScoreCandidateData[0]}
-              topicCountAnsweredBy={overAllScoreCandidateData[1]}  totalUsed, 
+              topicCountAnsweredBy={overAllScoreCandidateData[1]}
+            />
+            {/*<PieChartOverallCorrect
+              topicCountWithFlagTrue={overAllScoreCandidateData[2]}
+              questionCount={overAllScoreCandidateData[0]}            
             />*/}
-
-            <ProgressBar used={used} questionCount={questionCount} />
-
-            <PieChartCorrect correct={correct} testCount={testCount} />
           </li>
         </ul>
       </div>
@@ -369,4 +261,4 @@ const MarkTest = () => {
   );
 };
 
-export default MarkTest;
+export default ProfileTestResult;

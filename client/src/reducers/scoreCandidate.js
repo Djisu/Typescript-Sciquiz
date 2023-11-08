@@ -12,7 +12,7 @@ const initialState = {
 function scoreCandidateReducer(state = initialState, action) {
   const { type, payload } = action;
 
-  //  console.log('in userAnsweredQuestionsReducer', payload);
+  console.log('in scoreCandidateReducer', payload);
 
   switch (action.type) {
     case SCORE_QUESTION_REQUEST:

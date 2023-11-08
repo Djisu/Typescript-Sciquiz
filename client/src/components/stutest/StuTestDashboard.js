@@ -51,6 +51,8 @@ const StuTestDashboard = () => {
 
   const newSubjects = initialSubjects;
 
+  console.log('newSubjects== ', newSubjects);
+
   //Find out if user is authenticated or not
   useEffect(() => {
     if (!userid || userid.length == 0) {
