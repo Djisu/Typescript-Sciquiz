@@ -21,6 +21,9 @@ import {
   DELETE_CANDIDATE_TESTS_REQUEST,
   DELETE_CANDIDATE_TESTS_SUCCESS,
   DELETE_CANDIDATE_TESTS_FAIL,
+  EACH_TOPIC_REQUEST,
+  EACH_TOPIC_SUCCESS,
+  EACH_TOPIC_FAIL,
 } from './types.js';
 
 // Load Tests
@@ -273,6 +276,31 @@ export const score_test = (name, userId) => async (dispatch) => {
     }
   } catch (error) {
     dispatch({ type: SCORE_QUESTION_FAIL, payload: error.message });
+    dispatch(setAlert('Error in scoring candidate', 'danger'));
+  }
+};
+
+export const score_individual_test = (testname, userId) => async (dispatch) => {
+  dispatch({ type: EACH_TOPIC_REQUEST });
+
+  console.log('in score_individual_test action creator :: ', testname);
+
+  //Generate a random number
+  const randNum = Math.floor(Math.random() * 1000000);
+
+  try {
+    const res = await api.get(`/scoreCandidate/${testname}/${randNum}`);
+
+    console.log(
+      'in score_individual_test action creator res.data== ',
+      res.data
+    );
+
+    dispatch({ type: EACH_TOPIC_SUCCESS, payload: res.data });
+
+    dispatch(setAlert('Test scored succesfully', 'success'));
+  } catch (error) {
+    dispatch({ type: EACH_TOPIC_FAIL, payload: error.message });
     dispatch(setAlert('Error in scoring candidate', 'danger'));
   }
 };

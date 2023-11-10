@@ -80,6 +80,9 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
                   <li>
                     <Link to="/mark-test">Mark Test</Link>
                   </li>
+                  <li>
+                    <Link to="/current-test-result">Current Test Result</Link>
+                  </li>
                 </ul>
               </div>
             )}

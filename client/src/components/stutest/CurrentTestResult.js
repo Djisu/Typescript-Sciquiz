@@ -9,6 +9,7 @@ import {
   score_test,
   overall_score_test,
   deleteCandidateTests,
+  score_individual_test,
 } from '../../actions/tests.js';
 import { setAlert } from '../../actions/alert.js';
 import { ToastContainer, toast } from 'react-toastify';
@@ -22,8 +23,9 @@ import PieChartUsed from '../profiles/PieChartUsed.js';
 import ProgressBar from '../profiles/Progressbar.js';
 import PieChartOverall from '../profiles/PieChartOverall.js';
 import PieChartOverallCorrect from '../profiles/PieChartOverallCorrect.js';
+import PieChartCorrectTopics from '../profiles/PieChartCorrectTopics.js';
 
-const MarkTest = () => {
+const CurrentTestResult = () => {
   const dispatch = useDispatch();
 
   const [showAnswer, setShowAnswer] = useState(false);
@@ -32,6 +34,22 @@ const MarkTest = () => {
   const [testName, setTestName] = useState('');
   const [isDisabled, setIsDisabled] = useState(false);
   const [userAnswers, setUserAnswers] = useState([]);
+
+  const eachTopic = useSelector((state) => state.eachTopicScore.eachTopicScore);
+
+  console.log('XXXXXX  eachTopic== ', eachTopic);
+
+  const { trueAnswers, totalQuestions, topic } = useSelector(
+    (state) => state.eachTopicScore.eachTopicScore
+  );
+
+  console.log(
+    'topic, trueAnswers, totalQuestions ',
+
+    eachTopic[0],
+    eachTopic[1],
+    eachTopic[2]
+  );
 
   const tests = useSelector((state) => state.tests.tests);
 
@@ -101,6 +119,10 @@ const MarkTest = () => {
     dispatch(loadTests());
   }, [dispatch]);
 
+  //  useEffect(() => {
+  //    dispatch(score_individual_test());
+  //  }, [dispatch])
+
   const handleInputChange = (e) => {
     console.log('in handleInputChange: ', e.target.value);
 
@@ -128,7 +150,7 @@ const MarkTest = () => {
   };
 
   const handleScore = (testName) => {
-    dispatch(score_test(testName, userId));
+    dispatch(score_individual_test(testName, userId));
   };
 
   const handleOverallScore = (testName) => {
@@ -295,13 +317,13 @@ const MarkTest = () => {
             >
               Show individual statistics
             </button>
-            <button
+            {/*<button
               type="submit"
               className="btn btn-primary"
               onClick={(e) => handleOverallScore(testName)}
             >
               Show candidate overall statistics
-            </button>
+            </button>*/}
           </div>
           <div style={{ color: 'black', backgroundColor: 'white' }}>
             {/*Topics:{' '}*/}
@@ -337,28 +359,15 @@ const MarkTest = () => {
           </div>
         </div>
         <ul>
-          {/*{scoreCandidate.map((score, index) => (
-            <li key={index}>*/}
-          {/*<PieChartCorrect
-                topic={score.topic}
-                correct={score.correct}
-                used={score.used}
+          {eachTopic.map((topicItem, index) => (
+            <li key={index}>
+              <PieChartCorrectTopics
+                topic={topicItem.topic}
+                correct={topicItem.trueAnswers}
+                used={topicItem.totalQuestions}
               />
-
-              <ProgressBar
-                topic={score.topic}
-                used={score.used}
-                topicCounts={score.questionCount}
-              />*/}
-          {/*</li>
-          ))}*/}
-          <li>
-            <PieChartOverall correct={correct} used={usedValue} />
-
-            {/*<PieChartCorrect correct={correct} testCount={testCount} />*/}
-
-            <ProgressBar used={usedValue} questionCount={questionCount} />
-          </li>
+            </li>
+          ))}
         </ul>
       </div>
       <br />
@@ -366,4 +375,4 @@ const MarkTest = () => {
   );
 };
 
-export default MarkTest;
+export default CurrentTestResult;

@@ -1,18 +1,18 @@
 import React from 'react';
 import { Pie } from 'react-chartjs-2';
 
-function PieChartCorrect({ correct, testCount }) {
-  console.log('in PieChartCorrect correct, testCount');
+function PieChartCorrectTopics({ topic, correct, used }) {
+  console.log('in PieChartCorrectTopics topic, correct, used');
 
-  const incorrect = testCount - correct;
+  const incorrect = used - correct;
 
-  const labels = ['Correct', 'testCount'];
+  const labels = ['Correct', 'Used'];
 
   const data = {
     labels: labels,
     datasets: [
       {
-        data: [correct, testCount],
+        data: [correct, used],
         backgroundColor: ['rgba(0, 0, 255, 1)', 'rgba(255, 0, 0, 1)'],
         borderColor: ['rgba(0, 0, 255, 0.75)', 'rgba(255, 0, 0, 0.5)'],
         borderWidth: 1,
@@ -36,20 +36,21 @@ function PieChartCorrect({ correct, testCount }) {
   };
 
   const h2Style = {
-    fontSize: '20px',
+    fontSize: '10px',
     color: 'black',
   };
 
   return (
     <div className="pie-chart-container" style={chartStyle}>
-      <h4 style={h2Style}>
-        Current Test Results:
+      <p style={{ fontColor: 'black' }}> Current Test Results:</p>
+      <h5 style={h2Style}>
+        <span>{topic}</span>
         <br /> Correct&nbsp; <span>{correct}</span>
-        <br /> testCount&nbsp;<span>{testCount}</span>
+        <br /> Used&nbsp;<span>{used}</span>
         <Pie data={data} options={options} />
-      </h4>
+      </h5>
     </div>
   );
 }
 
-export default PieChartCorrect;
+export default PieChartCorrectTopics;

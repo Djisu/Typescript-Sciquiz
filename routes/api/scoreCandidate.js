@@ -9,6 +9,7 @@ const router = express.Router();
 router.get('/:testName', async (req, res) => {
   try {
     const testName = req.params.testName;
+
     console.log('in scoreCandidate router.get(/:testName', testName);
 
     console.log('testName==', testName);
@@ -26,8 +27,6 @@ router.get('/:testName', async (req, res) => {
     const topicCountAnsweredBy = await Question.countDocuments({
       answeredBy: { $exists: true, $ne: [], $in: [tempUserId._id] }
     });
-
-  
 
     console.log('topicCountAnsweredBy== ', topicCountAnsweredBy);
 
@@ -54,6 +53,41 @@ router.get('/:testName', async (req, res) => {
     console.error(error);
     return res.json([]);
     //res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+router.get('/:testname/:randNum', async (req, res) => {
+  console.log('in router.get(/:name/:randNum/:userId');
+
+  const testName = req.params.testname;
+
+  try {
+    const topicStatistics = await TestQuestion.aggregate([
+      { $match: { test_name: testName } },
+      {
+        $group: {
+          _id: '$topic',
+          trueAnswers: {
+            $sum: { $cond: [{ $eq: ['$answer_flag', 'true'] }, 1, 0] }
+          },
+          totalQuestions: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          topic: '$_id',
+          trueAnswers: 1,
+          totalQuestions: 1
+        }
+      }
+    ]);
+
+    console.log('Topic Statistics:', topicStatistics);
+    return res.json(topicStatistics);
+  } catch (error) {
+    console.error('Error getting topic statistics:', error);
+    throw error;
   }
 });
 

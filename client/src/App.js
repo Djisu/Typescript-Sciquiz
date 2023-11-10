@@ -42,6 +42,7 @@ import setAuthToken from './utils/setAuthToken.js';
 //import PaymentEntry from './components/payments/PaymentEntry.js';
 //import StuTestDashboard from './components/stutest/StuTestDashboard.js';
 import StuCreateTest from './components/stutest/StuCreateTest.js';
+import CurrentTestResult from './components/stutest/CurrentTestResult.js';
 
 import MainTest from './components/stutest/MainTest.js';
 import MainTestTopics from './components/stutest/MainTestTopics.js';
@@ -89,9 +90,7 @@ const App = () => {
         <Route path="login" element={<Login />} />
         <Route path="/user-edit" element={<UserEdit />} />
         <Route path="profiles" element={<Profiles />} />
-
         <Route path="profiletestresult" element={<ProfileTestResult />} />
-
         <Route path="profile/:id" element={<Profile />} />
         <Route path="profile/:status" element={<SearchText />} />
         {/*<Route path="payment-entry" element={<PaymentEntry />} />*/}
@@ -129,11 +128,14 @@ const App = () => {
           element={<PrivateRoute component={ProfileForm} />}
         />
         <Route path="/create-difficultylevel" element={<Difficultylevel />} />
+
         <Route path="/create-question" element={<Question />} />
         <Route path="/create-topic" element={<Topic />} />
         <Route path="/create-subject" element={<Subject />} />
         {/*<Route path="/create-tests" element={<Tests />} />*/}
         <Route path="/create-stutests" element={<StuCreateTest />} />
+
+        <Route path="/current-test-result" element={<CurrentTestResult />} />
 
         {/*<Route path="/create-stutests" element={<StuTestDashboard />} />*/}
         <Route path="/create-user-performance" element={<User_Performance />} />

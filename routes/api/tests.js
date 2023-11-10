@@ -26,9 +26,16 @@ router.get('/:name/:userId/:randNum', async (req, res) => {
       userName = user;
     }
 
-    // 1. Extract all topics corresponding to the name parameter
-    const testCount = await TestQuestion.count({ test_name: testName });
-    console.log('testCount== ', testCount);
+    const testCount = await TestQuestion.countDocuments({
+      test_name: { $regex: user, $options: 'i' }
+    });
+    console.log('testCount == ', testCount);
+
+    const usedQuestions = await TestQuestion.find({
+      test_name: { $regex: user, $options: 'i' }
+    });
+
+    console.log('usedQuestions.length == ', usedQuestions.length);
 
     // Count of total questions in the database
     const questionCount = await Question.estimatedDocumentCount()
@@ -55,25 +62,15 @@ router.get('/:name/:userId/:randNum', async (req, res) => {
       ]
     });
 
-    // Use a regular expression to find test names that include the searchString
-    const usedQuestions = await TestQuestion.find({
-      test_name: { $regex: user, $options: 'i' }
-    });
-
-    console.log('usedQuestions.length== ', usedQuestions.length);
-
     console.log(
-      'questionCount:  ' +
-        ' ' +
-        questionCount +
-        +' ' +
-        'correct:  ' +
-        correctAnswers +
-        +' ' +
-        'used:  ' +
-        usedQuestions.length +
-        'testCount:  ' +
-        testCount
+      'questionCount: ',
+      questionCount,
+      'correct: ',
+      correctAnswers,
+      'used: ',
+      usedQuestions.length,
+      'testCount: ',
+      testCount
     );
 
     const resultArray = [

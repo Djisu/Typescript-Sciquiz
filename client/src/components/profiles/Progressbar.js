@@ -1,35 +1,73 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 
 function ProgressBar({ used, questionCount }) {
-  console.log('ProgressBar questionCount: ', questionCount);
-  console.log('ProgressBar correct: ', used);
-
-  const percentage = (used / questionCount) * 100;
+  console.log('in ProgressBar used, questionCount =', used, questionCount);
 
   const progressBarStyle = {
-    width: '100%', // Reduce the width by 50%
-    height: '30%', // Reduce the height by 50%,
-    textAlign: 'center', // Center-align text
-    margin: 'auto', // Center horizontally
+    width: '100%',
+    height: '30px',
+    backgroundColor: 'lightgray', // Background color of the progress bar
   };
-  const h2Style = {
-    fontSize: '20px', // Adjust the font size as needed
-    color: 'black',
+
+  const usedStyle = {
+    width: (used / questionCount) * 100 + '%', // Width based on the used/questionCount ratio
+    height: '100%',
+    backgroundColor: 'green', // Color for the "used" segment
   };
 
   return (
-    <div className="progress-bar-container" style={progressBarStyle}>
-      {/*<h2 style={{ color: 'black' }}>Progress Bar for {topic}</h2>*/}
-      {/*{topic && <h2 style={h2Style}>Piechart for {topic}</h2>}*/}
-      <div className="progress">
-        <div className="progress-bar" style={{ width: `${percentage}%` }}></div>
+    <div className="progress-bar-container">
+      <div className="progress" style={progressBarStyle}>
+        <div className="used-segment" style={usedStyle}></div>
       </div>
       <p style={{ color: 'black' }}>
-        {used} Attempted Questions out of {questionCount}
+        {used} Used Questions out of {questionCount}
       </p>
     </div>
   );
 }
 
 export default ProgressBar;
+
+//import React from 'react';
+//
+//function ProgressBar({ used, questionCount }) {
+//
+//console.log('used== ', used)
+//console.log('questionCount== ', questionCount);
+//
+//  const percentage = (used / questionCount) * 100;
+//  const unusedPercentage = 100 - percentage;
+//
+//  const progressBarStyle = {
+//    width: '100%',
+//    height: '30px',
+//    backgroundColor: 'lightgray', // Background color of the progress bar
+//  };
+//
+//  const usedStyle = {
+//    width: `${percentage}%`,
+//    height: '100%',
+//    backgroundColor: 'green', // Color for the "used" segment
+//  };
+//
+//  const unusedStyle = {
+//    width: `${unusedPercentage}%`,
+//    height: '100%',
+//    backgroundColor: 'lightgray', // Color for the "unused" segment
+//  };
+//
+//  return (
+//    <div className="progress-bar-container">
+//      <div className="progress" style={progressBarStyle}>
+//        <div className="used-segment" style={usedStyle}></div>
+//        <div className="unused-segment" style={unusedStyle}></div>
+//      </div>
+//      <p style={{ color: 'black' }}>
+//        {used} Attempted Questions out of {questionCount}
+//      </p>
+//    </div>
+//  );
+//}
+//
+//export default ProgressBar;
