@@ -11,22 +11,9 @@ const ProfileAbout = ({
     user: { name },
   },
 }) => {
-  //  const answeredQuestions = useSelector((state) => state.userAnsweredQuestions);
-
   const id = useParams();
 
   const dispatch = useDispatch();
-
-  //  useEffect(() => {
-  //    console.log(' in useEffect dispatch(userAnsweredQuestions(id));');
-  //
-  //    dispatch(userAnsweredQuestions(id));
-  //  }, [dispatch]);
-  //
-  //  console.log(
-  //    'userAnsweredQuestions:',
-  //    userAnsweredQuestions.userAnsweredQuestions
-  //  );
 
   return (
     <div className="profile-about bg-light p-2">

@@ -4,12 +4,12 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import {
   loadTests,
+  loadTestsUserid,
   getTest,
   postAnswer,
   score_test,
   overall_score_test,
   deleteCandidateTests,
-  score_individual_test,
 } from '../../actions/tests.js';
 import { setAlert } from '../../actions/alert.js';
 import { ToastContainer, toast } from 'react-toastify';
@@ -23,9 +23,19 @@ import PieChartUsed from '../profiles/PieChartUsed.js';
 import ProgressBar from '../profiles/Progressbar.js';
 import PieChartOverall from '../profiles/PieChartOverall.js';
 import PieChartOverallCorrect from '../profiles/PieChartOverallCorrect.js';
-import PieChartCorrectTopics from '../profiles/PieChartCorrectTopics.js';
+import { useParams } from 'react-router-dom';
 
-const CurrentTestResult = () => {
+const ProfileMarkTest = (id) => {
+  const isAdmin = localStorage.getItem('isAdmin');
+
+  const myId = useParams();
+
+  console.log('myId===== ', myId);
+
+  const userId = String(myId.id);
+
+  console.log('userId=', userId);
+
   const dispatch = useDispatch();
 
   const [showAnswer, setShowAnswer] = useState(false);
@@ -35,51 +45,28 @@ const CurrentTestResult = () => {
   const [isDisabled, setIsDisabled] = useState(false);
   const [userAnswers, setUserAnswers] = useState([]);
 
-  const eachTopic = useSelector((state) => state.eachTopicScore.eachTopicScore);
-
-  console.log('XXXXXX  eachTopic== ', eachTopic);
-
-  const { trueAnswers, totalQuestions, topic } = useSelector(
-    (state) => state.eachTopicScore.eachTopicScore
-  );
-
-  console.log(
-    'topic, trueAnswers, totalQuestions ',
-
-    eachTopic[0],
-    eachTopic[1],
-    eachTopic[2]
-  );
-
   const tests = useSelector((state) => state.tests.tests);
 
-  const selectedQuestions = useSelector((state) => state.selectedQuestions);
+  console.log('tests=====:::: ', tests);
 
-  //  const topicsData = useSelector((state) => state.scoreCandidate);
+  const fetchedTest = useSelector((state) => state.selectedTest.selectedTest);
+
+  //  if (fetchedTest) {
+  dispatch(setAlert('Tests obtained', 'success'));
+  console.log('fetchedTest== ', fetchedTest);
+  //  }
+
   const overAllScoreCandidateData = useSelector(
     (state) => state.overAllScoreCandidate.overAllScoreCandidate
   );
-  console.log('overAllScoreCandidateData==== ', overAllScoreCandidateData);
 
   const scoreCandidate = useSelector((state) => state.scoreCandidate);
-
-  console.log('I AM scoreCandidate:: ', scoreCandidate);
   const testScore = scoreCandidate;
 
-  console.log('testScore:: ', testScore);
-  //  const { questionCount, used, correct } = scoreCandidate.scoreCandidate;
   const questionCount = scoreCandidate.scoreCandidate[0];
   const correct = scoreCandidate.scoreCandidate[1];
   const usedValue = scoreCandidate.scoreCandidate[2];
   const testCount = scoreCandidate.scoreCandidate[3];
-
-  console.log(
-    'questionCount, usedValue, correct, testCount',
-    questionCount,
-    usedValue,
-    correct,
-    testCount
-  );
 
   // Extract data from the scoreCandidate array
   const topics = overAllScoreCandidateData.map((item) => item.topic);
@@ -87,9 +74,6 @@ const CurrentTestResult = () => {
   const correctCounts = overAllScoreCandidateData.map((item) => item.correct);
   const usedCounts = overAllScoreCandidateData.map((item) => item.used);
   const wrongCounts = overAllScoreCandidateData.map((item) => item.wrong);
-
-  const isAdmin = localStorage.getItem('isAdmin');
-  const userId = localStorage.getItem('id');
 
   // Initialize userAnswers inside a useEffect that depends on tests
   useEffect(() => {
@@ -99,28 +83,31 @@ const CurrentTestResult = () => {
   }, [tests]);
 
   useEffect(() => {
-    console.log(' in useEffect dispatch(loadTests());');
-    dispatch(loadTests());
-  }, [dispatch]);
-
-  //  useEffect(() => {
-  //    dispatch(score_individual_test());
-  //  }, [dispatch])
+    const fetchedData = async () => {
+      if (userId) {
+        console.log('in useEffect dispatch(loadTestsUserid(userId)); ', userId);
+        dispatch(loadTestsUserid(userId));
+      } else {
+        console.log('No user id provided', 'danger');
+        setAlert('No user id provided', 'danger');
+        return;
+      }
+    };
+    // Call fetchData function on component mount
+    fetchedData();
+  }, [dispatch, userId]); //
 
   const handleInputChange = (e) => {
-    console.log('in handleInputChange: ', e.target.value);
+    console.log('in handleInputChange', e.target.value);
 
     e.preventDefault();
     setTestName(e.target.value);
 
-    //console.log('testName: ', testName);
-
     dispatch(getTest(e.target.value));
-    if (tests.length === 0) {
-      dispatch(loadTests());
-    }
-    //
-    //setIsDisabled(true);
+
+    //if (tests.length === 0) {
+    //  dispatch(loadTestsUserid(userId));
+    //}
   };
 
   // Event handler to handle option selection
@@ -129,17 +116,14 @@ const CurrentTestResult = () => {
   };
 
   const handleAnswer = (userAnswers, questionId, testName) => {
-    //console.log('in handleAnswer: ', userAnswers, questionId, testName);
     dispatch(postAnswer(questionId, userAnswers, testName, userId));
   };
 
   const handleScore = (testName) => {
-    dispatch(score_individual_test(testName, userId));
+    dispatch(score_test(testName, userId));
   };
 
   const handleOverallScore = (testName) => {
-    console.log('in handleOverallScore');
-
     dispatch(overall_score_test(getOnlyName(testName)));
   };
 
@@ -172,7 +156,7 @@ const CurrentTestResult = () => {
       if (result) {
         dispatch(deleteCandidateTests(newTestName));
         dispatch(setAlert('Deletion successful!', 'success'));
-        dispatch(loadTests());
+        dispatch(loadTestsUserid(userId));
       } else {
         dispatch(setAlert('Deletion aborted!', 'danger'));
       }
@@ -203,12 +187,29 @@ const CurrentTestResult = () => {
                 onChange={handleInputChange}
                 className="select-element"
               >
-                <option key="default" value=""></option>
-                {tests.map((test) => (
-                  <option key={test._id} value={test.test_name}>
-                    {test.test_name}
-                  </option>
-                ))}
+                <option value="">Select a test</option>
+
+                {!tests && (
+                  <p
+                    style={{
+                      color: 'red',
+                      backgroundColor: 'white',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    No tests found
+                  </p>
+                )}
+
+                {Array.isArray(tests) ? (
+                  tests.map((test, index) => (
+                    <option key={index} value={test}>
+                      {test}
+                    </option>
+                  ))
+                ) : (
+                  <p>No questions to display</p>
+                )}
               </select>
               {isAdmin === 'true' && (
                 <button
@@ -228,9 +229,9 @@ const CurrentTestResult = () => {
               fontWeight: 'bold',
             }}
           >
-            {Array.isArray(tests) ? (
-              tests.map((question, index) => (
-                <div key={question._id}>
+            {/*{Array.isArray(fetchedTest) ? (
+              fetchedTest.map((question, index) => (
+                <div key={index}>
                   <p>
                     Question {index + 1}: {question.question}
                   </p>
@@ -288,7 +289,7 @@ const CurrentTestResult = () => {
               ))
             ) : (
               <p>No questions to display</p>
-            )}
+            )}*/}
           </li>
         </ul>
 
@@ -299,7 +300,7 @@ const CurrentTestResult = () => {
               className="btn btn-primary"
               onClick={() => handleScore(testName)}
             >
-              Show individual statistics
+              Show Overall Correct Statistics
             </button>
             {/*<button
               type="submit"
@@ -318,40 +319,13 @@ const CurrentTestResult = () => {
             ))}{' '}
             <br />
             <br />
-            {/*Count of Topics:{' '}
-            {topicCounts.map((topicCount, index) => (
-              <span key={index}>{topicCount}, </span>
-            ))}{' '}
-
-          
-
-            <br />
-            Count of Correct Answers:{' '}
-            {correctCounts.map((correctCount, index) => (
-              <span key={index}>{correctCount}, </span>
-            ))}{' '}
-            <br />
-            Count of Used Questions:{' '}
-            {usedCounts.map((usedCount, index) => (
-              <span key={index}>{usedCount}, </span>
-            ))}{' '}
-            <br />
-            Count of Wrong Answers:{' '}
-            {wrongCounts.map((wrongCount, index) => (
-              <span key={index}>{wrongCount}, </span>
-            ))}{' '}*/}
           </div>
         </div>
         <ul>
-          {eachTopic.map((topicItem, index) => (
-            <li key={index}>
-              <PieChartCorrectTopics
-                topic={topicItem.topic}
-                correct={topicItem.trueAnswers}
-                used={topicItem.totalQuestions}
-              />
-            </li>
-          ))}
+          <li>
+            <PieChartOverall correct={correct} used={usedValue} />
+            <ProgressBar used={usedValue} questionCount={questionCount} />
+          </li>
         </ul>
       </div>
       <br />
@@ -359,4 +333,4 @@ const CurrentTestResult = () => {
   );
 };
 
-export default CurrentTestResult;
+export default ProfileMarkTest;

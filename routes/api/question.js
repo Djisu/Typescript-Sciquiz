@@ -13,9 +13,16 @@ import Question from '../../models/Question.js';
 import questionData from '../../questionsData.js';
 import TestQuestion from '../../models/test_question.js';
 
+import multer from 'multer';
+import xlsx from 'xlsx';
+
 const router = express.Router();
 const emailPassword = config.get('emailPassword');
 //import checkQuestionSelected from '../../middleware/checkQuestionSelected';
+
+// Multer configuration for file upload
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 // Route for seeding data
 //router.get('/seed', async (req, res) => {
@@ -638,23 +645,43 @@ router.post('/answer', async (req, res) => {
   }
 });
 
-//// Define a route to handle the PUT request for updating the document.
-//router.put('/api/updateDocument', (req, res) => {
-//  const { user_answer, id } = req.body;
-//
-//  // Your MongoDB update logic here.
-//  // You can use a MongoDB library like Mongoose to update the document.
-//
-//  // Example using Mongoose:
-//  YourModel.findByIdAndUpdate(id, { user_answer }, (err, doc) => {
-//    if (err) {
-//      console.error(err);
-//      return res.status(500).send('Internal Server Error');
-//    }
-//
-//    return res.status(200).send('Document updated successfully');
-//  });
-//});
+router.post('/api/upload', upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const workbook = xlsx.read(req.file.buffer, { type: 'buffer' });
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+    const data = xlsx.utils.sheet_to_json(worksheet);
+
+    // Assuming your Excel columns match the schema fields
+    for (const row of data) {
+      const question = new Question({
+        question: row.question,
+        answer: row.answer,
+        difficulty_level: row.difficulty_level,
+        subject_name: row.subject_name,
+        topic: row.topic,
+        question_year: row.question_year,
+        question_stats: row.question_stats,
+        answer_flag: row.answer_flag,
+        user_answer: row.user_answer
+      });
+      await question.save();
+    }
+
+    return res
+      .status(200)
+      .json({ message: 'Excel data uploaded successfully' });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: 'An error occurred while uploading the Excel file' });
+  }
+});
 
 function uuid() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {

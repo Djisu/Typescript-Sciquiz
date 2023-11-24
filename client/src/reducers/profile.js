@@ -6,16 +6,8 @@ import {
 } from '../actions/types.js';
 
 const initialState = {
-  profile: {
-    user: '',
-    school: '',
-    status: '',
-    bio: '',
-    name: '',
-    email: '',
-  },
+  profiles: [],
   loading: false,
-  error: null,
 };
 
 function profileReducer(state = initialState, action) {

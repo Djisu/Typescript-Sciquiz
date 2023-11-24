@@ -37,19 +37,13 @@ const MarkTest = () => {
 
   const selectedQuestions = useSelector((state) => state.selectedQuestions);
 
-  //  const topicsData = useSelector((state) => state.scoreCandidate);
   const overAllScoreCandidateData = useSelector(
     (state) => state.overAllScoreCandidate.overAllScoreCandidate
   );
-  console.log('overAllScoreCandidateData==== ', overAllScoreCandidateData);
 
   const scoreCandidate = useSelector((state) => state.scoreCandidate);
-
-  console.log('I AM scoreCandidate:: ', scoreCandidate);
   const testScore = scoreCandidate;
 
-  console.log('testScore:: ', testScore);
-  //  const { questionCount, used, correct } = scoreCandidate.scoreCandidate;
   const questionCount = scoreCandidate.scoreCandidate[0];
   const correct = scoreCandidate.scoreCandidate[1];
   const usedValue = scoreCandidate.scoreCandidate[2];
@@ -70,22 +64,6 @@ const MarkTest = () => {
   const usedCounts = overAllScoreCandidateData.map((item) => item.used);
   const wrongCounts = overAllScoreCandidateData.map((item) => item.wrong);
 
-  //  console.log('topicCounts==', topicCounts);
-  //  console.log('usedCounts==', usedCounts);
-
-  //  const selectedQuestions = useSelector((state) => state.selectedQuestions);
-
-  //  const tests = useSelector((state) => state.tests.tests);
-
-  //  const selectedQuestions = useSelector((state) => state.selectedQuestions);
-
-  // Check if topicsData is empty
-  //  const isScoreCandidateDataEmpty = scoreCandidate.length === 0;
-
-  //  console.log('selectedQuestions:: ', selectedQuestions);
-
-  //  console.log('tests.test_name:: ', tests.tests);
-
   const isAdmin = localStorage.getItem('isAdmin');
   const userId = localStorage.getItem('id');
 
@@ -97,24 +75,17 @@ const MarkTest = () => {
   }, [tests]);
 
   useEffect(() => {
-    console.log(' in useEffect dispatch(loadTests());');
     dispatch(loadTests());
   }, [dispatch]);
 
   const handleInputChange = (e) => {
-    console.log('in handleInputChange: ', e.target.value);
-
     e.preventDefault();
     setTestName(e.target.value);
-
-    //console.log('testName: ', testName);
 
     dispatch(getTest(e.target.value));
     if (tests.length === 0) {
       dispatch(loadTests());
     }
-    //
-    //setIsDisabled(true);
   };
 
   // Event handler to handle option selection
@@ -123,7 +94,6 @@ const MarkTest = () => {
   };
 
   const handleAnswer = (userAnswers, questionId, testName) => {
-    //console.log('in handleAnswer: ', userAnswers, questionId, testName);
     dispatch(postAnswer(questionId, userAnswers, testName, userId));
   };
 
@@ -132,8 +102,6 @@ const MarkTest = () => {
   };
 
   const handleOverallScore = (testName) => {
-    console.log('in handleOverallScore');
-
     dispatch(overall_score_test(getOnlyName(testName)));
   };
 
@@ -295,13 +263,13 @@ const MarkTest = () => {
             >
               Show individual statistics
             </button>
-            <button
+            {/*<button
               type="submit"
               className="btn btn-primary"
               onClick={(e) => handleOverallScore(testName)}
             >
               Show candidate overall statistics
-            </button>
+            </button>*/}
           </div>
           <div style={{ color: 'black', backgroundColor: 'white' }}>
             {/*Topics:{' '}*/}
@@ -312,51 +280,11 @@ const MarkTest = () => {
             ))}{' '}
             <br />
             <br />
-            {/*Count of Topics:{' '}
-            {topicCounts.map((topicCount, index) => (
-              <span key={index}>{topicCount}, </span>
-            ))}{' '}
-
-          
-
-            <br />
-            Count of Correct Answers:{' '}
-            {correctCounts.map((correctCount, index) => (
-              <span key={index}>{correctCount}, </span>
-            ))}{' '}
-            <br />
-            Count of Used Questions:{' '}
-            {usedCounts.map((usedCount, index) => (
-              <span key={index}>{usedCount}, </span>
-            ))}{' '}
-            <br />
-            Count of Wrong Answers:{' '}
-            {wrongCounts.map((wrongCount, index) => (
-              <span key={index}>{wrongCount}, </span>
-            ))}{' '}*/}
           </div>
         </div>
         <ul>
-          {/*{scoreCandidate.map((score, index) => (
-            <li key={index}>*/}
-          {/*<PieChartCorrect
-                topic={score.topic}
-                correct={score.correct}
-                used={score.used}
-              />
-
-              <ProgressBar
-                topic={score.topic}
-                used={score.used}
-                topicCounts={score.questionCount}
-              />*/}
-          {/*</li>
-          ))}*/}
           <li>
             <PieChartOverall correct={correct} used={usedValue} />
-
-            {/*<PieChartCorrect correct={correct} testCount={testCount} />*/}
-
             <ProgressBar used={usedValue} questionCount={questionCount} />
           </li>
         </ul>

@@ -25,6 +25,7 @@ import overAllScoreCandidate from './overallScoreCandidate';
 import deleteCandidateTests from './deleteCandidateTests.js';
 import userUpdate from './user_update.js';
 import eachTopicScore from './eachTopicScore.js';
+import selectedTest from './selectedTest.js';
 
 export default combineReducers({
   alert,
@@ -51,4 +52,5 @@ export default combineReducers({
   deleteCandidateTests,
   userUpdate,
   eachTopicScore,
+  selectedTest,
 });

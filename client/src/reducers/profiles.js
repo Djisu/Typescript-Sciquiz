@@ -8,7 +8,7 @@ const initialState = {
 function profilesReducer(state = initialState, action) {
   const { type, payload } = action;
 
-//  console.log('in profilesReducer: ', payload);
+  //  console.log('in profilesReducer: ', payload);
 
   switch (type) {
     case GET_PROFILES:

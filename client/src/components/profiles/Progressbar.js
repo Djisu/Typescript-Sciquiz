@@ -1,7 +1,7 @@
 import React from 'react';
 
 function ProgressBar({ used, questionCount }) {
-  console.log('in ProgressBar used, questionCount =', used, questionCount);
+//  console.log('in ProgressBar used, questionCount =', used, questionCount);
 
   const progressBarStyle = {
     width: '100%',

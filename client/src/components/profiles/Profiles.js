@@ -1,66 +1,156 @@
 import React, { Fragment, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import Spinner from '../layout/Spinner.js';
 import ProfileItem from './ProfileItem.js';
-import { getProfiles } from '../../actions/profile.js';
+import { getProfileById, getProfiles } from '../../actions/profile.js';
 
-const Profiles = () =>
-  //    {
-  //  profile: { profile, loading },
-  //  createProfile,
-  //  getCurrentProfile,
-  //}
-  {
-    const dispatch = useDispatch();
+const Profiles = () => {
+  console.log('in Profiles');
 
-    useEffect(() => {
-      //  console.log('IN  dispatch(getProfiles());');
+  const dispatch = useDispatch();
 
-      dispatch(getProfiles());
-    }, [getProfiles]);
+  // Fetch user data from local storage
+  const userId = localStorage.getItem('id');
+  const isAdmin = localStorage.getItem('isAdmin');
 
-    const profiles = useSelector((state) => state.profiles);
+  // Use the correct selector to access the profiles state
+  const profiles = useSelector((state) => state.profiles.profiles);
+  const singleProfile = useSelector((state) => state.profile.profile);
 
-    //console.log('profiles XXXXXX:::', profiles.profiles);
-    //console.log('typeof profiles.profiles', typeof profiles.profiles);
+  console.log('profiles::', profiles);
+  console.log('singleProfile::', singleProfile);
 
-    return (
-      <section className="container">
-        {profiles.loading ? (
-          <Spinner />
-        ) : (
-          <Fragment>
-            <h1 className="large text-primary">Students</h1>
-            <p className="lead">
-              <i className="fab fa-connectdevelop" /> Browse and connect with
-              students
-            </p>
+  useEffect(() => {
+    const fetchData = async () => {
+      if (isAdmin === 'false') {
+        console.log('IN dispatch(getProfileById(userId));', userId);
+        await dispatch(getProfileById(userId));
+      } else {
+        console.log('IN dispatch(getProfiles())');
+        await dispatch(getProfiles());
+      }
+    };
 
-            <div className="profiles">
-              {profiles.profiles.length > 0 ? (
-                profiles.profiles.map((profile) => (
-                  <ProfileItem key={profile._id} profile={profile} />
-                ))
-              ) : (
-                <h4>No profiles.profiles found...</h4>
-              )}
-            </div>
-          </Fragment>
-        )}
-      </section>
-    );
-  };
+    // Call fetchData function on component mount
+    fetchData();
+  }, [dispatch, isAdmin, userId]);
 
-Profiles.propTypes = {
-  getProfiles: PropTypes.func.isRequired,
-  profile: PropTypes.object.isRequired,
+  // Handle loading state
+  if (
+    (!profiles && isAdmin === 'true') ||
+    (!singleProfile && isAdmin === 'false')
+  ) {
+    return <Spinner />;
+  }
+
+  return (
+    <section className="container">
+      <Fragment>
+        <h1 className="large text-primary">Students</h1>
+        <p className="lead">
+          <i className="fab fa-connectdevelop" /> Browse and connect with
+          students
+        </p>
+
+        <div className="profiles">
+          {isAdmin === 'false' ? (
+            singleProfile ? (
+              <ProfileItem key={singleProfile._id} profile={singleProfile} />
+            ) : (
+              <p>No profile found...</p>
+            )
+          ) : Array.isArray(profiles) ? (
+            profiles.length > 0 ? (
+              profiles.map((profile) => (
+                <ProfileItem key={profile._id} profile={profile} />
+              ))
+            ) : (
+              <p>No profiles found...</p>
+            )
+          ) : (
+            <ProfileItem key={profiles._id} profile={profiles} />
+          )}
+        </div>
+      </Fragment>
+    </section>
+  );
 };
 
-const mapStateToProps = (state) => ({
-  profile: state.profile,
-});
+Profiles.propTypes = {
+  // Add any prop types if needed
+};
 
-export default connect(mapStateToProps, { getProfiles })(Profiles);
+export default Profiles;
+
+//import React, { Fragment, useEffect } from 'react';
+//import { useSelector, useDispatch } from 'react-redux';
+//import PropTypes from 'prop-types';
+//import Spinner from '../layout/Spinner.js';
+//import ProfileItem from './ProfileItem.js';
+//import { getProfileById, getProfiles } from '../../actions/profile.js';
+//
+//const Profiles = () => {
+//  console.log('in Profiles');
+//
+//  const dispatch = useDispatch();
+//
+//  const userId = localStorage.getItem('id');
+//  const isAdmin = localStorage.getItem('isAdmin');
+//
+//  // Use the correct selector to access the profiles state
+//  //  const profile = useSelector((state) => state.profile.profile); REMEMBER TO REVERSE WHEN NOT WORKING
+//  // Use the correct selector to access the profiles state
+//  const profiles = useSelector((state) => state.profile.profiles);
+//
+//  console.log('profiles::', profiles);
+//
+//  //  console.log('profile::', profile);
+//
+//  useEffect(() => {
+//    if (isAdmin === 'false') {
+//      console.log('IN  dispatch(getProfileById(userId));', userId);
+//      dispatch(getProfileById(userId));
+//    } else {
+//      console.log('IN  dispatch(getProfiles())');
+//      dispatch(getProfiles());
+//    }
+//  }, [dispatch, isAdmin, userId]);
+//
+//  // Handle loading state
+//  if (profile === null) {
+//    return <Spinner />;
+//  }
+//
+//  return (
+//    <section className="container">
+//      <Fragment>
+//        <h1 className="large text-primary">Students</h1>
+//        <p className="lead">
+//          <i className="fab fa-connectdevelop" /> Browse and connect with
+//          students
+//        </p>
+//
+//        <div className="profiles">
+//          {Array.isArray(profiles) ? (
+//            profiles.length > 0 ? (
+//              profiles.map((profile) => (
+//                <ProfileItem key={profile._id} profile={profile} />
+//              ))
+//            ) : (
+//              <p>No profiles found...</p>
+//            )
+//          ) : (
+//            <ProfileItem key={profiles._id} profile={profiles} />
+//          )}
+//        </div>
+//      </Fragment>
+//    </section>
+//  );
+//};
+//
+//Profiles.propTypes = {
+//  // Add any prop types if needed
+//};
+//
+//export default Profiles;

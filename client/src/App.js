@@ -19,9 +19,13 @@ import ProfileForm from './components/profile-forms/ProfileForm.js';
 import Profiles from './components/profiles/Profiles.js';
 import Profile from './components/profile/Profile.js';
 import ProfileTestResult from './components/profile/ProfileTestResult.js';
+import ProfileMarkTest from './components/profile/ProfileMarkTest';
 
 import Difficultylevel from './components/difficultylevel/Difficultylevel.js';
 import Question from './components/question/Question.js';
+
+import ExcelUpload from './components/question/ExcelUpload.js';
+
 import Subject from './components/subject/Subject.js';
 //import Tests from './components/tests/Tests.js';
 import StuTests from './components/stutest/StuTests.js';
@@ -128,14 +132,16 @@ const App = () => {
           element={<PrivateRoute component={ProfileForm} />}
         />
         <Route path="/create-difficultylevel" element={<Difficultylevel />} />
-
         <Route path="/create-question" element={<Question />} />
+        <Route path="/excel-upload" element={<ExcelUpload />} />
         <Route path="/create-topic" element={<Topic />} />
         <Route path="/create-subject" element={<Subject />} />
         {/*<Route path="/create-tests" element={<Tests />} />*/}
         <Route path="/create-stutests" element={<StuCreateTest />} />
 
         <Route path="/current-test-result" element={<CurrentTestResult />} />
+
+        <Route path="/profile-mark-test" element={<ProfileMarkTest />} />
 
         {/*<Route path="/create-stutests" element={<StuTestDashboard />} />*/}
         <Route path="/create-user-performance" element={<User_Performance />} />

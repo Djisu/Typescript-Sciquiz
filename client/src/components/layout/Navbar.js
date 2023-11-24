@@ -72,10 +72,13 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
                     <Link to="/create-question">Question</Link>
                   </li>
                   <li>
+                    <Link to="/excel-uploads">Excel File Upload</Link>
+                  </li>
+                  <li>
                     <Link to="/user-edit">Edit User</Link>
                   </li>
                   {/*<li>
-                    <Link to="/create-user-performance">Test Result</Link>
+                    <Link to="/create-user-performance">Test Result</Link>  
                   </li>*/}
                   <li>
                     <Link to="/mark-test">Mark Test</Link>

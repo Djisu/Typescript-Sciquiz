@@ -12,7 +12,7 @@ const initialState = {
 function overAllScoreCandidateReducer(state = initialState, action) {
   const { type, payload } = action;
 
-  console.log('in overAllScoreCandidateReducer', payload);
+//  console.log('in overAllScoreCandidateReducer', payload);
 
   switch (action.type) {
     case OVERALL_SCORE_QUESTION_REQUEST:

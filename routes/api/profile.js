@@ -180,7 +180,7 @@ router.get('/', async (req, res) => {
   try {
     const profiles = await Profile.find().populate('user', ['name', 'avatar']);
 
-    //console.log('in profile router.get(/', profiles);
+    //console.log('FETCHED profiles', profiles);
 
     return res.json(profiles);
   } catch (err) {
@@ -193,8 +193,8 @@ router.get('/', async (req, res) => {
 // @desc   GET profile by user ID
 // @access Public
 router.get('/user/:userId', async (req, res) => {
-  console.log('router.get(/user/:userId');
-
+  console.log('router.get(/user/:userId', req.params.userId);
+  //
   console.log(' req.params.userId: ', req.params.userId);
 
   try {
@@ -202,13 +202,17 @@ router.get('/user/:userId', async (req, res) => {
       user: req.params.userId
     }).populate('user', ['name', 'avatar']); //, 'school', 'status'
 
-    //console.log('profile=', profile);
+    if (!profile) {
+      console.log('No profiles seen');
+      return res.status(400).json({ msg: 'Profile not found' });
+    }
 
-    if (!profile) return res.status(400).json({ msg: 'Profile not found' });
+    console.log('fetched profile=', profile);
+    console.log('=================================================');
 
-    res.json(profile);
+    return res.json(profile);
   } catch (err) {
-    console.error(err.message);
+    //console.error(err.message);
 
     if (err.kind == 'ObjectId') {
       return res.status(400).json({ msg: 'Profile not found' });

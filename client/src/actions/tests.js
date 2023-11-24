@@ -1,3 +1,4 @@
+import { useParams } from 'react-router-dom';
 import api from '../utils/api.js';
 import { setAlert } from './alert.js';
 
@@ -24,6 +25,9 @@ import {
   EACH_TOPIC_REQUEST,
   EACH_TOPIC_SUCCESS,
   EACH_TOPIC_FAIL,
+  SELECTED_TEST_REQUEST,
+  SELECTED_TEST_SUCCESS,
+  SELECTED_TEST_FAIL,
 } from './types.js';
 
 // Load Tests
@@ -47,28 +51,28 @@ export const loadTests = () => async (dispatch) => {
 };
 
 // Load Tests Questions Only
-export const loadTestsUserid =
-  ({ userId }) =>
-  async (dispatch) => {
-    console.log('in loadTests');
+export const loadTestsUserid = (userId) => async (dispatch) => {
+  console.log('in action creator loadTestsUserid ', userId);
 
-    const randNum = Math.floor(Math.random() * 1000000);
+  dispatch({ type: TESTS_REQUEST });
 
-    try {
-      const res = await api.get(`/tests/${randNum}/${userId}`);
+  const randNum = Math.floor(Math.random() * 1000000);
 
-      console.log(' res.data[0]:', res.data[0]);
+  try {
+    const res = await api.get(`/tests/${randNum}/${userId}`);
 
-      dispatch({
-        type: TESTS_LOADED,
-        payload: res.data,
-      });
-    } catch (err) {
-      dispatch({
-        type: TESTS_FAIL,
-      });
-    }
-  };
+    console.log('TESTS FOUND!!! res.data:', res.data);
+
+    dispatch({
+      type: TESTS_LOADED,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: TESTS_FAIL,
+    });
+  }
+};
 
 // Load Tests Questions Only
 export const loadTestsQuestions =
@@ -100,26 +104,23 @@ export const getTest = (test_name) => async (dispatch) => {
     dispatch(setAlert('Tests name not found', 'danger'));
   }
 
-  dispatch({ type: TESTS_REQUEST });
+  dispatch({ type: SELECTED_TEST_REQUEST });
 
   try {
     const res = await api.get(`/tests/${test_name}`);
 
-    if (res.data.length > 0) {
-      console.log('TEST FETCHED res.data: ', res.data);
-      dispatch({
-        type: TESTS_SUCCESS,
-        payload: res.data,
-      });
-      dispatch(setAlert('Tests obtained', 'success'));
-      return;
-    }
+    console.log('SELECTED TEST FETCHED res.data: ', res.data);
 
-    dispatch(setAlert('Tests not obtained', 'danger'));
-  } catch (err) {
     dispatch({
-      type: TESTS_FAIL,
-      payload: { msg: err.response.statusText, status: err.response.status },
+      type: SELECTED_TEST_SUCCESS,
+      payload: res.data,
+    });
+  } catch (err) {
+    console.log('Error ocurred', err);
+
+    dispatch({
+      type: SELECTED_TEST_FAIL,
+      payload: { msg: 'Error has occured' },
     });
     dispatch(setAlert('Error in fetching data', 'danger'));
   }

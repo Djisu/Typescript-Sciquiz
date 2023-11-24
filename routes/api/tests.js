@@ -1,5 +1,7 @@
 /* eslint-disable semi */
 import express from 'express';
+import mongoose from 'mongoose';
+
 const router = express.Router();
 import { check, validationResult } from 'express-validator';
 
@@ -90,21 +92,38 @@ router.get('/:name/:userId/:randNum', async (req, res) => {
   }
 });
 
-//// Define an API endpoint to get the test by test ID
-router.get('/:rand/:userId', async (req, res) => {
-  console.log('in router.get(/:userId');
+//// Define an API endpoint to get the test by userId
+router.get('/:randNum/:userId', async (req, res) => {
+  console.log('in router.get(/:randNum/:userId');
 
   try {
-    const { test_name } = req.params;
+    //const rand = req.params.rand;
+    const id = req.params.userId;
+
+    const objectId = new mongoose.Types.ObjectId(id);
+
+    //console.log('objectId:::: ', objectId);
+
+    // Validate that the provided userId is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(objectId)) {
+      return res.status(400).json({ message: 'Invalid userId format' });
+    }
+
+    const userName = await getUserById(objectId);
+
+    //console.log('userName== ', userName);
 
     // Find the test by test_name
-    const test = await TestQuestion.find({ test_name: test_name });
+    //const test = await TestQuestion.find({ test_name: test_name });
+    const tests = await getTestNamesContainingString(userName);
 
-    if (test.length === 0) {
+    //if (tests) console.log('testsOOOOOOO:: ', tests);
+
+    if (!tests) {
       return res.status(404).json({ message: 'Test not found' });
     }
 
-    res.json(test);
+    res.json(tests);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
@@ -119,32 +138,6 @@ router.get('/:test_name', async (req, res) => {
     const test_name = req.params.test_name;
     const userId = getUserId(test_name);
 
-    // Create a regex pattern for the partialTestName as a wildcard
-    //const regexPattern = new RegExp(partialTestName, 'i'); // 'i' for case-insensitive
-
-    //
-    //  console.log('testName=== ', testName);
-    //  const user = await getOnlyName(testName);
-    //
-    //  console.log('user= ', user);
-    //
-    //  //  const tempUserId = getUserId(testName);
-    //  const tempUserId = await User.findOne({ name: user });
-    //
-    //  console.log('tempUserId=== ', tempUserId._id);
-    //
-    //    const answeredQuestion = await Question.find({
-    //      answeredBy: {
-    //        $elemMatch: {
-    //          $exists: true,
-    //          $ne: [],
-    //          $in: [tempUserId._id]
-    //        }
-    //      }
-    //    });
-    //
-    //    console.log('XXXXXX answeredQuestion:: ', answeredQuestion);
-
     // Find the test by test_name
     const test = await TestQuestion.find({ test_name: test_name });
 
@@ -154,7 +147,7 @@ router.get('/:test_name', async (req, res) => {
 
     console.log('test is ', test);
 
-    res.json(test);
+    return res.json(test);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
@@ -443,14 +436,17 @@ router.post(
 async function getUserById(userId) {
   try {
     // Find the user by their _id (assuming userId is the user's ObjectId)
+    //const user = await User.findById(userId);
     const user = await User.findById(userId);
+
+    console.log('user: ', user.name);
 
     if (!user) {
       return null; // User not found
     }
 
     // Return the user object
-    return user;
+    return user.name;
   } catch (error) {
     console.error('Error retrieving user:', error);
     throw error; // You can handle the error in the calling code
@@ -477,6 +473,8 @@ async function getTestNamesContainingString(searchString) {
     const testNames = await TestQuestion.distinct('test_name', {
       test_name: { $regex: searchString, $options: 'i' } // 'i' for case-insensitive search
     });
+
+    console.log('testNames== ', testNames);
 
     return testNames;
   } catch (error) {

@@ -3,7 +3,7 @@ import { Pie } from 'react-chartjs-2';
 import { useSelector } from 'react-redux';
 
 function PieChartOverall({ correct, used }) {
-  console.log('in PieChartOverall  correct, used ', correct, used);
+//  console.log('in PieChartOverall  correct, used ', correct, used);
 
   const incorrect = used - correct;
 

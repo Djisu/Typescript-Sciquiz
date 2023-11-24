@@ -14,12 +14,14 @@ const initialState = {
 function testsReducer(state = initialState, action) {
   const { type, payload } = action;
 
+  console.log('in testsReducer ', payload);
+
   switch (action.type) {
     case TESTS_LOADED:
     case TESTS_SUCCESS:
       return {
         ...state,
-        tests: action.payload, // Set the tests data from the action payload
+        tests: payload, // Set the tests data from the action payload
         loading: false, // Set loading to false, as the data has been successfully loaded
       };
 

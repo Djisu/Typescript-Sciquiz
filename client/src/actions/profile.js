@@ -59,17 +59,24 @@ export const getProfiles = () => async (dispatch) => {
 
 // Get profile by ID
 export const getProfileById = (userId) => async (dispatch) => {
-  //  console.log('in  getProfileById: ', userId);
+  console.log('in  action creator getProfileById: ', userId);
 
   try {
     const res = await api.get(`/profile/user/${userId}`);
 
     if (res.data) {
+      console.log('in  action creator getProfileById: res.data=== ', res.data);
+
       dispatch({
         type: GET_PROFILE,
         payload: res.data,
       });
+
+      dispatch(setAlert('Profile found!!!', 'success'));
     } else {
+      dispatch(setAlert('No profiles found!!!', 'danger'));
+      console.log('No profiles found');
+
       dispatch({
         type: PROFILE_ERROR,
         payload: { msg: 'Failed to get profile', status: res.status },

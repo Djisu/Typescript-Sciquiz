@@ -51,8 +51,6 @@ const StuTestDashboard = () => {
 
   const newSubjects = initialSubjects;
 
-  console.log('newSubjects== ', newSubjects);
-
   //Find out if user is authenticated or not
   useEffect(() => {
     if (!userid || userid.length == 0) {
@@ -109,11 +107,6 @@ const StuTestDashboard = () => {
       return;
     }
 
-    console.log('Checked Topics:', checkedTopics);
-    console.log('Checked Level:', checkedDifficultylevels);
-    console.log('Checked Subjects:', checkedSubjects);
-    console.log('noofquestions:', parseInt(noofquestions));
-
     let url = '';
 
     setCheckedSubjects([...checkedSubjects, selectedOption]);
@@ -124,9 +117,6 @@ const StuTestDashboard = () => {
       checkedDifficultylevels.length == 0 &&
       checkedSubjects.length > 0
     ) {
-      console.log(
-        'in checkedTopics && !checkedDifficultylevels && checkedsubjects'
-      );
       url = `/maintesttopics/${checkedTopics}/${checkedSubjects}/${userid}/${noofquestions}`;
     } else if (
       // checkedDifficultylevels
@@ -134,9 +124,6 @@ const StuTestDashboard = () => {
       checkedTopics.length == 0 &&
       checkedSubjects.length > 0
     ) {
-      console.log('ONLY DIFFICULTY LEVELS');
-
-      console.log(checkedDifficultylevels && !checkedTopics);
       url = `/maintestdifficultylevels/${checkedDifficultylevels}/${checkedSubjects}/${userid}/${noofquestions}`;
     } else if (
       // checkedSubjects
@@ -144,9 +131,6 @@ const StuTestDashboard = () => {
       checkedTopics.length == 0 &&
       checkedDifficultylevels.length == 0
     ) {
-      console.log(
-        'in checkedsubjects && !checkedTopics && !checkedDifficultylevels'
-      );
       url = `/maintestsubjects/${checkedSubjects}/${userid}/${noofquestions}`;
     } else if (
       // checkedTopics checkedDifficultylevels checkedSubjects
@@ -154,9 +138,6 @@ const StuTestDashboard = () => {
       checkedDifficultylevels.length > 0 &&
       checkedSubjects.length == 0
     ) {
-      console.log(
-        'in checkedTopics && checkedDifficultylevels && !checkedsubjects'
-      );
       url = `/maintesttopicsdifficultylevels/${checkedTopics}/${checkedDifficultylevels}/${checkedSubjects}/${userid}/${noofquestions}`;
     } else if (
       // checkedTopics checkedDifficultylevels checkedSubjects
@@ -164,9 +145,6 @@ const StuTestDashboard = () => {
       checkedDifficultylevels.length > 0 &&
       checkedSubjects.length > 0
     ) {
-      console.log(
-        'in checkedTopics && checkedDifficultylevels && checkedsubjects'
-      );
       url = `/maintest/${checkedTopics}/${checkedDifficultylevels}/${checkedSubjects}/${userid}/${noofquestions}`;
     }
 
@@ -241,29 +219,6 @@ const StuTestDashboard = () => {
           </ul>
         )}
       </div>
-      <span> </span>
-      {/*<div className="float-left">
-        <h2 style={labelStyle}>Levels:</h2>
-        <ul>
-          {initialDifficultyLevels.map((level, index) => (
-            <li key={index}>
-              <input
-                type="checkbox"
-                id={`level-${index}`}
-                checked={checkedDifficultylevels.includes(level)}
-                onChange={() => toggleCheckboxLevel(level)}
-              />
-              <span> </span>
-              <label
-                htmlFor={`level-  ${index}`}
-                style={{ color: 'black', backgroundColor: 'white' }}
-              >
-                {level}
-              </label>
-            </li>
-          ))}
-        </ul>
-      </div>*/}
     </div>
   );
 };

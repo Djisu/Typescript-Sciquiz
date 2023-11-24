@@ -1,38 +1,44 @@
 import React, { Fragment, useState, useEffect } from 'react';
 
 import PropTypes from 'prop-types';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, Navigate } from 'react-router-dom';
 import { connect } from 'react-redux';
+
 import { useDispatch, useSelector } from 'react-redux';
 import Spinner from '../layout/Spinner.js';
 import ProfileTop from './ProfileTop.js';
 import ProfileAbout from './ProfileAbout.js';
 
-import { getProfileById } from '../../actions/profile.js';
+import { getProfileById, getProfiles } from '../../actions/profile.js';
 import { userAnsweredQuestions } from '../../actions/auth.js';
 import { setAlert } from '../../actions/alert.js';
-//import Chart from '../../components/profiles/Chart.js';
 import PieChart from '../profiles/PieChartCorrect.js';
 import { Pie } from 'react-chartjs-2';
 import ProfileTestResult from './ProfileTestResult.js';
+import ProfileMarkTest from './ProfileMarkTest.js';
 
 const Profile = ({ profile: { profile }, auth }) => {
-  //  const topicsData = useSelector((state) => state.topics.topicsData);
-  //
-  //  if (topicsData.length === 0) {
-  //    dispatch(setAlert('No data found for the pie chart', 'danger'));
-  //    return;
-  //  }
-
   const dispatch = useDispatch();
   //  console.log('in Profile');  //
 
+  const isAdmin = localStorage.getItem('isAdmin');
+
+  const booleanValue = isAdmin === 'true' ? true : false;
+
+  //  console.log('isAdmin: ', isAdmin);
+
+  //  if (!booleanValue) {
+  //    setAlert('You are not admin.', 'danger');
+  //
+  //    return <Navigate to="/dashboard" />;
+  //  }
+
   const { id } = useParams();
 
-  console.log('profile::: ', profile);
-
-  console.log('in Profile');
-  console.log('id is ', id);
+  //  console.log('profile::: ', profile);
+  //
+  //  console.log('in Profile');
+  //  console.log('id is ', id);
 
   const profileX = useSelector((state) => state.profile);
 
@@ -42,6 +48,8 @@ const Profile = ({ profile: { profile }, auth }) => {
   }
 
   useEffect(() => {
+    //console.log('in useEffect   dispatch(getProfileById(id));', id);
+
     dispatch(getProfileById(id));
   }, [dispatch, id]);
 
@@ -55,7 +63,7 @@ const Profile = ({ profile: { profile }, auth }) => {
   // Destructure the profile object to get individual properties     getProfileById, id
   const { bio, email, name, school, status } = profile;
 
-  console.log('email===== ', email);
+  //  console.log('email===== ', email);
 
   return (
     <section className="container">
@@ -78,29 +86,23 @@ const Profile = ({ profile: { profile }, auth }) => {
           <div className="profile-grid my-1">
             <ProfileTop profile={profile} />
             <ProfileAbout profile={profile} />
-            <ProfileTestResult />
           </div>
+
+          {/*{auth.isAuthenticated &&
+            auth.loading === false &&
+            auth.user._id === profile.user._id && (*/}
+          <div className="profile-grid my-1">
+            <ProfileMarkTest userId={profile.user._id} />
+            <ProfileTestResult userId={profile.user._id} />
+          </div>
+          {/*)}*/}
         </Fragment>
       )}
-
-      <div>
-        {/*{topicsData.map((topic, index) => (
-          <div key={index}>
-            <h2>{topic.topic}</h2>
-            <PieChart
-              answeredByCount={topic.answeredByCount}
-              flagTrueCount={topic.flagTrueCount}
-              flagFalseCount={topic.flagFalseCount}
-            />
-          </div>
-        ))}*/}
-      </div>
     </section>
   );
 };
 
 Profile.propTypes = {
-  getProfileById: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired,
   auth: PropTypes.object.isRequired,
 };
