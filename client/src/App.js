@@ -133,7 +133,7 @@ const App = () => {
         />
         <Route path="/create-difficultylevel" element={<Difficultylevel />} />
         <Route path="/create-question" element={<Question />} />
-        <Route path="/excel-upload" element={<ExcelUpload />} />
+        <Route path="/excel-uploads" element={<ExcelUpload />} />
         <Route path="/create-topic" element={<Topic />} />
         <Route path="/create-subject" element={<Subject />} />
         {/*<Route path="/create-tests" element={<Tests />} />*/}
