@@ -91,9 +91,13 @@ const Profile = ({ profile: { profile }, auth }) => {
           {/*{auth.isAuthenticated &&
             auth.loading === false &&
             auth.user._id === profile.user._id && (*/}
-          <div className="profile-grid my-1">
-            <ProfileMarkTest userId={profile.user._id} />
-            <ProfileTestResult userId={profile.user._id} />
+          <div className=" d-flex flex-column">
+            <div className="col-md-6">
+              <ProfileMarkTest userId={profile.user._id} />
+            </div>
+            <div className="col-md-6">
+              <ProfileTestResult userId={profile.user._id} />
+            </div>
           </div>
           {/*)}*/}
         </Fragment>
