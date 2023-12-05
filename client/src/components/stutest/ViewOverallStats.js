@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import {
+  loadTests,
   getTest,
   postAnswer,
   score_test,
@@ -23,7 +24,7 @@ import ProgressBar from '../profiles/Progressbar.js';
 import PieChartOverall from '../profiles/PieChartOverall.js';
 import PieChartOverallCorrect from '../profiles/PieChartOverallCorrect.js';
 
-const MarkTest = () => {
+const ViewOverallStats = () => {
   const dispatch = useDispatch();
 
   const [showAnswer, setShowAnswer] = useState(false);
@@ -33,13 +34,7 @@ const MarkTest = () => {
   const [isDisabled, setIsDisabled] = useState(false);
   const [userAnswers, setUserAnswers] = useState([]);
 
-  const testsUnmarked = useSelector(
-    (state) => state.testsUnmarked.testsUnmarked
-  );
-
-  if (testsUnmarked.length == 0) {
-    dispatch(setAlert('No unmarked tests', 'danger'));
-  }
+  const tests = useSelector((state) => state.tests.tests);
 
   const selectedQuestions = useSelector((state) => state.selectedQuestions);
 
@@ -67,16 +62,24 @@ const MarkTest = () => {
 
   // Initialize userAnswers inside a useEffect that depends on tests
   useEffect(() => {
-    if (Array.isArray(testsUnmarked)) {
-      setUserAnswers(Array(testsUnmarked.length).fill(''));
+    if (Array.isArray(tests)) {
+      setUserAnswers(Array(tests.length).fill(''));
     }
-  }, [testsUnmarked]);
+  }, [tests]);
 
   useEffect(() => {
-    console.log('in useEffect dispatch(loadTestsUnmarked())');
-
-    dispatch(loadTestsUnmarked());
+    dispatch(loadTests());
   }, [dispatch]);
+
+  const handleInputChange = (e) => {
+    e.preventDefault();
+    setTestName(e.target.value);
+
+    dispatch(getTest(e.target.value));
+    if (tests.length === 0) {
+      dispatch(loadTests());
+    }
+  };
 
   const handleInputChangeUnmarked = (e) => {
     e.preventDefault();
@@ -84,7 +87,7 @@ const MarkTest = () => {
 
     dispatch(getTest(e.target.value));
     if (tests.length === 0) {
-      dispatch(loadTestsUnmarked());
+      dispatch(loadTests());
     }
   };
 
@@ -125,21 +128,21 @@ const MarkTest = () => {
     return extractedPart;
   };
 
-  const deleteCandidate = (testname) => {
-    if (testname) {
-      const newTestName = getOnlyName(testName);
-      const result = window.confirm(
-        'Are you sure you want to delete this item?'
-      );
-      if (result) {
-        dispatch(deleteCandidateTests(newTestName));
-        dispatch(setAlert('Deletion successful!', 'success'));
-        dispatch(loadTestsUnmarked());
-      } else {
-        dispatch(setAlert('Deletion aborted!', 'danger'));
-      }
-    }
-  };
+  //  const deleteCandidate = (testname) => {
+  //    if (testname) {
+  //      const newTestName = getOnlyName(testName);
+  //      const result = window.confirm(
+  //        'Are you sure you want to delete this item?'
+  //      );
+  //      if (result) {
+  //        dispatch(deleteCandidateTests(newTestName));
+  //        dispatch(setAlert('Deletion successful!', 'success'));
+  //        dispatch(loadTests());
+  //      } else {
+  //        dispatch(setAlert('Deletion aborted!', 'danger'));
+  //      }
+  //    }
+  //  };
 
   return (
     <div>
@@ -158,99 +161,21 @@ const MarkTest = () => {
             }}
           >
             <div className="form-group">
-              Select a test to mark:
+              Select old test to view statistics: &nbsp;
               <select
                 name="testName"
                 value={testName}
-                onChange={handleInputChangeUnmarked}
+                onChange={handleInputChange}
                 className="select-element"
               >
                 <option key="default" value=""></option>
-                {/*{testsUnmarked.map((test) => (
+                {tests.map((test) => (
                   <option key={test._id} value={test.test_name}>
                     {test.test_name}
                   </option>
-                ))}*/}
+                ))}
               </select>
-              {isAdmin === 'true' && (
-                <button
-                  className="btn btn-danger"
-                  onClick={() => deleteCandidate(testName)}
-                >
-                  Delete Old Candidate
-                </button>
-              )}
             </div>
-          </li>
-
-          <li
-            style={{
-              color: 'black',
-              backgroundColor: 'white',
-              fontWeight: 'bold',
-            }}
-          >
-            {Array.isArray(testsUnmarked) ? (
-              testsUnmarked.map((question, index) => (
-                <div key={question._id}>
-                  <p>
-                    Question {index + 1}: {question.question}
-                  </p>
-
-                  {isAdmin === 'true' && (
-                    <div style={{ color: 'black', backgroundColor: 'white' }}>
-                      <p style={{ color: 'red', backgroundColor: 'white' }}>
-                        Answer: {question.answer}
-                      </p>
-
-                      <div>
-                        Topic: {question.topic} <br />
-                        Difficulty Level: {question.difficulty_level}
-                        <br />
-                        Question Id: {question.questionId}
-                        <br />
-                        Test Name: {question.test_name}
-                      </div>
-
-                      <div>
-                        <label htmlFor="optionSelect">Select an option:</label>
-                        <select
-                          id="optionSelect"
-                          value={userAnswers[index] || ''}
-                          onChange={(e) => {
-                            const updatedAnswers = [...userAnswers]; // Create a copy of the state array
-                            updatedAnswers[index] = e.target.value; // Update the corresponding value
-                            setUserAnswers(updatedAnswers); // Set the new state
-                          }}
-                          className="select-element"
-                        >
-                          <option value="">Select an option</option>
-                          <option value="true">true</option>
-                          <option value="false">false</option>
-                        </select>
-
-                        <button
-                          type="submit"
-                          className="btn btn-primary"
-                          onClick={() =>
-                            handleAnswer(
-                              userAnswers[index],
-                              question.questionId,
-                              question.test_name
-                            )
-                          }
-                        >
-                          Post Answer
-                        </button>
-                      </div>
-                      <br />
-                    </div>
-                  )}
-                </div>
-              ))
-            ) : (
-              <p>No questions to display</p>
-            )}
           </li>
         </ul>
 
@@ -261,7 +186,7 @@ const MarkTest = () => {
               className="btn btn-primary"
               onClick={() => handleScore(testName)}
             >
-              Show individual statistics
+              Show candidate overall statistics
             </button>
           </div>
           <div style={{ color: 'black', backgroundColor: 'white' }}>
@@ -287,4 +212,4 @@ const MarkTest = () => {
   );
 };
 
-export default MarkTest;
+export default ViewOverallStats;

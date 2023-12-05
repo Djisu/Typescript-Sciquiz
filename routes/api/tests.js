@@ -100,21 +100,21 @@ router.get('/:randNum/:userId', async (req, res) => {
     //const rand = req.params.rand;
     const id = req.params.userId;
 
-    const objectId = new mongoose.Types.ObjectId(id);
+    //const objectId = new mongoose.Types.ObjectId(id);
 
     //console.log('objectId:::: ', objectId);
 
     // Validate that the provided userId is a valid ObjectId
-    if (!mongoose.Types.ObjectId.isValid(objectId)) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: 'Invalid userId format' });
     }
 
-    const userName = await getUserById(objectId);
+    const userName = await getUserById(id);
 
     //console.log('userName== ', userName);
 
     // Find the test by test_name
-    //const test = await TestQuestion.find({ test_name: test_name });
+    //const test = await TestQuestksion.find({ test_name: test_name });
     const tests = await getTestNamesContainingString(userName);
 
     //if (tests) console.log('testsOOOOOOO:: ', tests);
@@ -371,9 +371,30 @@ router.get('/', async (req, res) => {
     res.send(tests);
   } catch (err) {
     console.log(err.message);
-    res.status(500).send('Server Error');
+    return res.status(400).json({ msg: 'There is no test found' });
   }
 });
+
+//// @route  GET api/
+//// @access Public
+//router.get('/unmarked/:randnum', async (req, res) => {
+//  console.log("in tests router.get('/unmarked', ");
+//
+//  try {
+//    const tests = await TestQuestion.find({ answer_flag: 'false' });
+//
+//    console.log('unmarked tests== ', tests);
+//
+//    if (tests) {
+//      return res.send(tests);
+//    } else {
+//      return res.json([]);
+//    }
+//  } catch (err) {
+//    console.log(err.message);
+//    res.status(500).send('Server Error');
+//  }
+//});
 
 // Define an API endpoint to add a question to test_details array
 // @route  POST api/test

@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { fetchTopics } from '../../actions/topic.js';
 import { fetchDifficultyLevels } from '../../actions/difficulty_level.js';
 import { fetchUniqueSubjects } from '../../actions/subject.js';
+import topicReducer from '../../reducers/topic.js';
 
 const StuCreateTest = () => {
   const selectStyle = {
@@ -22,6 +23,16 @@ const StuCreateTest = () => {
     marginBottom: '10px', // Add space below the label
   };
 
+  const checkboxContainerStyle = {
+    marginBottom: '10px',
+  };
+
+  const checkboxLabelStyle = {
+    display: 'inline-block',
+    marginLeft: '5px',
+    cursor: 'pointer',
+  };
+
   const [loadTopics, setLoadTopics] = useState(false);
   const [loadDifficultLevel, setLoadDifficultLevel] = useState(false);
 
@@ -31,6 +42,8 @@ const StuCreateTest = () => {
   let [checkedDifficultylevels, setCheckedDifficultylevels] = useState([]);
   let [checkedSubjects, setCheckedSubjects] = useState([]);
   let [noofquestions, setNoofquestions] = useState(0);
+
+  const [isChecked, setIsChecked] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -44,13 +57,7 @@ const StuCreateTest = () => {
     (state) => state.difficultyLevel.difficultyLevels
   );
 
-  //  const { topic, count } = topics;
-  //  console.log('topics==  ', topics);
-  //  console.log('count== ', count);
-
-  console.log('TOPICS ARE== ', topics);
-
-  //  console.log('initialDifficultyLevelsXXXX== ', initialDifficultyLevels);
+  //  console.log('TOPICS ARE== ', topics);
 
   const initialSubjects = useSelector(
     (state) => state.fetchUniqueSubjects.fetchUniqueSubjects
@@ -69,34 +76,52 @@ const StuCreateTest = () => {
   };
 
   const handleSelectChange = (e) => {
-    //console.log('in handleSelectChange', e.target.value);
     const selectedSubject = e.target.value;
 
     setSelectedSubject(selectedSubject);
 
-    //console.log('selectedSubject==== ', selectedSubject);
-
     // Fetch topics based on the selected subject
     if (selectedSubject) {
-      //  console.log('dispatch(fetchTopics(selectedSubject));');
-
       dispatch(fetchTopics(selectedSubject));
     }
 
     //Fetch difficult levels based on the selected subject
     if (selectedSubject) {
-      //  console.log('in dispatch(fetchDifficultyLevels(selectedSubject));');
-
       dispatch(fetchDifficultyLevels(selectedSubject));
     }
   };
 
-  const toggleCheckboxTopic = (topic) => {
-    if (checkedTopics.includes(topic)) {
-      setCheckedTopics(checkedTopics.filter((item) => item !== topic));
-    } else {
-      setCheckedTopics([...checkedTopics, topic]);
-    }
+  //  const toggleCheckboxTopic = (topicData) => {
+  //    console.log('in toggleCheckboxTopic', topicData.topic);
+  //
+  //    if (checkedTopics.includes(topicData.topic)) {
+  //      setCheckedTopics(
+  //        checkedTopics.filter((item) => item !== topicData.topic)
+  //      );
+  //    } else {
+  //      setCheckedTopics([...checkedTopics, topicData.topic]);
+  //    }
+  //    setIsChecked(!isChecked);
+  //
+  //    console.log('checkedTopics:: ', checkedTopics);
+  //  };
+
+  const toggleCheckboxTopic = (topicData) => {
+    console.log('in toggleCheckboxTopic', topicData.topic);
+
+    setCheckedTopics((prevCheckedTopics) => {
+      const updatedTopics = [...prevCheckedTopics];
+
+      if (updatedTopics.includes(topicData.topic)) {
+        updatedTopics.splice(updatedTopics.indexOf(topicData.topic), 1);
+      } else {
+        updatedTopics.push(topicData.topic);
+      }
+
+      console.log('checkedTopics:: ', updatedTopics);
+      return updatedTopics;
+    });
+    setIsChecked(!isChecked);
   };
 
   const toggleCheckboxLevel = (level) => {
@@ -107,6 +132,8 @@ const StuCreateTest = () => {
     } else {
       setCheckedDifficultylevels([...checkedDifficultylevels, level]);
     }
+
+    console.log('checkedDifficultylevels:: ', checkedDifficultylevels);
   };
 
   const handleButtonClick = () => {
@@ -235,6 +262,7 @@ const StuCreateTest = () => {
 
       <div className="float-left">
         <h4 style={labelStyle}>Topics:</h4>
+
         {Array.isArray(topics) ? (
           <ul>
             {topics.map((topicData, index) => (
@@ -242,7 +270,7 @@ const StuCreateTest = () => {
                 <input
                   type="checkbox"
                   id={`topic-${index}`}
-                  checked={checkedTopics.includes(topicData)}
+                  checked={checkedTopics.includes(topicData.topic)}
                   onChange={() => toggleCheckboxTopic(topicData)}
                 />
                 &nbsp;
@@ -251,12 +279,9 @@ const StuCreateTest = () => {
                   style={{ color: 'black', backgroundColor: 'white' }}
                 >
                   {topicData.topic}
-                </label>
+                </label>{' '}
                 &nbsp;
-                <label
-                  htmlFor={`topic-${index}`}
-                  style={{ color: 'red', backgroundColor: 'white' }}
-                >
+                <label style={{ color: 'red', backgroundColor: 'white' }}>
                   {topicData.count}
                 </label>
               </li>
@@ -266,9 +291,7 @@ const StuCreateTest = () => {
           <p>No data available</p>
         )}
       </div>
-
       <span></span>
-
       <div className="float-left">
         <h4 style={labelStyle}>Difficulty Levels:</h4>
 
@@ -284,7 +307,7 @@ const StuCreateTest = () => {
                 />
                 &nbsp;
                 <label
-                  htmlFor={`topic-${index}`}
+                  htmlFor={`level-${index}`}
                   style={{ color: 'black', backgroundColor: 'white' }}
                 >
                   {level}

@@ -3,21 +3,18 @@ import { Pie } from 'react-chartjs-2';
 import { useSelector } from 'react-redux';
 
 function PieChartOverall({ correct, used }) {
-//  console.log('in PieChartOverall  correct, used ', correct, used);
-
+  const initCorrect = correct;
   const incorrect = used - correct;
+  const correctPercentage = (correct / used) * 100;
+  const incorrectPercentage = (incorrect / used) * 100;
 
-  //  const labels = ['Correct', 'testCount'];
-
-  //  const incorrect = (correct / used) * 100; // used - correct;
-
-  const labels = ['Correct', 'Used'];
+  const labels = ['Correct', 'Incorrect'];
 
   const data = {
     labels: labels,
     datasets: [
       {
-        data: [used, correct],
+        data: [correctPercentage, incorrectPercentage, initCorrect],
         backgroundColor: ['rgba(0, 0, 255, 1)', 'rgba(255, 0, 0, 1)'],
         borderColor: ['rgba(0, 0, 255, 0.75)', 'rgba(255, 0, 0, 0.5)'],
         borderWidth: 1,
@@ -41,16 +38,16 @@ function PieChartOverall({ correct, used }) {
   };
 
   const h2Style = {
-    fontSize: '20px',
+    fontSize: '10px',
     color: 'black',
   };
 
   return (
     <div className="pie-chart-container" style={chartStyle}>
       <h4 style={h2Style}>
-        Cumulative Results:
-        <br /> Correct&nbsp; <span>{correct}</span>
-        <br /> Used&nbsp;<span>{used}</span>
+        <br /> Correct&nbsp; <span>{correctPercentage.toFixed(2)}%</span>
+        <br /> Incorrect&nbsp;<span>{incorrectPercentage.toFixed(2)}%</span>
+        <br /> Overall Correct: {initCorrect} &nbsp;
         <Pie data={data} options={options} />
       </h4>
     </div>
@@ -58,3 +55,64 @@ function PieChartOverall({ correct, used }) {
 }
 
 export default PieChartOverall;
+
+//import React from 'react';
+//import { Pie } from 'react-chartjs-2';
+//import { useSelector } from 'react-redux';
+//
+//function PieChartOverall({ correct, used }) {
+////  console.log('in PieChartOverall  correct, used ', correct, used);
+//
+//  const incorrect = used - correct;
+//
+//  //  const labels = ['Correct', 'testCount'];
+//
+//  //  const incorrect = (correct / used) * 100; // used - correct;
+//
+//  const labels = ['Correct', 'Used'];
+//
+//  const data = {
+//    labels: labels,
+//    datasets: [
+//      {
+//        data: [used, correct],
+//        backgroundColor: ['rgba(0, 0, 255, 1)', 'rgba(255, 0, 0, 1)'],
+//        borderColor: ['rgba(0, 0, 255, 0.75)', 'rgba(255, 0, 0, 0.5)'],
+//        borderWidth: 1,
+//      },
+//    ],
+//  };
+//
+//  const options = {
+//    plugins: {
+//      legend: {
+//        display: true,
+//      },
+//    },
+//  };
+//
+//  const chartStyle = {
+//    width: '30%',
+//    height: '30%',
+//    textAlign: 'center',
+//    margin: 'auto',
+//  };
+//
+//  const h2Style = {
+//    fontSize: '20px',
+//    color: 'black',
+//  };
+//
+//  return (
+//    <div className="pie-chart-container" style={chartStyle}>
+//      <h4 style={h2Style}>
+//        Cumulative Results:
+//        <br /> Correct&nbsp; <span>{correct}</span>
+//        <br /> Used&nbsp;<span>{used}</span>
+//        <Pie data={data} options={options} />
+//      </h4>
+//    </div>
+//  );
+//}
+//
+//export default PieChartOverall;

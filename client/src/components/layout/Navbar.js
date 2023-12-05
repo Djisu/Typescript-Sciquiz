@@ -86,6 +86,11 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
                   <li>
                     <Link to="/current-test-result">Current Test Result</Link>
                   </li>
+                  <li>
+                    <Link to="/view-overall-stats">
+                      View Overall Test Result
+                    </Link>
+                  </li>
                 </ul>
               </div>
             )}

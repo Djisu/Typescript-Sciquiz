@@ -221,7 +221,7 @@ const CurrentTestResult = () => {
             </div>
           </li>
 
-          <li
+          {/*<li
             style={{
               color: 'black',
               backgroundColor: 'white',
@@ -289,7 +289,7 @@ const CurrentTestResult = () => {
             ) : (
               <p>No questions to display</p>
             )}
-          </li>
+          </li>*/}
         </ul>
 
         <div>

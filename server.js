@@ -23,6 +23,7 @@ import unique_subjects from './routes/api/unique_subjects.js';
 import clear_answered_by from './routes/api/clear_answered_by.js';
 import updateDocument from './routes/api/updateDocument.js';
 import scoreCandidate from './routes/api/scoreCandidate.js';
+import testsUnmarked from './routes/api/testsUnmarked.js';
 
 const app = express();
 
@@ -51,6 +52,7 @@ app.use('/api/unique_subjects', unique_subjects);
 app.use('/api/clear_answered_by', clear_answered_by);
 app.use('/api/updateDocument', updateDocument);
 app.use('/api/scoreCandidate', scoreCandidate);
+app.use('/api/testsUnmarked', testsUnmarked);
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {

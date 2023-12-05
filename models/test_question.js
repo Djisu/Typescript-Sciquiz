@@ -39,7 +39,8 @@ const TestQuestionSchema = new mongoose.Schema({
     }
   ],
   answer_flag: {
-    type: String
+    type: String,
+    default: '' // Set default value to an empty string
   },
   user_answer: {
     type: String

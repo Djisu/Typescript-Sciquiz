@@ -28,16 +28,21 @@ import {
   SELECTED_TEST_REQUEST,
   SELECTED_TEST_SUCCESS,
   SELECTED_TEST_FAIL,
+  TESTS_UNMARKED_SUCCESS,
+  TESTS_UNMARKED_FAIL,
+  TESTS_UNMARKED_REQUEST,
+  TESTS_UNMARKED_LOADED,
 } from './types.js';
 
 // Load Tests
 export const loadTests = () => async (dispatch) => {
-  console.log('IN ACTION loadTests');
+  //  console.log('IN ACTION loadTests');
+  dispatch({ type: TESTS_REQUEST });
 
   try {
     const res = await api.get('/tests');
 
-    console.log('IN ACTION loadTests res.data:', res.data);
+    //console.log('IN ACTION loadTests res.data:', res.data);
 
     dispatch({
       type: TESTS_LOADED,
@@ -46,6 +51,34 @@ export const loadTests = () => async (dispatch) => {
   } catch (err) {
     dispatch({
       type: TESTS_FAIL,
+    });
+  }
+};
+
+// Load Unmarked Tests
+export const loadTestsUnmarked = () => async (dispatch) => {
+  console.log('IN ACTION loadTestsUnmarked');
+
+  dispatch({ type: TESTS_UNMARKED_REQUEST });
+
+  try {
+    const randNum = Math.floor(Math.random() * 1000000);
+
+    const res = await api.get(`/testsUnmarked/unmarked/${randNum}`);
+
+    console.log('IN ACTION loadTestsUnmarked res.data:', res.data);
+
+    if (!res.data) {
+      dispatch(setAlert('No tests NOT mark!!!', 'danger'));
+    }
+
+    dispatch({
+      type: TESTS_UNMARKED_LOADED,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: TESTS_UNMARKED_FAIL,
     });
   }
 };

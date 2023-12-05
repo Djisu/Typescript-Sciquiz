@@ -5,14 +5,16 @@ function PieChartCorrectTopics({ topic, correct, used }) {
   console.log('in PieChartCorrectTopics topic, correct, used');
 
   const incorrect = used - correct;
+  const correctPercentage = (correct / used) * 100;
+  const incorrectPercentage = (incorrect / used) * 100;
 
-  const labels = ['Correct', 'Used'];
+  const labels = ['Correct', 'Incorrect'];
 
   const data = {
     labels: labels,
     datasets: [
       {
-        data: [correct, used],
+        data: [correctPercentage, incorrectPercentage],
         backgroundColor: ['rgba(0, 0, 255, 1)', 'rgba(255, 0, 0, 1)'],
         borderColor: ['rgba(0, 0, 255, 0.75)', 'rgba(255, 0, 0, 0.5)'],
         borderWidth: 1,
@@ -42,13 +44,12 @@ function PieChartCorrectTopics({ topic, correct, used }) {
 
   return (
     <div className="pie-chart-container" style={chartStyle}>
-      <p style={{ fontColor: 'black' }}> Current Test Results:</p>
-      <h5 style={h2Style}>
+      <h4 style={h2Style}>
         <span>{topic}</span>
-        <br /> Correct&nbsp; <span>{correct}</span>
-        <br /> Used&nbsp;<span>{used}</span>
+        <br /> Correct&nbsp; <span>{correctPercentage.toFixed(2)}%</span>
+        <br /> Incorrect&nbsp;<span>{incorrectPercentage.toFixed(2)}%</span>
         <Pie data={data} options={options} />
-      </h5>
+      </h4>
     </div>
   );
 }
