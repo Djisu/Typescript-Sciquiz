@@ -5,7 +5,7 @@ import {
 } from '../actions/types.js';
 
 const initialState = {
-  selectedTest: [], // Initial state for the difficulty levels data
+  selectedTest: [], // Initial state for the selectedTest data
   loading: true, // Indicates whether the data is being loaded or not
   error: null,
 };
@@ -13,7 +13,7 @@ const initialState = {
 function selectedTestReducer(state = initialState, action) {
   const { type, payload } = action;
 
-  //  console.log('in selectedTestReducer ', payload);
+  console.log('in selectedTestReducer ', payload);
 
   switch (action.type) {
     case SELECTED_TEST_REQUEST:

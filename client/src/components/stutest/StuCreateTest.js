@@ -1,6 +1,6 @@
 // components/stutest/StuCreateTest.js
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,6 +8,7 @@ import { fetchTopics } from '../../actions/topic.js';
 import { fetchDifficultyLevels } from '../../actions/difficulty_level.js';
 import { fetchUniqueSubjects } from '../../actions/subject.js';
 import topicReducer from '../../reducers/topic.js';
+import { setAlert } from '../../actions/alert.js';
 
 const StuCreateTest = () => {
   const selectStyle = {
@@ -47,6 +48,8 @@ const StuCreateTest = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const inputRef = useRef(null);
 
   //  const topics = useSelector((state) => state.topics.topics);
   const topics = useSelector((state) =>
@@ -91,21 +94,6 @@ const StuCreateTest = () => {
     }
   };
 
-  //  const toggleCheckboxTopic = (topicData) => {
-  //    console.log('in toggleCheckboxTopic', topicData.topic);
-  //
-  //    if (checkedTopics.includes(topicData.topic)) {
-  //      setCheckedTopics(
-  //        checkedTopics.filter((item) => item !== topicData.topic)
-  //      );
-  //    } else {
-  //      setCheckedTopics([...checkedTopics, topicData.topic]);
-  //    }
-  //    setIsChecked(!isChecked);
-  //
-  //    console.log('checkedTopics:: ', checkedTopics);
-  //  };
-
   const toggleCheckboxTopic = (topicData) => {
     console.log('in toggleCheckboxTopic', topicData.topic);
 
@@ -144,6 +132,14 @@ const StuCreateTest = () => {
     if (!checkedSubjects) {
       console.log('Select the subject');
       return;
+    }
+
+    if (checkedDifficultylevels.length == 0) {
+      dispatch(setAlert('Select a difficulty level', 'danger'));
+
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
     }
 
     console.log('Checked Topics:', checkedTopics);
@@ -303,6 +299,7 @@ const StuCreateTest = () => {
                   type="checkbox"
                   id={`level-${index}`}
                   checked={checkedDifficultylevels.includes(level)}
+                  ref={inputRef}
                   onChange={() => toggleCheckboxLevel(level)}
                 />
                 &nbsp;

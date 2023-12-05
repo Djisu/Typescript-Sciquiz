@@ -17,16 +17,29 @@ router.get('/unmarked/:randnum', async (req, res) => {
   console.log("in tests router.get('/unmarked', ");
 
   try {
-    const unmarkedTests = await TestQuestion.aggregate([
-      { $match: { answer_flag: { $nin: ['true', 'false'] } } },
-      { $group: { _id: null, documents: { $push: '$$ROOT' } } },
-      { $project: { _id: 0, documents: 1 } }
-    ]);
+    //const unmarkedTests = await TestQuestion.aggregate([
+    //  { $match: { answer_flag: { $nin: ['true', 'false'] } } },
+    //  { $group: { _id: null, documents: { $push: '$$ROOT' } } },  unmarkedTests[0].test_names
+    //  { $project: { _id: 0, documents: 1 } }
+    //]);
 
-    console.log('unmarked test names== ', unmarkedTests[0].test_names);
+    //const unmarkedTests = await TestQuestion.distinct('answer_flag', {
+    //  answer_flag: { $in: ['', ' '] }
+    //});
+
+    const uniqueAnswerFlags = await TestQuestion.distinct('answer_flag', {
+      answer_flag: { $in: ['', ' '] }
+    });
+
+    // Use find to get unique documents based on answer_flag
+    const unmarkedTests = await TestQuestion.find({
+      answer_flag: { $in: uniqueAnswerFlags }
+    });
+
+    console.log('unmarked == ', unmarkedTests);
 
     if (unmarkedTests.length > 0) {
-      return res.send(unmarkedTests[0].test_names);
+      return res.send(unmarkedTests);
     } else {
       return res.status(400).json({ msg: 'There is no unmarkes test!' });
     }

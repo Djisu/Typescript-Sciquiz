@@ -82,20 +82,46 @@ const ProfileMarkTest = (id) => {
     }
   }, [tests]);
 
+  //  useEffect(() => {
+  //    const fetchedData = async () => {
+  //      if (userId) {
+  //        console.log('in useEffect dispatch(loadTestsUserid(userId)); ', userId);
+  //        dispatch(loadTestsUserid(userId));
+  //        dispatch(setAlert('Tests obtained', 'success')); // Move this line outside the if statement
+  //      } else {
+  //        console.log('No user id provided', 'danger');
+  //        setAlert('No user id provided', 'danger');
+  //        return;
+  //      }
+  //    };
+  //
+  //    // Call fetchData function on component mount
+  //    fetchedData();
+  //  }, [dispatch, userId]);
+
   useEffect(() => {
-    const fetchedData = async () => {
+    // Fetch tests based on the userId when the component mounts
+    const fetchData = async () => {
       if (userId) {
-        console.log('in useEffect dispatch(loadTestsUserid(userId)); ', userId);
-        dispatch(loadTestsUserid(userId));
+        try {
+          dispatch(loadTestsUserid(userId));
+        } catch (error) {
+          console.error('Error fetching tests:', error);
+          dispatch(setAlert('Error fetching tests', 'danger'));
+        }
       } else {
         console.log('No user id provided', 'danger');
-        setAlert('No user id provided', 'danger');
-        return;
+        dispatch(setAlert('No user id provided', 'danger'));
       }
     };
-    // Call fetchData function on component mount
-    fetchedData();
-  }, [dispatch, userId]); //
+
+    fetchData(); // Call the fetchData function
+
+    // Cleanup function to cancel the effect when the component is unmounted
+    return () => {
+      // Perform any cleanup here, if necessary
+    };
+  }, [dispatch, userId]); // Empty dependency array ensures the effect runs only once
 
   const handleInputChange = (e) => {
     console.log('in handleInputChange', e.target.value);

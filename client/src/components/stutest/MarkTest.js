@@ -41,7 +41,37 @@ const MarkTest = () => {
     dispatch(setAlert('No unmarked tests', 'danger'));
   }
 
+  console.log('testsUnmarked== ', testsUnmarked);
+
+  const uniqueTestnames = [];
+
+  for (let i = 0; i < testsUnmarked.length; i++) {
+    if (!uniqueTestnames.includes(testsUnmarked[i].test_name)) {
+      uniqueTestnames.push(testsUnmarked[i].test_name);
+    }
+  }
+  console.log('uniqueTestnames== ', uniqueTestnames);
+
+  let questionsTest = useSelector((state) => state.selectedTest.selectedTest);
+
+  console.log('questionsTest:: ', questionsTest);
+
+  const filteredQuestionsTest =
+    questionsTest?.filter((question) => {
+      return question.answer_flag === '' || question.answer_flag === ' ';
+    }) || [];
+
+  // Now `filteredQuestionsTest` contains only the items where answer_flag is an empty string or a space.
+
+  console.log('filteredQuestionsTest== ', filteredQuestionsTest);
+
   const selectedQuestions = useSelector((state) => state.selectedQuestions);
+
+  if (selectedQuestions.length > 0) {
+    console.log('selectedQuestions== ', selectedQuestions);
+  } else {
+    console.log('No questions found!!!');
+  }
 
   const overAllScoreCandidateData = useSelector(
     (state) => state.overAllScoreCandidate.overAllScoreCandidate
@@ -65,6 +95,8 @@ const MarkTest = () => {
   const isAdmin = localStorage.getItem('isAdmin');
   const userId = localStorage.getItem('id');
 
+  console.log('isAdmin is ', isAdmin);
+
   // Initialize userAnswers inside a useEffect that depends on tests
   useEffect(() => {
     if (Array.isArray(testsUnmarked)) {
@@ -79,11 +111,14 @@ const MarkTest = () => {
   }, [dispatch]);
 
   const handleInputChangeUnmarked = (e) => {
+    console.log('in handleInputChangeUnmarked ', e.target.value);
+
     e.preventDefault();
     setTestName(e.target.value);
 
     dispatch(getTest(e.target.value));
-    if (tests.length === 0) {
+
+    if (testsUnmarked.length === 0) {
       dispatch(loadTestsUnmarked());
     }
   };
@@ -162,15 +197,15 @@ const MarkTest = () => {
               <select
                 name="testName"
                 value={testName}
-                onChange={handleInputChangeUnmarked}
+                onChange={(e) => handleInputChangeUnmarked(e)}
                 className="select-element"
               >
                 <option key="default" value=""></option>
-                {/*{testsUnmarked.map((test) => (
-                  <option key={test._id} value={test.test_name}>
-                    {test.test_name}
+                {uniqueTestnames.map((test, index) => (
+                  <option key={index} value={test}>
+                    {test}
                   </option>
-                ))}*/}
+                ))}
               </select>
               {isAdmin === 'true' && (
                 <button
@@ -190,8 +225,8 @@ const MarkTest = () => {
               fontWeight: 'bold',
             }}
           >
-            {Array.isArray(testsUnmarked) ? (
-              testsUnmarked.map((question, index) => (
+            {Array.isArray(filteredQuestionsTest) ? (
+              filteredQuestionsTest.map((question, index) => (
                 <div key={question._id}>
                   <p>
                     Question {index + 1}: {question.question}
@@ -210,6 +245,8 @@ const MarkTest = () => {
                         Question Id: {question.questionId}
                         <br />
                         Test Name: {question.test_name}
+                        <br />
+                        Answer_flag: {question.answer_flag}
                       </div>
 
                       <div>
