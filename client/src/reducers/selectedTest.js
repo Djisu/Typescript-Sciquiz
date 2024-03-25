@@ -13,7 +13,7 @@ const initialState = {
 function selectedTestReducer(state = initialState, action) {
   const { type, payload } = action;
 
-  console.log('in selectedTestReducer ', payload);
+  //console.log('in selectedTestReducer ', payload);
 
   switch (action.type) {
     case SELECTED_TEST_REQUEST:

@@ -1,12 +1,24 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { Pie } from 'react-chartjs-2';
 import { useSelector } from 'react-redux';
 
 function PieChartOverall({ correct, used }) {
-  const initCorrect = correct;
-  const incorrect = used - correct;
-  const correctPercentage = (correct / used) * 100;
-  const incorrectPercentage = (incorrect / used) * 100;
+   if (correct === null || used === null) {
+    return null;
+  }
+
+  const [correctPercentage, setCorrectPercentage] = useState(0);
+  const [incorrectPercentage, setIncorrectPercentage] = useState(0);
+
+  useEffect(() => {
+    if (used !== 0) {
+      const correctPercentage = (correct / used) * 100;
+      const incorrectPercentage = ((used - correct) / used) * 100;
+      setCorrectPercentage(correctPercentage);
+      setIncorrectPercentage(incorrectPercentage);
+    }
+  }, [correct, used]);
+
 
   const labels = ['Correct', 'Incorrect'];
 
@@ -14,10 +26,10 @@ function PieChartOverall({ correct, used }) {
     labels: labels,
     datasets: [
       {
-        data: [correctPercentage, incorrectPercentage, initCorrect],
-        backgroundColor: ['rgba(0, 0, 255, 1)', 'rgba(255, 0, 0, 1)'],
-        borderColor: ['rgba(0, 0, 255, 0.75)', 'rgba(255, 0, 0, 0.5)'],
-        borderWidth: 1,
+        data: [correctPercentage, incorrectPercentage],
+                backgroundColor: ['rgba(0, 255, 0, 0.5)', 'rgba(255, 0, 0, 0.5)'],
+                borderColor: ['rgba(0, 255, 0, 1.5)', 'rgba(255, 0, 0, 1.5)'],
+                borderWidth: 1,
       },
     ],
   };
@@ -47,7 +59,6 @@ function PieChartOverall({ correct, used }) {
       <h4 style={h2Style}>
         <br /> Correct&nbsp; <span>{correctPercentage.toFixed(2)}%</span>
         <br /> Incorrect&nbsp;<span>{incorrectPercentage.toFixed(2)}%</span>
-        <br /> Overall Correct: {initCorrect} &nbsp;
         <Pie data={data} options={options} />
       </h4>
     </div>
@@ -56,63 +67,82 @@ function PieChartOverall({ correct, used }) {
 
 export default PieChartOverall;
 
-//import React from 'react';
-//import { Pie } from 'react-chartjs-2';
-//import { useSelector } from 'react-redux';
-//
-//function PieChartOverall({ correct, used }) {
-////  console.log('in PieChartOverall  correct, used ', correct, used);
-//
-//  const incorrect = used - correct;
-//
-//  //  const labels = ['Correct', 'testCount'];
-//
-//  //  const incorrect = (correct / used) * 100; // used - correct;
-//
-//  const labels = ['Correct', 'Used'];
-//
-//  const data = {
-//    labels: labels,
-//    datasets: [
-//      {
-//        data: [used, correct],
-//        backgroundColor: ['rgba(0, 0, 255, 1)', 'rgba(255, 0, 0, 1)'],
-//        borderColor: ['rgba(0, 0, 255, 0.75)', 'rgba(255, 0, 0, 0.5)'],
-//        borderWidth: 1,
-//      },
-//    ],
-//  };
-//
-//  const options = {
-//    plugins: {
-//      legend: {
-//        display: true,
-//      },
-//    },
-//  };
-//
-//  const chartStyle = {
-//    width: '30%',
-//    height: '30%',
-//    textAlign: 'center',
-//    margin: 'auto',
-//  };
-//
-//  const h2Style = {
-//    fontSize: '20px',
-//    color: 'black',
-//  };
-//
-//  return (
-//    <div className="pie-chart-container" style={chartStyle}>
-//      <h4 style={h2Style}>
-//        Cumulative Results:
-//        <br /> Correct&nbsp; <span>{correct}</span>
-//        <br /> Used&nbsp;<span>{used}</span>
-//        <Pie data={data} options={options} />
-//      </h4>
-//    </div>
-//  );
-//}
-//
-//export default PieChartOverall;
+
+
+
+
+
+
+
+
+
+
+// import React, { useState, useEffect } from 'react';
+// import { Pie } from 'react-chartjs-2';
+
+// function PieChartOverall({ correct, used }) {
+  
+//   if (correct === null || used === null) {
+//     return null;
+//   }
+
+//   const [correctPercentage, setCorrectPercentage] = useState(0);
+//   const [incorrectPercentage, setIncorrectPercentage] = useState(0);
+
+//   useEffect(() => {
+//     if (used !== 0) {
+//       const correctPercentage = (correct / used) * 100;
+//       const incorrectPercentage = ((used - correct) / used) * 100;
+//       setCorrectPercentage(correctPercentage);
+//       setIncorrectPercentage(incorrectPercentage);
+//     }
+//   }, [correct, used]);
+
+  
+
+//   const data = {
+//     labels: ['Correct', 'Used'],
+//     datasets: [
+//       {
+//         data: [correctPercentage, incorrectPercentage],
+//         backgroundColor: ['rgba(0, 255, 0, 0.5)', 'rgba(255, 0, 0, 0.5)'],
+//         borderColor: ['rgba(0, 255, 0, 1.5)', 'rgba(255, 0, 0, 1.5)'],
+//         borderWidth: 1,
+//       },
+//     ],
+//   };
+
+//   const options = {
+//     legend: {
+//       display: true,
+//       labels: {
+//         font: {
+//           size: 12,
+//         },
+//       },
+//     },
+//   };
+
+  
+
+//   return (
+//     <div className="pie-chart-container">
+//     <p style={{ color: 'black' }}> Overall Result:</p>
+//     <h5 style={{ fontSize: '20px', color: 'black' }}>
+//       <div>
+//         {/* Correct: <span>{correctPercentage}%</span> ({correct}) */}
+//         Correct: <span>{correctPercentage}%</span> {correct}
+//       </div>
+//       <div>
+//         {/* Incorrect: <span>{incorrectPercentage}%</span> ({used - correct}) */}
+//         Used: <span>{incorrectPercentage}%</span> {used}
+//       </div>
+      
+//       <Pie data={data} options={options} />
+     
+//     </h5>
+//   </div>
+//   );
+// }
+
+// export default PieChartOverall;

@@ -14,9 +14,8 @@ import Question from '../../models/Question.js';
 router.get('/:name/:userId/:randNum', async (req, res) => {
   try {
     const testName = req.params.name;
-    const userId = req.params.userId;
 
-    console.log('in router.get(/:name/:randNum');
+    console.log('in router.get(/:name/:randNum', testName);
 
     // Get user's name from the userId
     const user = await getOnlyName(testName);
@@ -114,7 +113,7 @@ router.get('/:randNum/:userId', async (req, res) => {
     //console.log('userName== ', userName);
 
     // Find the test by test_name
-    //const test = await TestQuestksion.find({ test_name: test_name });
+    //const test = await TestQuestion.find({ test_name: test_name });
     const tests = await getTestNamesContainingString(userName);
 
     //if (tests) console.log('testsOOOOOOO:: ', tests);
@@ -136,6 +135,7 @@ router.get('/:test_name', async (req, res) => {
 
   try {
     const test_name = req.params.test_name;
+
     const userId = getUserId(test_name);
 
     // Find the test by test_name

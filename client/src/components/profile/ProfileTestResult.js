@@ -1,36 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import {
-  loadTests,
   getTest,
   postAnswer,
-  score_test,
   overall_score_test,
   deleteCandidateTests,
   score_individual_test,
   loadTestsUserid,
 } from '../../actions/tests.js';
 import { setAlert } from '../../actions/alert.js';
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useCallback } from 'react';
-import Barchart from '../profiles/BarChart.js';
-import { Chart as ChartJS } from 'chart.js/auto';
 
-import PieChartCorrect from '../profiles/PieChartCorrect.js';
-import PieChartUsed from '../profiles/PieChartUsed.js';
-import ProgressBar from '../profiles/Progressbar.js';
-import PieChartOverall from '../profiles/PieChartOverall.js';
-import PieChartOverallCorrect from '../profiles/PieChartOverallCorrect.js';
 import PieChartCorrectTopics from '../profiles/PieChartCorrectTopics.js';
 import { useParams } from 'react-router-dom';
 
-const CurrentTestResult = (id) => {
+const ProfileTestResult = (id) => {
   const userId = useParams();
 
-  console.log('userId==', userId);
+  ////console.log('userId==', userId);
 
   const dispatch = useDispatch();
 
@@ -40,22 +28,31 @@ const CurrentTestResult = (id) => {
   const [testName, setTestName] = useState('');
   const [isDisabled, setIsDisabled] = useState(false);
   const [userAnswers, setUserAnswers] = useState([]);
+  //console.log('XXXXXX  eachTopic== ', eachTopic);
 
   const eachTopic = useSelector((state) => state.eachTopicScore.eachTopicScore);
-
-  console.log('XXXXXX  eachTopic== ', eachTopic);
 
   const { trueAnswers, totalQuestions, topic } = useSelector(
     (state) => state.eachTopicScore.eachTopicScore
   );
 
-  console.log(
-    'topic, trueAnswers, totalQuestions ',
+  // Calculate the total of all totalQuestions values
+const totalQuestionsSum = eachTopic.reduce((total, currentTopic) => {
+  return total + currentTopic.totalQuestions;
+}, 0);
 
-    eachTopic[0],
-    eachTopic[1],
-    eachTopic[2]
-  );
+// Print the totalQuestionsSum
+//console.log('Total Questions Sum:', totalQuestionsSum);
+
+  
+
+  // console.log(
+  //   'topic, trueAnswers, totalQuestions ',
+
+  //   eachTopic[0],
+  //   eachTopic[1],
+  //   eachTopic[2]
+  // );
 
   const tests = useSelector((state) => state.tests.tests);
 
@@ -65,27 +62,26 @@ const CurrentTestResult = (id) => {
   const overAllScoreCandidateData = useSelector(
     (state) => state.overAllScoreCandidate.overAllScoreCandidate
   );
-  console.log('overAllScoreCandidateData==== ', overAllScoreCandidateData);
+  //console.log('overAllScoreCandidateData==== ', overAllScoreCandidateData);
 
   const scoreCandidate = useSelector((state) => state.scoreCandidate);
 
-  console.log('I AM scoreCandidate:: ', scoreCandidate);
+  //console.log('I AM scoreCandidate:: ', scoreCandidate);
   const testScore = scoreCandidate;
 
-  console.log('testScore:: ', testScore);
+  //console.log('testScore:: ', testScore);
   //  const { questionCount, used, correct } = scoreCandidate.scoreCandidate;
   const questionCount = scoreCandidate.scoreCandidate[0];
   const correct = scoreCandidate.scoreCandidate[1];
   const usedValue = scoreCandidate.scoreCandidate[2];
   const testCount = scoreCandidate.scoreCandidate[3];
 
-  console.log(
-    'questionCount, usedValue, correct, testCount',
-    questionCount,
-    usedValue,
-    correct,
-    testCount
-  );
+  // console.log(
+  //   'questionCount, usedValue, correct, testCount',
+  //   questionCount,
+  //   usedValue,
+  //   correct,
+  //   testCount);
 
   // Extract data from the scoreCandidate array
   const topics = overAllScoreCandidateData.map((item) => item.topic);
@@ -105,7 +101,7 @@ const CurrentTestResult = (id) => {
   }, [tests]);
 
   useEffect(() => {
-    console.log(' in useEffect dispatch(loadTests());');
+    //console.log(' in useEffect dispatch(loadTests());');
     dispatch(loadTestsUserid(userId));
   }, [dispatch]);
 
@@ -114,7 +110,7 @@ const CurrentTestResult = (id) => {
   //  }, [dispatch])
 
   const handleInputChange = (e) => {
-    console.log('in handleInputChange: ', e.target.value);
+   // console.log('in handleInputChange: ', e.target.value);
 
     e.preventDefault();
     setTestName(e.target.value);
@@ -144,7 +140,7 @@ const CurrentTestResult = (id) => {
   };
 
   const handleOverallScore = (testName) => {
-    console.log('in handleOverallScore');
+    //console.log('in handleOverallScore');
 
     dispatch(overall_score_test(getOnlyName(testName)));
   };
@@ -165,8 +161,7 @@ const CurrentTestResult = (id) => {
     const parts = testName.split('-');
 
     // The part before the hyphen is at index 0
-    const extractedPart = parts[0];
-    return extractedPart;
+    return parts[0];
   };
 
   const deleteCandidate = (testname) => {
@@ -234,67 +229,6 @@ const CurrentTestResult = (id) => {
               fontWeight: 'bold',
             }}
           >
-            {/*{Array.isArray(tests) ? (
-              tests.map((question, index) => (
-                <div key={question._id}>
-                  <p>
-                    Question {index + 1}: {question.question}
-                  </p>
-
-                  {isAdmin === 'true' && (
-                    <div style={{ color: 'black', backgroundColor: 'white' }}>
-                      <p style={{ color: 'red', backgroundColor: 'white' }}>
-                        Answer: {question.answer}
-                      </p>
-
-                      <div>
-                        Topic: {question.topic} <br />
-                        Difficulty Level: {question.difficulty_level}
-                        <br />
-                        Question Id: {question.questionId}
-                        <br />
-                        Test Name: {question.test_name}
-                      </div>
-
-                      <div>
-                        <label htmlFor="optionSelect">Select an option:</label>
-                        <select
-                          id="optionSelect"
-                          value={userAnswers[index] || ''}
-                          onChange={(e) => {
-                            const updatedAnswers = [...userAnswers]; // Create a copy of the state array
-                            updatedAnswers[index] = e.target.value; // Update the corresponding value
-                            setUserAnswers(updatedAnswers); // Set the new state
-                          }}
-                          className="select-element"
-                        >
-                          <option value="">Select an option</option>
-                          <option value="true">true</option>
-                          <option value="false">false</option>
-                        </select>
-
-                        <button
-                          type="submit"
-                          className="btn btn-primary"
-                          onClick={() =>
-                            handleAnswer(
-                              userAnswers[index],
-                              question.questionId,
-                              question.test_name
-                            )
-                          }
-                        >
-                          Post Answer
-                        </button>
-                      </div>
-                      <br />
-                    </div>
-                  )}
-                </div>
-              ))
-            ) : (
-              <p>No questions to display</p>
-            )}*/}
           </li>
         </ul>
 
@@ -307,13 +241,6 @@ const CurrentTestResult = (id) => {
             >
               Show Individual Correct Statistics
             </button>
-            {/*<button
-              type="submit"
-              className="btn btn-primary"
-              onClick={(e) => handleOverallScore(testName)}
-            >
-              Show candidate overall statistics
-            </button>*/}
           </div>
           <div style={{ color: 'black', backgroundColor: 'white' }}>
             {/*Topics:{' '}*/}
@@ -324,37 +251,17 @@ const CurrentTestResult = (id) => {
             ))}{' '}
             <br />
             <br />
-            {/*Count of Topics:{' '}
-            {topicCounts.map((topicCount, index) => (
-              <span key={index}>{topicCount}, </span>
-            ))}{' '}
-
-          
-
-            <br />
-            Count of Correct Answers:{' '}
-            {correctCounts.map((correctCount, index) => (
-              <span key={index}>{correctCount}, </span>
-            ))}{' '}
-            <br />
-            Count of Used Questions:{' '}
-            {usedCounts.map((usedCount, index) => (
-              <span key={index}>{usedCount}, </span>
-            ))}{' '}
-            <br />
-            Count of Wrong Answers:{' '}
-            {wrongCounts.map((wrongCount, index) => (
-              <span key={index}>{wrongCount}, </span>
-            ))}{' '}*/}
           </div>
         </div>
         <ul>
           {eachTopic.map((topicItem, index) => (
             <li key={index}>
               <PieChartCorrectTopics
+                key={topicItem.topic} // Unique key based on topic
                 topic={topicItem.topic}
                 correct={topicItem.trueAnswers}
                 used={topicItem.totalQuestions}
+                totQuestions = {totalQuestionsSum}
               />
             </li>
           ))}
@@ -365,4 +272,4 @@ const CurrentTestResult = (id) => {
   );
 };
 
-export default CurrentTestResult;
+export default ProfileTestResult;

@@ -15,7 +15,6 @@ import { setAlert } from '../../actions/alert.js';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useCallback } from 'react';
-import Barchart from '../profiles/BarChart.js';
 import { Chart as ChartJS } from 'chart.js/auto';
 
 import PieChartCorrect from '../profiles/PieChartCorrect.js';
@@ -47,7 +46,34 @@ const ProfileMarkTest = (id) => {
 
   const tests = useSelector((state) => state.tests.tests);
 
-  console.log('tests=====:::: ', tests);
+  const scoreCandidate = useSelector((state) => state.scoreCandidate);
+  const testScore = scoreCandidate;
+
+  const questionCount = scoreCandidate.scoreCandidate[0];
+  const correct = scoreCandidate.scoreCandidate[1];
+  const usedValue = scoreCandidate.scoreCandidate[2];
+  const testCount = scoreCandidate.scoreCandidate[3];
+
+  useEffect(() => {
+    const fetchTestDetails = async () => {
+      console.log('in XXXXXXXXX useEffect fetchTestDetails');
+      console.log('tests[0]:', tests[0], userId);
+
+      if (!tests[0]) {
+        console.log('empty userId!!!!');
+      }
+
+      dispatch(score_test(tests[0], userId));
+
+      console.log('correct, usedValue, questionCount',correct,usedValue,questionCount)
+    };
+
+    const delay = setTimeout(fetchTestDetails, 10000); // Introduce a 1-second delay
+
+    return () => clearTimeout(delay); // Clean up the timeout on component unmount
+  }, [tests[0], userId]); // Include tests[0] as a dependency
+
+  
 
   const fetchedTest = useSelector((state) => state.selectedTest.selectedTest);
 
@@ -60,13 +86,10 @@ const ProfileMarkTest = (id) => {
     (state) => state.overAllScoreCandidate.overAllScoreCandidate
   );
 
-  const scoreCandidate = useSelector((state) => state.scoreCandidate);
-  const testScore = scoreCandidate;
+  // const scoreCandidate = useSelector((state) => state.scoreCandidate);
+  // const testScore = scoreCandidate;
 
-  const questionCount = scoreCandidate.scoreCandidate[0];
-  const correct = scoreCandidate.scoreCandidate[1];
-  const usedValue = scoreCandidate.scoreCandidate[2];
-  const testCount = scoreCandidate.scoreCandidate[3];
+
 
   // Extract data from the scoreCandidate array
   const topics = overAllScoreCandidateData.map((item) => item.topic);
@@ -75,6 +98,8 @@ const ProfileMarkTest = (id) => {
   const usedCounts = overAllScoreCandidateData.map((item) => item.used);
   const wrongCounts = overAllScoreCandidateData.map((item) => item.wrong);
 
+
+
   // Initialize userAnswers inside a useEffect that depends on tests
   useEffect(() => {
     if (Array.isArray(tests)) {
@@ -82,22 +107,22 @@ const ProfileMarkTest = (id) => {
     }
   }, [tests]);
 
-  //  useEffect(() => {
-  //    const fetchedData = async () => {
-  //      if (userId) {
-  //        console.log('in useEffect dispatch(loadTestsUserid(userId)); ', userId);
-  //        dispatch(loadTestsUserid(userId));
-  //        dispatch(setAlert('Tests obtained', 'success')); // Move this line outside the if statement
-  //      } else {
-  //        console.log('No user id provided', 'danger');
-  //        setAlert('No user id provided', 'danger');
-  //        return;
-  //      }
-  //    };
-  //
-  //    // Call fetchData function on component mount
-  //    fetchedData();
-  //  }, [dispatch, userId]);
+   useEffect(() => {
+     const fetchedData = async () => {
+       if (userId) {
+         console.log('in useEffect dispatch(loadTestsUserid(userId)); ', userId);
+         dispatch(loadTestsUserid(userId));
+         dispatch(setAlert('Tests obtained', 'success')); // Move this line outside the if statement
+       } else {
+         console.log('No user id provided', 'danger');
+         setAlert('No user id provided', 'danger');
+         return;
+       }
+     };
+  
+     // Call fetchData function on component mount
+     fetchedData();
+   }, [dispatch, userId]);
 
   useEffect(() => {
     // Fetch tests based on the userId when the component mounts
@@ -123,9 +148,13 @@ const ProfileMarkTest = (id) => {
     };
   }, [dispatch, userId]); // Empty dependency array ensures the effect runs only once
 
+ 
+
+  ///////////////////////////////////////////////////////////////
   const handleInputChange = (e) => {
     console.log('in handleInputChange', e.target.value);
 
+    
     e.preventDefault();
     setTestName(e.target.value);
 
@@ -135,6 +164,7 @@ const ProfileMarkTest = (id) => {
     //  dispatch(loadTestsUserid(userId));
     //}
   };
+  /////////////////////////////////////////////////////////
 
   // Event handler to handle option selection
   const handleOptionChange = (event) => {
@@ -146,6 +176,8 @@ const ProfileMarkTest = (id) => {
   };
 
   const handleScore = (testName) => {
+    console.log('in handleScore testName===', testName)
+
     dispatch(score_test(testName, userId));
   };
 
@@ -191,11 +223,11 @@ const ProfileMarkTest = (id) => {
 
   return (
     <div>
+      {/* <br />
       <br />
       <br />
       <br />
-      <br />
-      <br />
+      <br /> */}
       <div>
         <ul>
           <li
@@ -205,7 +237,7 @@ const ProfileMarkTest = (id) => {
               fontWeight: 'bold',
             }}
           >
-            <div className="form-group">
+            {/* <div className="form-group">
               Select a test:
               <select
                 name="testName"
@@ -245,89 +277,28 @@ const ProfileMarkTest = (id) => {
                   Delete Old Candidate
                 </button>
               )}
-            </div>
+            </div> */}
           </li>
 
-          <li
+          {/* <li
             style={{
               color: 'black',
               backgroundColor: 'white',
               fontWeight: 'bold',
             }}
           >
-            {/*{Array.isArray(fetchedTest) ? (
-              fetchedTest.map((question, index) => (
-                <div key={index}>
-                  <p>
-                    Question {index + 1}: {question.question}
-                  </p>
-
-                  {isAdmin === 'true' && (
-                    <div style={{ color: 'black', backgroundColor: 'white' }}>
-                      <p style={{ color: 'red', backgroundColor: 'white' }}>
-                        Answer: {question.answer}
-                      </p>
-
-                      <div>
-                        Topic: {question.topic} <br />
-                        Difficulty Level: {question.difficulty_level}
-                        <br />
-                        Question Id: {question.questionId}
-                        <br />
-                        Test Name: {question.test_name}
-                      </div>
-
-                      <div>
-                        <label htmlFor="optionSelect">Select an option:</label>
-                        <select
-                          id="optionSelect"
-                          value={userAnswers[index] || ''}
-                          onChange={(e) => {
-                            const updatedAnswers = [...userAnswers]; // Create a copy of the state array
-                            updatedAnswers[index] = e.target.value; // Update the corresponding value
-                            setUserAnswers(updatedAnswers); // Set the new state
-                          }}
-                          className="select-element"
-                        >
-                          <option value="">Select an option</option>
-                          <option value="true">true</option>
-                          <option value="false">false</option>
-                        </select>
-
-                        <button
-                          type="submit"
-                          className="btn btn-primary"
-                          onClick={() =>
-                            handleAnswer(
-                              userAnswers[index],
-                              question.questionId,
-                              question.test_name
-                            )
-                          }
-                        >
-                          Post Answer
-                        </button>
-                      </div>
-                      <br />
-                    </div>
-                  )}
-                </div>
-              ))
-            ) : (
-              <p>No questions to display</p>
-            )}*/}
-          </li>
+          </li> */}
         </ul>
 
         <div>
           <div>
-            <button
+          {/*   <button
               type="submit"
               className="btn btn-primary"
               onClick={() => handleScore(testName)}
             >
               Show Overall Correct Statistics
-            </button>
+            </button> */}
             {/*<button
               type="submit"
               className="btn btn-primary"
@@ -349,7 +320,7 @@ const ProfileMarkTest = (id) => {
         </div>
         <ul>
           <li>
-            <PieChartOverall correct={correct} used={usedValue} />
+            <PieChartOverallCorrect correct={correct} used={usedValue} />
             <ProgressBar used={usedValue} questionCount={questionCount} />
           </li>
         </ul>

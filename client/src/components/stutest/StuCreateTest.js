@@ -136,10 +136,11 @@ const StuCreateTest = () => {
 
     if (checkedDifficultylevels.length == 0) {
       dispatch(setAlert('Select a difficulty level', 'danger'));
+      return
 
-      if (inputRef.current) {
+     /*  if (inputRef.current) {
         inputRef.current.focus();
-      }
+      } */
     }
 
     console.log('Checked Topics:', checkedTopics);

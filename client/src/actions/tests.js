@@ -135,8 +135,9 @@ export const loadTestsQuestions =
 export const getTest = (test_name) => async (dispatch) => {
   console.log('in  getTest::', test_name);
 
-  if (test_name.length == 0) {
-    dispatch(setAlert('Tests name not found', 'danger'));
+  if (!test_name || test_name.length === 0) {
+    dispatch(setAlert('Test name not found', 'danger'));
+    return;
   }
 
   dispatch({ type: SELECTED_TEST_REQUEST });
@@ -155,7 +156,7 @@ export const getTest = (test_name) => async (dispatch) => {
 
     dispatch({
       type: SELECTED_TEST_FAIL,
-      payload: { msg: 'Error has occured' },
+      payload: { msg: 'Error has occurred' },
     });
     dispatch(setAlert('Error in fetching data', 'danger'));
   }
@@ -199,7 +200,7 @@ export const createTests = (testData) => async (dispatch) => {
 
     dispatch({
       type: TESTS_FAIL,
-      payload: { msg: 'Error has occured' },
+      payload: { msg: 'Error has occurred' },
     });
     dispatch(setAlert('Test Creation failed', 'danger'));
   }
@@ -221,7 +222,7 @@ export const updateTests =
 
       dispatch(setAlert('Tests Update Successful', 'success'));
     } catch (err) {
-      const errors = err.response.data.errors;
+      const {errors} = err.response.data;
 
       if (errors) {
         errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
@@ -306,7 +307,7 @@ export const score_test = (name, userId) => async (dispatch) => {
     if (res.data.length > 0) {
       dispatch({ type: SCORE_QUESTION_SUCCESS, payload: res.data });
 
-      dispatch(setAlert('Test scored succesfully', 'success'));
+      dispatch(setAlert('Test scored successfully', 'success'));
     } else {
       dispatch(setAlert('No result found', 'danger'));
     }
@@ -334,7 +335,7 @@ export const score_individual_test = (testname, userId) => async (dispatch) => {
 
     dispatch({ type: EACH_TOPIC_SUCCESS, payload: res.data });
 
-    dispatch(setAlert('Test scored succesfully', 'success'));
+    dispatch(setAlert('Test scored successfully', 'success'));
   } catch (error) {
     dispatch({ type: EACH_TOPIC_FAIL, payload: error.message });
     dispatch(setAlert('Error in scoring candidate', 'danger'));

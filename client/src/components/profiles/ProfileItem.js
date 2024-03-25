@@ -10,7 +10,6 @@ const ProfileItem = ({
     location, // Assuming this property is present in your data
     skills, // Assuming this property is present in your data
     images, // Assuming this property is present in your data
-    telno, // Assuming this property is present in your data
   },
 }) => {
   console.log('in ProfileItem');
@@ -26,8 +25,7 @@ const ProfileItem = ({
         <p>{location && <span>Location: {location}</span>}</p>
         <p>{skills && <span>Skills: {skills.join(', ')}</span>}</p>
         <p>{images && <span>Images: {images.join(', ')}</span>}</p>
-        <p>{telno && <span>Tel No: {telno}</span>}</p>
-
+     
         <Link to={`/profile/${_id}`} className="btn btn-primary">
           View Profile
         </Link>

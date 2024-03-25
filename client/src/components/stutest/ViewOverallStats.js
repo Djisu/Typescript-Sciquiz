@@ -202,7 +202,7 @@ const ViewOverallStats = () => {
         </div>
         <ul>
           <li>
-            <PieChartOverall correct={correct} used={usedValue} />
+            <PieChartOverallCorrect correct={correct} used={usedValue} />
             <ProgressBar used={usedValue} questionCount={questionCount} />
           </li>
         </ul>

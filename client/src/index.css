@@ -274,10 +274,13 @@ label {
 
 /* Reduce the size of the pie chart container */
 .pie-chart-container {
-  width: 700px; /* Set your desired width */
-  height: 700px; /* Set your desired height */
+  height: 800px;
+  width: 800px;
 }
 
+.pie-chart-container.visible {
+  display: block;
+}
   /* Apply styles to visually hide the default checkbox */
 .hidden-checkbox {
   position: absolute;

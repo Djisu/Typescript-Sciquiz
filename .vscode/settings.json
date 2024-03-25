@@ -1,3 +1,20 @@
 {
-    "git.ignoreLimitWarning": true
+    "git.ignoreLimitWarning": true,
+    "cSpell.words": [
+        "chartjs",
+        "connectdevelop",
+        "datalabels",
+        "difficultylevel",
+        "Djoleto",
+        "dropbtn",
+        "Progressbar",
+        "randnum",
+        "reduxjs",
+        "sciquiz",
+        "stutest",
+        "stutests",
+        "testname",
+        "toastify",
+        "Userid"
+    ]
 }
