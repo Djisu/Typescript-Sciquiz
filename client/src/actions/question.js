@@ -111,7 +111,7 @@ export const createQuestion = (questionData) => async (dispatch) => {
     });
   }
 };
-// experiement //
+// experiment //
 // find Question
 export const findQuestion = (question) => async (dispatch) => {
   //console.log('in actions findQuestion', question);
@@ -133,7 +133,7 @@ export const findQuestion = (question) => async (dispatch) => {
     if (err) {
       dispatch({
         type: FIND_QUESTION_FAIL,
-        payload: { msg: 'Error has occured' },
+        payload: { msg: 'Error has occurred' },
       });
     }
   }
@@ -277,28 +277,37 @@ export const selectQuestionsTopicsDifficultylevels =
       const testName = test_name;
 
       //  let res = null;
+      console.log("Values sent: ", checkedTopics,
+      checkedDifficultylevels,
+      checkedSubjects,
+      userId,
+      noofquestions,
+      test_name)
+
+
 
       // Check null selectQuestionsTopics
       //  if (checkedTopics.length > 0 && checkedDifficultylevels.length > 0) {
-      const res = await api.get(
-        `/question/${checkedTopics}/${checkedDifficultylevels}/${checkedSubjects}/${userId}/${noofquestions}/${testName}`
-      );
+        const res = await api.get(
+          `/question/${checkedTopics}/${checkedDifficultylevels}/${checkedSubjects}/${userId}/${noofquestions}/${testName}`
+        );
       //  }
 
       console.log('DATA DATA res.data==', res.data);
 
-      //  if (res.data.length == 0) {
-      //dispatch(
-      //  setAlert('All selected questions criteria not found', 'danger')
-      //);
-      //    dispatch({ type: SELECTED_QUESTION_FAIL });
-      //  }
+       if (!res) {
+          dispatch(
+             setAlert('All selected questions criteria not found', 'danger')
+          );
+          dispatch({ type: SELECTED_QUESTION_FAIL });
+       }
       dispatch({
         type: SELECTED_QUESTION_SUCCESS,
         payload: res.data,
       });
     } catch (error) {
       console.error('Error fetching question:', error);
+      setAlert('Error fetching question', 'danger')
       dispatch({ type: SELECTED_QUESTION_FAIL });
     }
   };

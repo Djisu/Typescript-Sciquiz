@@ -136,6 +136,8 @@ export const getTest = (test_name) => async (dispatch) => {
   console.log('in  getTest::', test_name);
 
   if (!test_name || test_name.length === 0) {
+    console.log('Test name not found')
+
     dispatch(setAlert('Test name not found', 'danger'));
     return;
   }
@@ -143,6 +145,8 @@ export const getTest = (test_name) => async (dispatch) => {
   dispatch({ type: SELECTED_TEST_REQUEST });
 
   try {
+    console.log('about to go to /tests/${test_name}')
+    
     const res = await api.get(`/tests/${test_name}`);
 
     console.log('SELECTED TEST FETCHED res.data: ', res.data);

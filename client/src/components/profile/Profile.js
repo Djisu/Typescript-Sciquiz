@@ -17,6 +17,8 @@ import ProfileMarkTest from './ProfileMarkTest.js';
 const Profile = ({ profile: { profile }, auth }) => {
   const dispatch = useDispatch();
   const isAdmin = localStorage.getItem('isAdmin');
+ 
+  const booleanValue = !!(isAdmin === 'true');
   const { id } = useParams();
   const profileX = useSelector((state) => state.profile);
 
@@ -34,9 +36,12 @@ const Profile = ({ profile: { profile }, auth }) => {
   return (
     <section className="container">
       <Fragment>
-        <Link to="/profiles" className="btn btn-light">
-          Back To Profiles
-        </Link>
+        {booleanValue && (
+          <Link to="/profiles" className="btn btn-light">
+            Back To Profiles
+          </Link>
+        )}
+      
 
         {/* Only show edit button if user is authenticated and owns the profile */}
         {auth.isAuthenticated &&
@@ -51,10 +56,7 @@ const Profile = ({ profile: { profile }, auth }) => {
           <ProfileTop profile={profile} />
           <ProfileAbout profile={profile} />
         </div>
-
-        {/* Render ProfileMarkTest and ProfileTestResult components  */ }
-        
-        
+    
         <div className="d-flex flex-column" style={{ alignItems: 'flex-start' }}>
           <div className="col-md-6">
             <ProfileMarkTest userId={profile.user._id} />

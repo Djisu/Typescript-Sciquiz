@@ -14,14 +14,14 @@ import {
 
 // Fetch Topics
 export const fetchTopics = (subjectName) => async (dispatch) => {
-  //  console.log('in fetchTopics');
+    console.log('in fetchTopics: ', subjectName);
 
   dispatch({ type: TOPIC_REQUEST });
 
   try {
     const res = await api.get(`/topic/${subjectName}`);
 
-    //console.log(' res.data:', res.data);
+    console.log(' res.data:', res.data);
 
     dispatch({
       type: TOPIC_LOADED,

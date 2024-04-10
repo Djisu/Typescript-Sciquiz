@@ -116,13 +116,12 @@ export const getProfileByStatus = (status) => async (dispatch) => {
   }
 };
 
-// Create or update profile
-export const createProfile =
-  (formData, edit = false) =>
-  async (dispatch) => {
-    console.log('in createProfile action', formData);
-
+// Create profile
+export const createProfile = (formData, edit = false) => {
+  return async (dispatch) => {
     try {
+      console.log('in createProfile action', formData);
+
       const res = await api.post('/profile', formData);
 
       console.log('res.data::', res.data);
@@ -134,7 +133,7 @@ export const createProfile =
 
       dispatch(setAlert('Profile Created', 'success'));
     } catch (err) {
-      const errors = err.response.data.errors;
+      const { errors } = err.response.data;
 
       if (errors) {
         errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
@@ -146,14 +145,14 @@ export const createProfile =
       });
     }
   };
+};
 
-// Create or update profile
-export const updateProfile =
-  (formData, edit = true) =>
-  async (dispatch) => {
-    console.log('in updateProfile action', formData);
-
+// Update profile
+export const updateProfile = (formData, edit = true) => {
+  return async (dispatch) => {
     try {
+      console.log('in updateProfile action', formData);
+
       const res = await api.put('/profile', formData);
 
       console.log('res.data::', res.data);
@@ -165,7 +164,7 @@ export const updateProfile =
 
       dispatch(setAlert('Profile Updated', 'success'));
     } catch (err) {
-      const errors = err.response.data.errors;
+      const { errors } = err.response.data;
 
       if (errors) {
         errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
@@ -177,6 +176,69 @@ export const updateProfile =
       });
     }
   };
+};
+
+// // Create profile
+// export const createProfile =
+//   (formData, edit = false) =>
+//   async (dispatch) => {
+//     console.log('in createProfile action', formData);
+
+//     try {
+//       const res = await api.post('/profile', formData);
+
+//       console.log('res.data::', res.data);
+
+//       dispatch({
+//         type: GET_PROFILE,
+//         payload: res.data,
+//       });
+
+//       dispatch(setAlert('Profile Created', 'success'));
+//     } catch (err) {
+//       const {errors} = err.response.data;
+
+//       if (errors) {
+//         errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+//       }
+
+//       dispatch({
+//         type: PROFILE_ERROR,
+//         payload: { msg: err.response.statusText, status: err.response.status },
+//       });
+//     }
+//   };
+
+// // Update profile
+// export const updateProfile =
+//   (formData, edit = true) =>
+//   async (dispatch) => {
+//     console.log('in updateProfile action', formData);
+
+//     try {
+//       const res = await api.put('/profile', formData);
+
+//       console.log('res.data::', res.data);
+
+//       dispatch({
+//         type: GET_PROFILE,
+//         payload: res.data,
+//       });
+
+//       dispatch(setAlert('Profile Updated', 'success'));
+//     } catch (err) {
+//       const {errors} = err.response.data;
+
+//       if (errors) {
+//         errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+//       }
+
+//       dispatch({
+//         type: PROFILE_ERROR,
+//         payload: { msg: err.response.statusText, status: err.response.status },
+//       });
+//     }
+//   };
 
 // Delete account & profile
 export const deleteAccount = () => async (dispatch) => {

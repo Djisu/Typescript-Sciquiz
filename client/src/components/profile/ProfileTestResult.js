@@ -46,13 +46,13 @@ const totalQuestionsSum = eachTopic.reduce((total, currentTopic) => {
 
   
 
-  // console.log(
-  //   'topic, trueAnswers, totalQuestions ',
+  console.log(
+    'topic, trueAnswers, totalQuestions ',
 
-  //   eachTopic[0],
-  //   eachTopic[1],
-  //   eachTopic[2]
-  // );
+    eachTopic[0],
+    eachTopic[1],
+    eachTopic[2]
+  );
 
   const tests = useSelector((state) => state.tests.tests);
 
@@ -110,7 +110,7 @@ const totalQuestionsSum = eachTopic.reduce((total, currentTopic) => {
   //  }, [dispatch])
 
   const handleInputChange = (e) => {
-   // console.log('in handleInputChange: ', e.target.value);
+   //console.log('in handleInputChange: ', e.target.value);
 
     e.preventDefault();
     setTestName(e.target.value);
@@ -150,10 +150,10 @@ const totalQuestionsSum = eachTopic.reduce((total, currentTopic) => {
     const parts = testName.split('-');
 
     // Extract the desired portion (from the first character to the last hyphen)
-    const extractedString = parts.slice(0, -1).join(' ');
+    //const extractedString = parts.slice(0, -1).join(' ');
 
     //console.log(extractedString); // Output: "Paul Fleischer-Djoleto"
-    return extractedString;
+    return parts.slice(0, -1).join(' ');
   };
 
   const getOnlyName = () => {

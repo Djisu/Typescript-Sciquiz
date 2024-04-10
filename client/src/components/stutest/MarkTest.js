@@ -14,7 +14,6 @@ import { setAlert } from '../../actions/alert.js';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useCallback } from 'react';
-import Barchart from '../profiles/BarChart.js';
 import { Chart as ChartJS } from 'chart.js/auto';
 
 import PieChartCorrect from '../profiles/PieChartCorrect.js';
@@ -314,7 +313,7 @@ const MarkTest = () => {
         </div>
         <ul>
           <li>
-            <PieChartOverall correct={correct} used={usedValue} />
+            <PieChartOverallCorrect correct={correct} used={usedValue} />
             <ProgressBar used={usedValue} questionCount={questionCount} />
           </li>
         </ul>

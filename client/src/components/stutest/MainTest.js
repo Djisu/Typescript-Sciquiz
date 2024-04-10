@@ -21,9 +21,15 @@ const MainTest = () => {
     userId,
     noofquestions,
   } = useParams();
+
   const selectedQuestions = useSelector((state) => state.selectedQuestions);
+
   const name = localStorage.getItem('name');
+
+  console.log('name is: ', name)
+
   const isAdmin = localStorage.getItem('isAdmin');
+  
   const [newTestName, setNewTestName] = useState(''); // Use state to store the test name
 
   const navigate = useNavigate();

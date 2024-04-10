@@ -3,11 +3,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 
 import { fetchTopics } from '../../actions/topic.js';
 import { fetchDifficultyLevels } from '../../actions/difficulty_level.js';
 import { fetchUniqueSubjects } from '../../actions/subject.js';
-import topicReducer from '../../reducers/topic.js';
+//import topicReducer from '../../reducers/topic.js';
 import { setAlert } from '../../actions/alert.js';
 
 const StuCreateTest = () => {
@@ -34,13 +35,23 @@ const StuCreateTest = () => {
     cursor: 'pointer',
   };
 
+  const userid = localStorage.getItem('id');
+
+//Find out if user is authenticated or not
+useEffect(() => {
+  if (!userid) {
+    dispatch(setAlert('You have to login!!', 'danger'));
+    return <Navigate to="/login" />;
+  }
+},[]);
+
   const [loadTopics, setLoadTopics] = useState(false);
   const [loadDifficultLevel, setLoadDifficultLevel] = useState(false);
 
   const [selectedSubject, setSelectedSubject] = useState('');
 
   let [checkedTopics, setCheckedTopics] = useState([]);
-  let [checkedDifficultylevels, setCheckedDifficultylevels] = useState([]);
+  let [checkedDifficultylevel, setCheckedDifficultylevels] = useState([]);
   let [checkedSubjects, setCheckedSubjects] = useState([]);
   let [noofquestions, setNoofquestions] = useState(0);
 
@@ -70,7 +81,6 @@ const StuCreateTest = () => {
     dispatch(fetchUniqueSubjects());
   }, []);
 
-  const userid = localStorage.getItem('id');
 
   const newSubjects = initialSubjects;
 
@@ -113,105 +123,103 @@ const StuCreateTest = () => {
   };
 
   const toggleCheckboxLevel = (level) => {
-    if (checkedDifficultylevels.includes(level)) {
+    if (checkedDifficultylevel.includes(level)) {
       setCheckedDifficultylevels(
-        checkedDifficultylevels.filter((item) => item !== level)
+        checkedDifficultylevel.filter((item) => item !== level)
       );
     } else {
-      setCheckedDifficultylevels([...checkedDifficultylevels, level]);
+      setCheckedDifficultylevels([...checkedDifficultylevel, level]);
     }
 
-    console.log('checkedDifficultylevels:: ', checkedDifficultylevels);
+    console.log('checkedDifficultylevels:: ', checkedDifficultylevel);
   };
+  
 
   const handleButtonClick = () => {
-    console.log('in handleButtonClick');
+      console.log('in handleButtonClick');
 
-    checkedSubjects = [selectedSubject.toString()];
+      checkedSubjects = [selectedSubject.toString()];
 
-    if (!checkedSubjects) {
-      console.log('Select the subject');
-      return;
-    }
+      if (!checkedSubjects) {
+        console.log('Select the subject');
+        return;
+      }
 
-    if (checkedDifficultylevels.length == 0) {
-      dispatch(setAlert('Select a difficulty level', 'danger'));
-      return
+      if (checkedDifficultylevel.length == 0 || !checkedDifficultylevel) {
+        dispatch(setAlert('Select a difficulty level', 'danger'));
+        console.log('Select a difficulty level')
+        return
+      }
 
-     /*  if (inputRef.current) {
-        inputRef.current.focus();
-      } */
-    }
+      console.log('Checked Topics:', checkedTopics);
+      console.log('Checked Level:', checkedDifficultylevel);
+      console.log('Checked Subjects:', checkedSubjects);
+      console.log('noofquestions:', parseInt(noofquestions));
 
-    console.log('Checked Topics:', checkedTopics);
-    console.log('Checked Level:', checkedDifficultylevels);
-    console.log('Checked Subjects:', checkedSubjects);
-    console.log('noofquestions:', parseInt(noofquestions));
+      let url = '';
 
-    let url = '';
+      setCheckedSubjects([...checkedSubjects, selectedSubject]);
 
-    setCheckedSubjects([...checkedSubjects, selectedSubject]);
+      if (
+        // checkedTopics
+        checkedTopics.length > 0 &&
+        checkedDifficultylevel.length == 0 &&
+        checkedSubjects.length > 0
+      ) {
+        console.log(
+          'in checkedTopics && !checkedDifficultylevels && checkedsubjects'
+        );
+        url = `/maintesttopics/${checkedTopics}/${checkedSubjects}/${userid}/${noofquestions}`;
+      } else if (
+        // checkedDifficultylevels
+        checkedDifficultylevel.length > 0 &&
+        checkedTopics.length == 0 &&
+        checkedSubjects.length > 0
+      ) {
+        console.log('ONLY DIFFICULTY LEVELS');
 
-    if (
-      // checkedTopics
-      checkedTopics.length > 0 &&
-      checkedDifficultylevels.length == 0 &&
-      checkedSubjects.length > 0
-    ) {
-      console.log(
-        'in checkedTopics && !checkedDifficultylevels && checkedsubjects'
-      );
-      url = `/maintesttopics/${checkedTopics}/${checkedSubjects}/${userid}/${noofquestions}`;
-    } else if (
-      // checkedDifficultylevels
-      checkedDifficultylevels.length > 0 &&
-      checkedTopics.length == 0 &&
-      checkedSubjects.length > 0
-    ) {
-      console.log('ONLY DIFFICULTY LEVELS');
+        console.log(checkedDifficultylevel && !checkedTopics);
+        url = `/maintestdifficultylevels/${checkedDifficultylevel}/${checkedSubjects}/${userid}/${noofquestions}`;
+      } else if (
+        // checkedSubjects
+        checkedSubjects.length > 0 &&
+        checkedTopics.length == 0 &&
+        checkedDifficultylevel.length == 0
+      ) {
+        console.log(
+          'in checkedsubjects && !checkedTopics && !checkedDifficultylevels'
+        );
+        url = `/maintestsubjects/${checkedSubjects}/${userid}/${noofquestions}`;
+      } else if (
+        // checkedTopics checkedDifficultylevels checkedSubjects
+        checkedTopics.length > 0 &&
+        checkedDifficultylevel.length > 0 &&
+        checkedSubjects.length == 0
+      ) {
+        console.log(
+          'in checkedTopics && checkedDifficultylevels && !checkedsubjects'
+        );
+        url = `/maintesttopicsdifficultylevels/${checkedTopics}/${checkedDifficultylevel}/${checkedSubjects}/${userid}/${noofquestions}`;
+      } else if (
+        // checkedTopics checkedDifficultylevels checkedSubjects
+        checkedTopics.length > 0 &&
+        checkedDifficultylevel.length > 0 &&
+        checkedSubjects.length > 0 &&
+        userid && userid.length > 0 &&
+        parseInt(noofquestions) > 0
+      ) {
+        console.log(
+          'in checkedTopics && checkedDifficultylevels && checkedsubjects LOOK',
+          checkedTopics,
+          checkedDifficultylevel,
+          checkedSubjects,
+          userid,
+          noofquestions
+        );
+        url = `/maintest/${checkedTopics}/${checkedDifficultylevel}/${checkedSubjects}/${userid}/${noofquestions}`;
+      }
 
-      console.log(checkedDifficultylevels && !checkedTopics);
-      url = `/maintestdifficultylevels/${checkedDifficultylevels}/${checkedSubjects}/${userid}/${noofquestions}`;
-    } else if (
-      // checkedSubjects
-      checkedSubjects.length > 0 &&
-      checkedTopics.length == 0 &&
-      checkedDifficultylevels.length == 0
-    ) {
-      console.log(
-        'in checkedsubjects && !checkedTopics && !checkedDifficultylevels'
-      );
-      url = `/maintestsubjects/${checkedSubjects}/${userid}/${noofquestions}`;
-    } else if (
-      // checkedTopics checkedDifficultylevels checkedSubjects
-      checkedTopics.length > 0 &&
-      checkedDifficultylevels.length > 0 &&
-      checkedSubjects.length == 0
-    ) {
-      console.log(
-        'in checkedTopics && checkedDifficultylevels && !checkedsubjects'
-      );
-      url = `/maintesttopicsdifficultylevels/${checkedTopics}/${checkedDifficultylevels}/${checkedSubjects}/${userid}/${noofquestions}`;
-    } else if (
-      // checkedTopics checkedDifficultylevels checkedSubjects
-      checkedTopics.length > 0 &&
-      checkedDifficultylevels.length > 0 &&
-      checkedSubjects.length > 0 &&
-      userid.length > 0 &&
-      parseInt(noofquestions) > 0
-    ) {
-      console.log(
-        'in checkedTopics && checkedDifficultylevels && checkedsubjects LOOOOOK',
-        checkedTopics,
-        checkedDifficultylevels,
-        checkedSubjects,
-        userid,
-        noofquestions
-      );
-      url = `/maintest/${checkedTopics}/${checkedDifficultylevels}/${checkedSubjects}/${userid}/${noofquestions}`;
-    }
-
-    navigate(url);
+      navigate(url);
   };
 
   const handleInputChange = (e) => {
@@ -299,8 +307,8 @@ const StuCreateTest = () => {
                 <input
                   type="checkbox"
                   id={`level-${index}`}
-                  checked={checkedDifficultylevels.includes(level)}
-                  ref={inputRef}
+                  checked={checkedDifficultylevel.includes(level)}
+                 
                   onChange={() => toggleCheckboxLevel(level)}
                 />
                 &nbsp;

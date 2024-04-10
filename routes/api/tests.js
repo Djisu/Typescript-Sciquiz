@@ -7,9 +7,38 @@ import { check, validationResult } from 'express-validator';
 
 import TestQuestion from '../../models/test_question.js';
 import User from '../../models/User.js';
-import Profile from '../../models/Profile.js';
 
 import Question from '../../models/Question.js';
+
+// Create a route for creating and seeding the database
+router.post('/seed', async (req, res) => {
+  try {
+    console.log('in testquestion database seed')
+    // Create a test question record
+    const testQuestion = new TestQuestion({
+      test_name: 'Sample Test',
+      question: 'What is the capital of France?',
+      answer: 'Paris',
+      difficulty_level: 'Easy',
+      subject_name: 'Geography',
+      topic: 'Capitals',
+      question_year: 2022,
+      question_stats: 0,
+      answeredBy: [],
+      answer_flag: '',
+      user_answer: '',
+      questionId: 'ABC123',
+    });
+
+    // Save the test question record to the database
+    await testQuestion.save();
+
+    res.status(201).json({ message: 'Database created and seeded successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'An error occurred while creating and seeding the database' });
+  }
+});
 
 router.get('/:name/:userId/:randNum', async (req, res) => {
   try {
@@ -134,7 +163,7 @@ router.get('/:test_name', async (req, res) => {
   console.log('in router.get(/:test_name');
 
   try {
-    const test_name = req.params.test_name;
+    const {test_name} = req.params;
 
     const userId = getUserId(test_name);
 

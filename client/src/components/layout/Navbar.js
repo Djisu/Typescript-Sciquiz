@@ -1,26 +1,25 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
-import { useDispatch, useSelector } from 'react-redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { logout } from '../../actions/auth.js';
 //import SearchText from './SearchText.js';
-import StuTests from '../stutest/StuTests.js';
 import { useState } from 'react';
-import { setAlert } from '../../actions/alert.js';
 
 const Navbar = ({ auth: { isAuthenticated }, logout }) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const isAdmin = localStorage.getItem('isAdmin');
 
-  const booleanValue = isAdmin === 'true' ? true : false;
+  const booleanValue = !!(isAdmin === 'true');
 
   //  console.log('isAdmin: ', isAdmin);
 
   const toggleDropdown = () => {
-    if (!booleanValue) alert('You are not admin.');
+    if (!booleanValue) {
+      alert('You are not admin.');
+    }
     setShowDropdown(!showDropdown);
   };
 
@@ -28,9 +27,11 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
     <div>
       <div>
         <ul>
+        
           <li>
-            <Link to="/profiles">Students</Link>
+              <Link to="/profiles">Students</Link>
           </li>
+        
           <li>
             <Link to="/create-stutests">Take Test</Link>
           </li>
@@ -110,9 +111,9 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
 
   const guestLinks = (
     <ul>
-      <li>
+      {/* <li>
         <Link to="/profiles">Students</Link>
-      </li>
+      </li> */}
 
       <li>
         <Link to="/register">Register</Link>

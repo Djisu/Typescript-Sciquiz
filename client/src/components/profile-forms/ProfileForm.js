@@ -39,7 +39,9 @@ const ProfileForm = ({
 
   useEffect(() => {
     // if there is no profile, attempt to fetch one
-    if (!profile) getCurrentProfile();
+    if (!profile) {
+      getCurrentProfile();
+    }
 
     // if we finished loading and we do have a profile
     // then build our profileData
@@ -69,25 +71,33 @@ const ProfileForm = ({
 
     formData.email = userEmail;
 
-    const editing = profile ? true : false;
+    const editing = !!profile;
 
     //console.log('editing==', editing);
     e.preventDefault();
 
     if (editing) {
       console.log('in updateProfile formData==', formData);
+      // Dispatch a plain action object for updating profile
       dispatch(updateProfile(formData, editing));
     } else {
-      dispatch(
-        createProfile(formData, editing).then(() => {
+      // Dispatch an asynchronous action using Redux Thunk for creating profile
+      dispatch((dispatch) => {
+        // Dispatch the createProfile action and handle the Promise returned by it
+        dispatch(createProfile(formData, editing)).then(() => {
           console.log('in createProfile formData==', formData);
-
+          
+          // After successfully creating the profile, navigate to the dashboard
           if (!editing) {
             navigate('/dashboard');
           }
-        })
-      );
+        }).catch(error => {
+          // Handle any errors that occur during profile creation
+          console.error('Error creating profile:', error);
+        });
+      });
     }
+    
   };
 
   return (

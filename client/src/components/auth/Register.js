@@ -9,7 +9,7 @@ import { register } from '../../actions/auth.js'; //action to post formdata to t
 
 // isAuthenticated from the state, from the reducer. It is in the state so it found everywhere
 const Register = ({ setAlert, register, isAuthenticated }) => {
-  // Initialise the local state
+  // Initialize the local state
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -17,7 +17,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
     password2: '',
   });
 
-  // Destructure formData retrived from the screen to the local state
+  // Destructure formData retrieved from the screen to the local state
   const { name, email, password, password2 } = formData;
 
   // Update local state with the formData when you move from one inputbox to another

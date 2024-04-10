@@ -1,15 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { VictoryPie } from 'victory';
 
 function PieChartCorrectTopics({ topic, correct, totQuestions }) {
-  const correctPercentage = (correct / totQuestions) * 100;
-  const incorrect = totQuestions - correct;
-  const incorrectPercentage = (incorrect / totQuestions) * 100;
+  const [data, setData] = useState([]);
 
-  const data = [
-    { x: 'Correct', y: correctPercentage },
-    { x: 'Used', y: incorrectPercentage },
-  ];
+  useEffect(() => {
+    const correctPercentage = (correct / totQuestions) * 100;
+    const incorrect = totQuestions - correct;
+    const incorrectPercentage = (incorrect / totQuestions) * 100;
+
+    const chartData = [
+      { x: 'Correct', y: correctPercentage },
+      { x: 'Used', y: incorrectPercentage },
+    ];
+
+    setData(chartData);
+  }, [correct, totQuestions]);
 
   const chartStyle = {
     width: '60%',
@@ -24,24 +30,77 @@ function PieChartCorrectTopics({ topic, correct, totQuestions }) {
       <h5 style={{ fontSize: '20px', color: 'black' }}>
         <span>{topic}</span>
         <div>
-          Correct: <span>{correctPercentage.toFixed(2)}%</span> ({correct})
+          Correct: <span>{data.length > 0 && data[0].y.toFixed(2)}%</span> ({correct})
         </div>
         <div>
-          Used: <span>{incorrectPercentage.toFixed(2)}%</span> ({totQuestions})
+          Used: <span>{data.length > 0 && data[1].y.toFixed(2)}%</span> ({totQuestions})
         </div>
-        <VictoryPie
-          data={data}
-          colorScale={['rgba(0, 255, 0, 0.5)', 'rgba(255, 0, 0, 0.5)']}
-          style={{ labels: { fontSize: 10, fill: 'black' } }}
-          innerRadius={100}
-          padAngle={3}
-        />
+        {data.length > 0 && (
+          <VictoryPie
+            data={data}
+            colorScale={['rgba(0, 255, 0, 0.5)', 'rgba(255, 0, 0, 0.5)']}
+            style={{ labels: { fontSize: 10, fill: 'black' } }}
+            innerRadius={100}
+            padAngle={3}
+          />
+        )}
       </h5>
     </div>
   );
 }
 
 export default PieChartCorrectTopics;
+
+
+
+
+
+
+
+// import React from 'react';
+// import { VictoryPie } from 'victory';
+
+// function PieChartCorrectTopics({ topic, correct, totQuestions }) {
+//   const correctPercentage = (correct / totQuestions) * 100;
+//   const incorrect = totQuestions - correct;
+//   const incorrectPercentage = (incorrect / totQuestions) * 100;
+
+//   const data = [
+//     { x: 'Correct', y: correctPercentage },
+//     { x: 'Used', y: incorrectPercentage },
+//   ];
+
+//   const chartStyle = {
+//     width: '60%',
+//     height: '60%',
+//     textAlign: 'center',
+//     margin: 'auto',
+//   };
+
+//   return (
+//     <div className="doughnut-chart-container" style={chartStyle}>
+//       <p style={{ color: 'black' }}>Current Test Results:</p>
+//       <h5 style={{ fontSize: '20px', color: 'black' }}>
+//         <span>{topic}</span>
+//         <div>
+//           Correct: <span>{correctPercentage.toFixed(2)}%</span> ({correct})
+//         </div>
+//         <div>
+//           Used: <span>{incorrectPercentage.toFixed(2)}%</span> ({totQuestions})
+//         </div>
+//         <VictoryPie
+//           data={data}
+//           colorScale={['rgba(0, 255, 0, 0.5)', 'rgba(255, 0, 0, 0.5)']}
+//           style={{ labels: { fontSize: 10, fill: 'black' } }}
+//           innerRadius={100}
+//           padAngle={3}
+//         />
+//       </h5>
+//     </div>
+//   );
+// }
+
+// export default PieChartCorrectTopics;
 
 
 // import React from 'react';

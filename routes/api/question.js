@@ -142,11 +142,12 @@ router.get(
 
       noofquestions = parseInt(noofquestions);
 
+      // Splitting param arrays into variables
       const topicsArray = checkedTopics.split(',');
       const difficultyLevelsArray = checkedDifficultyLevels.split(',');
       const subjectsArray = checkedSubjects.split(',');
 
-      //  console.log('ARRAYS' + topicsArray + difficultyLevelsArray + subjectsArray);
+        console.log('xxxxxx ARRAYS' + topicsArray + " " + difficultyLevelsArray  + " " + subjectsArray);
 
       const totalQuestions = await Question.countDocuments({
         topic: { $in: topicsArray },
@@ -183,6 +184,7 @@ router.get(
               answeredBy: userId
             }
           };
+          
           Question.updateOne(filter, update)
             .then((result) => {
               console.log(
@@ -248,6 +250,10 @@ router.get(
     }
   }
 );
+
+
+
+
 
 const createTests = async (questionData, test_name) => {
   console.log('in createTests = async (questionData, test_name)');
@@ -544,13 +550,27 @@ router.put(
     // Build question object question_no
     const questionFields = {};
 
-    if (_id) questionFields._id = _id;
-    if (question) questionFields.question = question;
-    if (answer) questionFields.answer = answer;
-    if (difficulty_level) questionFields.difficulty_level = difficulty_level;
-    if (subject_name) questionFields.subject_name = subject_name;
-    if (topic) questionFields.topic = topic;
-    if (question_year) questionFields.question_year = question_year;
+    if (_id) {
+      questionFields._id = _id;
+    }
+    if (question) {
+      questionFields.question = question;
+    }
+    if (answer) {
+      questionFields.answer = answer;
+    }
+    if (difficulty_level) {
+      questionFields.difficulty_level = difficulty_level;
+    }
+    if (subject_name) {
+      questionFields.subject_name = subject_name;
+    }
+    if (topic) {
+      questionFields.topic = topic;
+    }
+    if (question_year) {
+      questionFields.question_year = question_year;
+    }
 
     try {
       let questionItem = await Question.findOne({
