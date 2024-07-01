@@ -13,6 +13,8 @@ import User from '../../models/User.js';
 // @desc   Test route
 // @access Public
 router.get('/', (req, res) => {
+   console.log('in api router.get')
+
   console.log(req.body);
   res.send('User route');
 });

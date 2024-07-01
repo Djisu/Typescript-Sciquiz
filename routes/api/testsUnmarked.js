@@ -41,7 +41,7 @@ router.get('/unmarked/:randnum', async (req, res) => {
     if (unmarkedTests.length > 0) {
       return res.send(unmarkedTests);
     } else {
-      return res.status(400).json({ msg: 'There is no unmarkes test!' });
+      return res.status(400).json({ msg: 'There is no unmarked test!' });
     }
   } catch (err) {
     console.log(err.message);

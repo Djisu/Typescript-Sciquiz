@@ -35,6 +35,13 @@ connectDB();
 app.use(express.json());
 app.use(cors());
 
+app.use(cors({
+  origin: 'http://localhost:3000', // Replace with your client-side application URL
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 // Define Routes
 app.use('/api/users', users);
 app.use('/api/auth', auth);

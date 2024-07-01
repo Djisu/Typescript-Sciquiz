@@ -169,6 +169,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/prop-types@npm:^15.7.12":
+  version: 15.7.12
+  resolution: "@types/prop-types@npm:15.7.12"
+  checksum: 1babcc7db6a1177779f8fde0ccc78d64d459906e6ef69a4ed4dd6339c920c2e05b074ee5a92120fe4e9d9f1a01c952f843ebd550bee2332fc2ef81d1706878f8
+  languageName: node
+  linkType: hard
+
+"@types/redux-thunk@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@types/redux-thunk@npm:2.1.0"
+  dependencies:
+    redux-thunk: "npm:*"
+  checksum: 358b64539f2eece640990d3e56c1593aec87b6121d797286b8c481b55e71fdf9fb0ea198dc606eb6857703e0d5cc9b35aba25d42390d92037b7525e8aa57b26f
+  languageName: node
+  linkType: hard
+
 "@types/webidl-conversions@npm:*":
   version: 7.0.3
   resolution: "@types/webidl-conversions@npm:7.0.3"
@@ -978,6 +994,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"escalade@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "escalade@npm:3.1.2"
+  checksum: 6b4adafecd0682f3aa1cd1106b8fff30e492c7015b178bc81b2d2f75106dabea6c6d6e8508fc491bd58e597c74abb0e8e2368f943ecb9393d4162e3c2f3cf287
+  languageName: node
+  linkType: hard
+
 "escape-html@npm:~1.0.3":
   version: 1.0.3
   resolution: "escape-html@npm:1.0.3"
@@ -1131,6 +1154,13 @@ __metadata:
   version: 0.2.0
   resolution: "forwarded@npm:0.2.0"
   checksum: 9b67c3fac86acdbc9ae47ba1ddd5f2f81526fa4c8226863ede5600a3f7c7416ef451f6f1e240a3cc32d0fd79fcfe6beb08fd0da454f360032bde70bf80afbb33
+  languageName: node
+  linkType: hard
+
+"fp-ts@npm:^2.0.0":
+  version: 2.16.5
+  resolution: "fp-ts@npm:2.16.5"
+  checksum: 7208a91dcfd3aadd356ee727df351ae86017cfe8c61a6375c6b8f642bb68028edcf928ec5075b3e9884d723cdac3103317c0398ccd6825448eaf01f6298cb61f
   languageName: node
   linkType: hard
 
@@ -1437,6 +1467,15 @@ __metadata:
   version: 2.0.3
   resolution: "internmap@npm:2.0.3"
   checksum: 8cedd57f07bbc22501516fbfc70447f0c6812871d471096fad9ea603516eacc2137b633633daf432c029712df0baefd793686388ddf5737e3ea15074b877f7ed
+  languageName: node
+  linkType: hard
+
+"io-ts@npm:^2.0.3":
+  version: 2.2.21
+  resolution: "io-ts@npm:2.2.21"
+  peerDependencies:
+    fp-ts: ^2.5.0
+  checksum: 4e59e2135c26ced17f9c357c554486e716ac4c75d9bf69164702f66d41400e165786b0d653263bcd2afb4dee947bff4eb7869899ec810050ef067307764f6c32
   languageName: node
   linkType: hard
 
@@ -2207,6 +2246,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"picocolors@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "picocolors@npm:1.0.1"
+  checksum: c63cdad2bf812ef0d66c8db29583802355d4ca67b9285d846f390cc15c2f6ccb94e8cb7eb6a6e97fc5990a6d3ad4ae42d86c84d3146e667c739a4234ed50d400
+  languageName: node
+  linkType: hard
+
 "picomatch@npm:^2.0.4, picomatch@npm:^2.2.1, picomatch@npm:^2.3.1":
   version: 2.3.1
   resolution: "picomatch@npm:2.3.1"
@@ -2235,6 +2281,18 @@ __metadata:
     err-code: "npm:^2.0.2"
     retry: "npm:^0.12.0"
   checksum: 9c7045a1a2928094b5b9b15336dcd2a7b1c052f674550df63cc3f36cd44028e5080448175b6f6ca32b642de81150f5e7b1a98b728f15cb069f2dd60ac2616b96
+  languageName: node
+  linkType: hard
+
+"prop-types-ts@npm:^0.7.4":
+  version: 0.7.4
+  resolution: "prop-types-ts@npm:0.7.4"
+  dependencies:
+    fp-ts: "npm:^2.0.0"
+    io-ts: "npm:^2.0.3"
+  peerDependencies:
+    react: ^15.0.0 || ^16.0.0
+  checksum: 9a0442e63cbaa8f88e3e64c6b0827813d5add2e2e5f1bf85611599504b63dbc1d2a0a004e72137f611ce4b5940b7b570ec3db546552ba247d4d7c20f70940d18
   languageName: node
   linkType: hard
 
@@ -2417,6 +2475,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"redux-thunk@npm:*":
+  version: 3.1.0
+  resolution: "redux-thunk@npm:3.1.0"
+  peerDependencies:
+    redux: ^5.0.0
+  checksum: 21557f6a30e1b2e3e470933247e51749be7f1d5a9620069a3125778675ce4d178d84bdee3e2a0903427a5c429e3aeec6d4df57897faf93eb83455bc1ef7b66fd
+  languageName: node
+  linkType: hard
+
 "regenerator-runtime@npm:^0.14.0":
   version: 0.14.1
   resolution: "regenerator-runtime@npm:0.14.1"
@@ -2486,6 +2553,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "sciquiz@workspace:."
   dependencies:
+    "@types/prop-types": "npm:^15.7.12"
+    "@types/redux-thunk": "npm:2.1.0"
     axios: "npm:^1.5.0"
     bcryptjs: "npm:^2.4.3"
     concurrently: "npm:^8.2.1"
@@ -2502,9 +2571,11 @@ __metadata:
     multer: "npm:^1.4.5-lts.1"
     nodemailer: "npm:^6.9.4"
     nodemon: "npm:^3.0.1"
+    prop-types-ts: "npm:^0.7.4"
     react-error-overlay: "npm:6.0.9"
     recharts: "npm:^2.12.3"
     ssl-root-cas: "npm:^1.3.1"
+    update-browserslist-db: "npm:^1.0.16"
     victory: "npm:^37.0.1"
     xlsx: "npm:^0.18.5"
   languageName: unknown
@@ -2925,6 +2996,20 @@ __metadata:
   version: 1.0.0
   resolution: "unpipe@npm:1.0.0"
   checksum: 193400255bd48968e5c5383730344fbb4fa114cdedfab26e329e50dd2d81b134244bb8a72c6ac1b10ab0281a58b363d06405632c9d49ca9dfd5e90cbd7d0f32c
+  languageName: node
+  linkType: hard
+
+"update-browserslist-db@npm:^1.0.16":
+  version: 1.0.16
+  resolution: "update-browserslist-db@npm:1.0.16"
+  dependencies:
+    escalade: "npm:^3.1.2"
+    picocolors: "npm:^1.0.1"
+  peerDependencies:
+    browserslist: ">= 4.21.0"
+  bin:
+    update-browserslist-db: cli.js
+  checksum: 5995399fc202adbb51567e4810e146cdf7af630a92cc969365a099150cb00597e425cc14987ca7080b09a4d0cfd2a3de53fbe72eebff171aed7f9bb81f9bf405
   languageName: node
   linkType: hard
 

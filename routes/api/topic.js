@@ -89,11 +89,11 @@ async function getRemainingTopicCounts(subjectName, topic) {
       count
     }));
 
-    if (remainingTopics.length === 0) {
-      console.log('No remaining topics.');
-    } else {
-      console.log('Remaining Topics:', remainingTopics);
-    }
+    // if (remainingTopics.length === 0) {
+    //   console.log('No remaining topics.');
+    // } else {
+    //   console.log('Remaining Topics:', remainingTopics);
+    // }
 
     return remainingTopics;
   } catch (err) {
@@ -105,7 +105,7 @@ async function getRemainingTopicCounts(subjectName, topic) {
 // Route handler
 // Route handler
 router.get('/:subjectName', async (req, res) => {
-  console.log('router.get(/:subjectName');
+  console.log('in backend router.get(/:subjectName');
 
   const { subjectName } = req.params;
 
@@ -140,7 +140,8 @@ router.get('/:subjectName', async (req, res) => {
       const remainingCount = await getRemainingTopicCounts(subjectName, topic);
       remainingTopics.push(...remainingCount);      
     }
- console.log('before returning remainingTopics:', remainingTopics);
+
+ //console.log('before returning topic count:', remainingTopics);
   
 
     res.json(remainingTopics);

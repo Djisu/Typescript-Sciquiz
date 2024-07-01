@@ -8,31 +8,85 @@ import { check, validationResult } from 'express-validator';
 import Difficultylevel from '../../models/Difficulty_level.js';
 import Question from '../../models/Question.js';
 
-// @route  POST api/difficult_level
-// @desc   find all difficult_level
-// @access Public
-// @route  POST api/topic/:topic
+// @route  POST api/get/
 // @desc   find all topic
 // @access Public
-router.get('/:difficulty_level', async (req, res) => {
-  //  console.log("in router.get('/:difficulty_level', ");
-
-  const subject_name = req.query.subject_name;
+router.get('/', async (req, res) => {
+  console.log("in difficultlevels router.get('/', ");
 
   try {
-    const subjectNameParam = 'YourSubjectName'; // Replace with the subject_name you want to filter by
 
-    const difficultyLevels = await Question.distinct('difficulty_level', {
-      subject_name: subject_name
-    });
+    const difficultyLevels = await Difficultylevel.find({});
 
-    //console.log('Distinct Difficulty Levels:', difficultyLevels);
+    console.log('difficultyLevels returned: ', difficultyLevels)
+
     res.json(difficultyLevels);
   } catch (err) {
     console.error('Error:', err);
     res.json([]);
   }
 });
+
+// @route  POST api/get/
+// @desc   find all topic
+// @access Public
+router.get('/:difficulty_level', async (req, res) => {
+  console.log("in router.get('/:difficulty_level', ");
+
+  const subject_name = req.query.subject_name;
+
+  try {
+
+    const distinctDifficultyLevels = await Question.aggregate([
+      {
+        $match: {
+          subject_name: subject_name
+        }
+      },
+      {
+        $group: {
+          _id: "$difficulty_level",
+          difficulty_level: { $first: "$difficulty_level" }
+        }
+      },
+      // {
+      //   $project: {
+      //     _id: 0
+      //   }
+      // }
+    ]);
+
+    console.log('distinctDifficultyLevels returned: ', distinctDifficultyLevels)
+
+    res.json(distinctDifficultyLevels);
+  } catch (err) {
+    console.error('Error:', err);
+    res.json([]);
+  }
+});
+
+// // @route  POST api/topic/:topic
+// // @desc   find all topic
+// // @access Public
+// router.get('/:difficulty_level', async (req, res) => {
+//   console.log("in router.get('/:difficulty_level', ");
+
+//   const subject_name = req.query.subject_name;
+
+//   try {
+//     const subjectNameParam = 'YourSubjectName'; // Replace with the subject_name you want to filter by
+
+//     const difficultyLevels = await Question.distinct('difficulty_level', {
+//       subject_name: subject_name
+//     });
+
+//     //console.log('Distinct Difficulty Levels:', difficultyLevels);
+//     res.json(difficultyLevels);
+//   } catch (err) {
+//     console.error('Error:', err);
+//     res.json([]);
+//   }
+// });
 
 // @route  POST api/difficult_level
 // @desc   Post difficult_level
@@ -67,14 +121,27 @@ router.post(
           { $set: difficultyFields },
           { new: true }
         );
+
+        console.log('difficulty_level: ', difficulty_level)
+
         return res.json(difficulty_level);
       }
+
+     
 
       // Create new difficult level
       difficulty_level = new Difficultylevel(difficultyFields);
 
       await difficulty_level.save();
-      return res.json(difficulty_level);
+
+      console.log('difficulty_level created= ', difficulty_level)
+
+      const difficultyLevels = await Difficultylevel.find({});
+
+      console.log('difficultyLevels returned: ', difficultyLevels)
+
+      res.json(difficultyLevels);
+      
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server Error');
@@ -91,7 +158,14 @@ router.delete('/:id', async (req, res) => {
   try {
     // Remove question
     await Difficultylevel.deleteOne({ _id: req.params.id });
-    res.json({ msg: 'Difficult level deleted' });
+
+
+    const difficultyLevels = await Difficultylevel.find({});
+
+    console.log('difficultyLevels returned: ', difficultyLevels)
+
+    res.json(difficultyLevels);
+
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

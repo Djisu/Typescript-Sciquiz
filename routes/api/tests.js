@@ -103,10 +103,12 @@ router.get('/:name/:userId/:randNum', async (req, res) => {
       testCount
     );
 
+    const usedQuestionsLength = usedQuestions.length
+
     const resultArray = [
       questionCount,
       correctAnswers,
-      usedQuestions.length,
+      usedQuestionsLength,
       testCount
     ];
 
@@ -145,7 +147,7 @@ router.get('/:randNum/:userId', async (req, res) => {
     //const test = await TestQuestion.find({ test_name: test_name });
     const tests = await getTestNamesContainingString(userName);
 
-    //if (tests) console.log('testsOOOOOOO:: ', tests);
+    if (tests) console.log('testsOOOOOOO:: ', tests);
 
     if (!tests) {
       return res.status(404).json({ message: 'Test not found' });
@@ -395,7 +397,7 @@ router.get('/', async (req, res) => {
       }
     ]);
 
-    //console.log('TESTS== ', tests);
+    console.log('TESTS obtained from the backend == ', tests);
 
     res.send(tests);
   } catch (err) {
@@ -518,6 +520,9 @@ async function getUserId(testName) {
 }
 
 async function getTestNamesContainingString(searchString) {
+
+  console.log('searchString== ', searchString)
+
   try {
     // Use a regular expression to find test names that include the searchString
     const testNames = await TestQuestion.distinct('test_name', {

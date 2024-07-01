@@ -26,16 +26,40 @@ router.get('/:id', auth, async (req, res) => {
 
 // @route  POST api/auth
 // @desc   find all user
-// @access Public
+// @access Public 
 router.get('/', auth, async (req, res) => {
+  //console.log('in router.get(/, auth')
+ 
   try {
-    const user = await User.find().select('-password');
+    const user = await User.findById(req.user.id).select('-password');
+
+    //console.log('user== ', user)
+
     res.json(user);
   } catch (err) {
     console.log(err.message);
     res.status(500).send('Server Error');
   }
 });
+
+// // @route  POST api/auth
+// // @desc   find all user
+// // @access Public 
+// router.get('/', auth, async (req, res) => {
+//   console.log('in router.get(/, auth')
+ 
+//   try {
+//     const user = await User.find(req.user.id).select('-password');
+
+//     console.log('user== ', user)
+
+//     res.json(user);
+//   } catch (err) {
+//     console.log(err.message);
+//     res.status(500).send('Server Error');
+//   }
+// });
+
 
 // @route  POST api/auth
 // @desc   Authenticate user and get token
@@ -50,19 +74,13 @@ router.post(
   async (req, res) => {
     const errors = validationResult(req);
 
-    console.log('in login')
-
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    //console.log('in login router.post(');
-
-    // Destructure the req.body into email and password fields
     const { email, password } = req.body;
 
     try {
-      // Request user from the database by using the user's email
       let user = await User.findOne({ email });
 
       if (!user) {
@@ -71,7 +89,6 @@ router.post(
           .json({ errors: [{ msg: 'Invalid Credentials' }] });
       }
 
-      // Compare user provided password to the user's password stored in the database
       const isMatch = await bcrypt.compare(password, user.password);
 
       if (!isMatch) {
@@ -80,9 +97,6 @@ router.post(
           .json({ errors: [{ msg: 'Invalid Credentials' }] });
       }
 
-      //console.log("in auth router post user:", user)
-
-      // Return jsonwebtoken
       const payload = {
         user: {
           id: user.id,
@@ -91,6 +105,7 @@ router.post(
           isAdmin: user.isAdmin
         }
       };
+
       jwt.sign(
         payload,
         config.get('jwtSecret'),
@@ -101,14 +116,85 @@ router.post(
           res.json({ token });
         }
       );
-
-      // res.send('User registered')
     } catch (err) {
       console.log(err.message);
       res.status(500).send('Server error');
     }
   }
 );
+
+// // @route  POST api/auth
+// // @desc   Authenticate user and get token
+// // @access Public
+// // With auth, route becomes protective.
+// router.post(
+//   '/',
+//   [
+//     check('email', 'Please include a valid email').isEmail(),
+//     check('password', 'Password is required').exists()
+//   ],
+//   async (req, res) => {
+//     const errors = validationResult(req);
+
+//     //console.log('in router.post')
+
+//     if (!errors.isEmpty()) {
+//       return res.status(400).json({ errors: errors.array() });
+//     }
+
+//     //console.log('in login router.post(');
+
+//     // Destructure the req.body into email and password fields
+//     const { email, password } = req.body;
+
+//     try {
+//       // Request user from the database by using the user's email
+//       let user = await User.findOne({ email });
+
+//       if (!user) {
+//         return res
+//           .status(400)
+//           .json({ errors: [{ msg: 'Invalid Credentials' }] });
+//       }
+
+//       // Compare user provided password to the user's password stored in the database
+//       const isMatch = await bcrypt.compare(password, user.password);
+
+//       if (!isMatch) {
+//         return res
+//           .status(400)
+//           .json({ errors: [{ msg: 'Invalid Credentials' }] });
+//       }
+
+//       //console.log("in auth router post user:", user)
+
+//       // Return jsonwebtoken
+//       const payload = {
+//         user: {
+//           id: user.id,
+//           name: user.name,
+//           email: user.email,
+//           isAdmin: user.isAdmin
+//         }
+//       };
+//       jwt.sign(
+//         payload,
+//         config.get('jwtSecret'),
+//         { expiresIn: 360000 },
+//         (err, token) => {
+//           if (err) throw err;
+
+//           res.json({ token });
+//         }
+//       );
+
+//       // res.send('User registered')
+//     } catch (err) {
+//       console.log(err.message);
+//       res.status(500).send('Server error');
+//     }
+//   }
+// );
 
 // GET API endpoint to get the count of answered questions for a specific user
 

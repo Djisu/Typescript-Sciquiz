@@ -17,6 +17,9 @@ const ProfileSchema = new Schema({
   name: {
     type: String
   },
+  bio: {
+    type: String
+  },
   email: {
     type: String
   }
@@ -24,3 +27,4 @@ const ProfileSchema = new Schema({
 
 const Profile = mongoose.model('profile', ProfileSchema);
 export default Profile;
+

@@ -1,4 +1,5 @@
 import express from 'express';
+import mongoose from 'mongoose';
 const router = express.Router();
 import auth from '../../middleware/auth.js';
 import { check, validationResult } from 'express-validator';
@@ -64,6 +65,7 @@ router.post(
     profileFields.user = req.user.id;
     if (school) profileFields.school = school;
     if (status) profileFields.status = status;
+    if (bio) profileFields.bio = bio;
     if (name) profileFields.name = name;
     if (email) profileFields.email = email;
 
@@ -138,7 +140,7 @@ router.put(
 
     console.log('in POST api/profile post/put');
 
-    const { user, school, status, name, email } = req.body;
+    const { user, school, status, name, bio, email } = req.body;
 
     // Build profile object
     const profileFields = {};
@@ -147,6 +149,7 @@ router.put(
     if (school) profileFields.school = school;
     if (status) profileFields.status = status;
     if (name) profileFields.name = name;
+    if (bio) profileFields.bio = bio;
     if (email) profileFields.email = email;
 
     try {
@@ -178,9 +181,35 @@ router.get('/', async (req, res) => {
   console.log('in profile router.get(/');
 
   try {
-    const profiles = await Profile.find().populate('user', ['name', 'avatar']);
+    //const profiles = await Profile.find().populate('user', ['name', 'avatar']);
+    const profiles = await Profile.aggregate([
+      {
+        $lookup: {
+          from: "users", // Name of the user collection
+          localField: "user", // Field in the profiles collection
+          foreignField: "_id", // Field in the users collection
+          as: "userDetails" // Alias for the joined user details
+        }
+      },
+      {
+        $unwind: "$userDetails" // Deconstruct the array field created by $lookup
+      },
+      {
+        $project: {
+          _id: 1, // Include the profile _id field
+          name: 1, // Include other profile fields you want
+          status: 1,
+          school: 1,
+          bio: 1,
+          user: 1, // Include user fields as profile fields
+          avatar: "$userDetails.avatar",
+          email: "$userDetails.email",
+        }
+      }
+    ]);
+    
 
-    //console.log('FETCHED profiles', profiles);
+    console.log('backend FETCHED profiles', profiles);
 
     return res.json(profiles);
   } catch (err) {
@@ -193,27 +222,54 @@ router.get('/', async (req, res) => {
 // @desc   GET profile by user ID
 // @access Public
 router.get('/user/:userId', async (req, res) => {
-  console.log('router.get(/user/:userId', req.params.userId);
-  //
-  console.log(' req.params.userId: ', req.params.userId);
+   console.log('router.get(/user/:userId', req.params.userId)
+
+   const newUserId = new mongoose.Types.ObjectId(req.params.userId);
+
+  if (!mongoose.Types.ObjectId.isValid(newUserId)) {
+    return res.status(400).json({ message: 'Invalid userId' });
+  }
+
+  console.log('newUserId:: ', newUserId)
 
   try {
-    const profile = await Profile.findOne({
-      user: req.params.userId
-    }).populate('user', ['name', 'avatar']); //, 'school', 'status'
+    const profile = await Profile.aggregate([
+      {
+        $match: {
+          user: newUserId // Use the newUserId variable
+        }
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "user",
+          foreignField: "_id",
+          as: "userDetails"
+        }
+      },
+      {
+        $unwind: "$userDetails"
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          status: 1,
+          school: 1,
+          bio: 1,
+          user: 1,
+          avatar: "$userDetails.avatar",
+          email: "$userDetails.email",
+          userName: "$userDetails.name",
+        }
+      }
+    ]);
 
-    if (!profile) {
-      console.log('No profiles seen');
-      return res.status(400).json({ msg: 'Profile not found' });
-    }
-
-    console.log('fetched profile=', profile);
+    console.log('fetched profileXXXXX=', profile);
     console.log('=================================================');
 
     return res.json(profile);
   } catch (err) {
-    //console.error(err.message);
-
     if (err.kind == 'ObjectId') {
       return res.status(400).json({ msg: 'Profile not found' });
     }
@@ -256,8 +312,6 @@ router.get('/:status', async (req, res) => {
 // @access Private
 router.delete('/:id', auth, async (req, res) => {
   try {
-    // @todo - remove users posts
-
     // Remove profile
     await Profile.findOneAndRemove({ user: req.user.id });
 
