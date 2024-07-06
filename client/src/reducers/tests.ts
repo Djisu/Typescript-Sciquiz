@@ -33,7 +33,7 @@ const initialState = {
 export const testsReducer = (state: TestState = initialState, action: AnyAction) => {
   const { type, payload } = action;
 
-  console.log('in testsReducer ', payload);
+  //console.log('in testsReducer ', payload);
 
   switch (action.type) {
     case TESTS_LOADED:

@@ -122,6 +122,8 @@ export const login = (email: string, password: string): ThunkAction<void, RootSt
 ) => {
   const body = { email, password };
 
+  console.log('in login action creator', email, password)
+
   dispatch({ type: ActionType.LOGIN_REQUEST });
 
   try {

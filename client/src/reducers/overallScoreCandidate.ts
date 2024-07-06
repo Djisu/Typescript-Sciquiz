@@ -30,7 +30,7 @@ const initialState = {
 export const overAllScoreCandidateReducer = (state: OverAllScoreCandidateState = initialState, action: OverallScoreQuestionAction) => {
   const { type, payload } = action;
 
-  console.log('in overAllScoreCandidateReducer', payload);
+  //console.log('in overAllScoreCandidateReducer', payload);
 
   switch (action.type) {
     case OVERALL_SCORE_QUESTION_REQUEST:

@@ -27,7 +27,7 @@ export const initialState = {
 export const scoreCandidateReducer = (state: ScoreCandidateState = initialState, action: ScoreQuestionAction) => {
   const { type, payload } = action;
 
-    console.log('in scoreCandidateReducer', payload);
+    //console.log('in scoreCandidateReducer', payload);
 
   switch (action.type) {
     case SCORE_QUESTION_REQUEST:
